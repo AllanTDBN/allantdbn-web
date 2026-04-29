@@ -1,168 +1,219 @@
 <!DOCTYPE html>
-<html lang="es">
+<ol lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AllanTDBN — The Digital Banking Network</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Instrument+Serif:italic@400&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --bg: #07070d;
             --surface: #0f0f1a;
+            --surface-2: #16162a;
+            --line: #1e1e32;
+            --line-2: #2a2a40;
             --text: #ffffff;
             --muted: #a0a0b8;
             --blue: #7B3FF2;
             --pink: #EC4899;
             --grad: linear-gradient(135deg, #7B3FF2 0%, #EC4899 100%);
-            --sans: 'Space Grotesk', sans-serif;
-            --serif: 'Instrument Serif', serif;
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'Space Grotesk', system-ui, sans-serif;
             --mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.6; }
-
-        /* HERO SECTION - Título Original */
-        .hero { padding: 6rem 2rem 3rem; text-align: center; position: relative; }
-        h1 { font-size: clamp(3.5rem, 9vw, 7rem); line-height: 0.9; margin-bottom: 1rem; letter-spacing: -0.04em; }
-        h1 span { font-family: var(--serif); font-style: italic; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* REDES SOCIALES - Debajo del Título */
-        .social-bar {
-            display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem;
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            overflow-x: hidden;
         }
-        .social-link {
-            padding: 0.6rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
-            text-decoration: none; border: 1px solid #1e1e32; background: var(--surface);
-            transition: 0.3s; color: var(--muted);
-        }
-        .social-link:hover { color: #fff; border-color: var(--pink); transform: translateY(-2px); }
-        .link-yt:hover { background: #ff0000; border-color: #ff0000; }
-        .link-pat:hover { background: #f96854; border-color: #f96854; color: #000; }
 
-        /* CALCULADORAS - Estilo Original */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-        .section-title { font-size: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--blue); padding-left: 1rem; }
-        
-        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 5rem; }
-        .calc-card { background: var(--surface); padding: 2rem; border-radius: 20px; border: 1px solid #1e1e32; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .calc-card h3 { color: var(--pink); margin-bottom: 1.5rem; font-family: var(--mono); font-size: 1rem; text-transform: uppercase; }
-        
-        label { display: block; margin-bottom: 0.5rem; color: var(--muted); font-size: 0.8rem; font-family: var(--mono); }
-        input { 
-            width: 100%; padding: 1rem; background: #07070d; border: 1px solid #2a2a40; 
-            border-radius: 10px; color: white; margin-bottom: 1.5rem; font-family: var(--mono); 
+        /* NAVBAR ORIGINAL */
+        .nav {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(10, 10, 15, 0.72);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 32px;
         }
-        .result-box { background: rgba(123, 63, 242, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(123, 63, 242, 0.3); }
-        .result-box span { display: block; font-size: 1.5rem; font-weight: 700; color: #fff; }
+        .nav-inner { max-width: 1320px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .brand-mark { width: 26px; height: 26px; background: var(--grad); border-radius: 6px; display: grid; place-items: center; font-size: 12px; }
 
-        /* VIDEOS */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 5rem; }
-        .video-card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid #1e1e32; }
+        /* TICKER ORIGINAL */
+        .ticker { border-bottom: 1px solid var(--line); background: rgba(123, 63, 242, 0.05); overflow: hidden; white-space: nowrap; padding: 10px 0; }
+        .ticker-track { display: inline-flex; gap: 40px; animation: tick 40s linear infinite; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* HERO ORIGINAL */
+        .hero { padding: 80px 32px; text-align: center; border-bottom: 1px solid var(--line); position: relative; }
+        .hero h1 { font-size: clamp(40px, 8vw, 100px); line-height: 0.9; letter-spacing: -0.05em; margin-bottom: 20px; }
+        .hero h1 span { font-family: var(--serif); font-style: italic; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-sub { max-width: 700px; margin: 0 auto 40px; color: var(--muted); font-size: 20px; }
+
+        /* BOTONES REDES SOCIALES */
+        .social-grid { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+        .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: 0.2s; border: 1px solid var(--line-2); background: var(--surface); color: white; }
+        .btn:hover { transform: translateY(-2px); border-color: var(--pink); }
+        .btn-yt { background: #ff0000; border: none; }
+
+        /* SECCIÓN DE VIDEOS MEJORADA (Lo único que cambié) */
+        .section-container { max-width: 1320px; margin: 60px auto; padding: 0 32px; }
+        .section-title { font-size: 24px; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .section-title::after { content: ""; height: 1px; flex-grow: 1; background: var(--line); }
+
+        .video-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 25px; 
+        }
+        .video-card { 
+            background: var(--surface); 
+            border: 1px solid var(--line); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            transition: 0.3s; 
+        }
+        .video-card:hover { 
+            border-color: var(--blue); 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 30px rgba(123, 63, 242, 0.15); 
+        }
         .video-card iframe { width: 100%; aspect-ratio: 16/9; border: none; }
-        .video-title { padding: 1.2rem; font-size: 0.95rem; font-weight: 500; }
+        .video-info { padding: 15px; }
+        .video-tag { font-family: var(--mono); font-size: 10px; color: var(--pink); text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .video-name { font-weight: 600; font-size: 15px; }
 
-        footer { text-align: center; padding: 4rem; opacity: 0.4; font-family: var(--mono); font-size: 0.7rem; }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 3.5rem; }
-            .social-bar { gap: 0.5rem; }
-        }
+        /* CALCULADORAS ORIGINALES */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .tool-card { background: var(--surface-2); padding: 30px; border-radius: 20px; border: 1px solid var(--line); }
+        .tool-card h3 { font-family: var(--mono); font-size: 14px; margin-bottom: 20px; color: var(--pink); }
+        input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--line-2); border-radius: 10px; color: white; margin: 10px 0 20px; font-family: var(--mono); }
+        .res-box { background: rgba(123, 63, 242, 0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(123, 63, 242, 0.2); }
+        .res-box span { font-size: 24px; font-weight: 700; display: block; }
     </style>
 </head>
 <body>
 
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="brand">
+                <div class="brand-mark">A</div>
+                AllanTDBN
+            </div>
+            <div style="font-family: var(--mono); font-size: 11px; color: var(--muted);">VALÍDAME EN METAL BLOCKCHAIN</div>
+        </div>
+    </nav>
+
+    <div class="ticker">
+        <div class="ticker-track">
+            <div class="ticker-item">● METAL <b>$1.24</b></div>
+            <div class="ticker-item">● XPR <b>$0.0008</b></div>
+            <div class="ticker-item">● LOAN <b>$0.00002</b></div>
+            <div class="ticker-item">● STAKING APR <b>12%</b></div>
+            <div class="ticker-item">● METAL <b>$1.24</b></div>
+            <div class="ticker-item">● XPR <b>$0.0008</b></div>
+            <div class="ticker-item">● LOAN <b>$0.00002</b></div>
+        </div>
+    </div>
+
     <header class="hero">
         <h1>AllanTDBN — The Digital <span>Banking</span> Network</h1>
+        <p class="hero-sub">El único canal exclusivo sobre el ecosistema <em>Metallicus</em> en español. Análisis on-chain, datos reales y validación.</p>
         
-        <div class="social-bar">
-            <a href="https://www.youtube.com/@allantdbn" target="_blank" class="social-link link-yt">YouTube</a>
-            <a href="https://patreon.com/AllanTDBN" target="_blank" class="social-link link-pat">Patreon</a>
-            <a href="https://x.com/Allanamientos" target="_blank" class="social-link">X (Twitter)</a>
-            <a href="https://instagram.com/allantdbn" target="_blank" class="social-link">Instagram</a>
-            <a href="https://tiktok.com/@allan_tdbn" target="_blank" class="social-link">TikTok</a>
+        <div class="social-grid">
+            <a href="https://www.youtube.com/@allantdbn" class="btn btn-yt">YouTube</a>
+            <a href="https://patreon.com/AllanTDBN" class="btn">Patreon</a>
+            <a href="https://x.com/Allanamientos" class="btn">Twitter / X</a>
+            <a href="https://instagram.com/allantdbn" class="btn">Instagram</a>
+            <a href="https://tiktok.com/@allan_tdbn" class="btn">TikTok</a>
         </div>
     </header>
 
-    <div class="container">
-        
-        <h2 class="section-title">Herramientas del Ecosistema</h2>
-        <div class="calc-grid">
-            <div class="calc-card">
-                <h3>Calculadora Metal (Staking)</h3>
-                <label>Monto de METAL</label>
-                <input type="number" id="metalAmt" placeholder="0.00" oninput="runCalc()">
-                <label>APR Anual (%)</label>
-                <input type="number" id="metalApr" value="12" oninput="runCalc()">
-                <div class="result-box">
-                    <label>Recompensa estimada (Anual)</label>
-                    <span id="resMetal">0.00 METAL</span>
-                </div>
-            </div>
-
-            <div class="calc-card">
-                <h3>Calculadora LOAN (Rendimiento)</h3>
-                <label>Monto de LOAN</label>
-                <input type="number" id="loanAmt" placeholder="0.00" oninput="runCalc()">
-                <label>APY Estimado (%)</label>
-                <input type="number" id="loanApy" value="5" oninput="runCalc()">
-                <div class="result-box">
-                    <label>Rendimiento Mensual</label>
-                    <span id="resLoan">0.00 LOAN</span>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Contenido Destacado</h2>
+    <section class="section-container">
+        <h2 class="section-title">Videos Destacados</h2>
         <div class="video-grid">
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/mDUTTIrEA5M"></iframe>
-                <div class="video-title">Conexiones de Metallicus</div>
+                <div class="video-info">
+                    <span class="video-tag">Ecosistema</span>
+                    <div class="video-name">Conexiones de Metallicus</div>
+                </div>
             </div>
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/z4rU79kaLIY"></iframe>
-                <div class="video-title">XPR Network en Español</div>
+                <div class="video-info">
+                    <span class="video-tag">XPR Network</span>
+                    <div class="video-name">Guía Completa en Español</div>
+                </div>
             </div>
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/fNQftwGZizc"></iframe>
-                <div class="video-title">Cómo usar Metal DEX</div>
+                <div class="video-info">
+                    <span class="video-tag">Tutorial</span>
+                    <div class="video-name">Cómo usar Metal DEX</div>
+                </div>
             </div>
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/d_20W7xs6P8"></iframe>
-                <div class="video-title">Configuración de Nodo</div>
+                <div class="video-info">
+                    <span class="video-tag">Validación</span>
+                    <div class="video-name">Tutorial Metal Blockchain Node</div>
+                </div>
             </div>
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/Lt7-CFKu4co"></iframe>
-                <div class="video-title">El Futuro de Metal Blockchain</div>
+                <div class="video-info">
+                    <span class="video-tag">Análisis</span>
+                    <div class="video-name">Metal Blockchain: El Jefe Final</div>
+                </div>
             </div>
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/videoseries?list=PLpZJvXyZ2pU_v_nI-v-fT2rD1I1Pq7v_N"></iframe>
-                <div class="video-title">Lista: Análisis de Protocolos</div>
+                <div class="video-info">
+                    <span class="video-tag">Playlist</span>
+                    <div class="video-name">Análisis de Protocolos DeFi</div>
+                </div>
             </div>
         </div>
+    </section>
 
-    </div>
+    <section class="section-container" id="tools">
+        <h2 class="section-title">Calculadoras On-Chain</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <h3>METAL STAKING</h3>
+                <label>Monto</label>
+                <input type="number" id="m_amt" placeholder="0" oninput="calc()">
+                <div class="res-box">
+                    <span id="m_res">0.00 METAL</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <h3>LOAN PROTOCOL</h3>
+                <label>Monto</label>
+                <input type="number" id="l_amt" placeholder="0" oninput="calc()">
+                <div class="res-box">
+                    <span id="l_res">0.00 LOAN</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script>
-        function runCalc() {
-            // Metal
-            const m_amt = document.getElementById('metalAmt').value || 0;
-            const m_apr = document.getElementById('metalApr').value || 0;
-            document.getElementById('resMetal').innerText = (m_amt * (m_apr/100)).toFixed(2) + " METAL";
-            
-            // Loan
-            const l_amt = document.getElementById('loanAmt').value || 0;
-            const l_apy = document.getElementById('loanApy').value || 0;
-            document.getElementById('resLoan').innerText = ((l_amt * (l_apy/100)) / 12).toFixed(2) + " LOAN";
+        function calc() {
+            let m = document.getElementById('m_amt').value || 0;
+            let l = document.getElementById('l_amt').value || 0;
+            document.getElementById('m_res').innerText = (m * 0.12).toFixed(2) + " METAL";
+            document.getElementById('l_res').innerText = ((l * 0.05) / 12).toFixed(2) + " LOAN";
         }
     </script>
 
-    <footer>
-        &copy; 2026 ALLANTDBN — THE DIGITAL BANKING NETWORK — CHILE
+    <footer style="text-align: center; padding: 60px; color: var(--dim); font-family: var(--mono); font-size: 11px; border-top: 1px solid var(--line);">
+        &copy; 2026 ALLANTDBN — NODO VALIDADOR CHILE
     </footer>
 
 </body>
