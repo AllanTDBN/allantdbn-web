@@ -923,7 +923,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
      HERO
      ========================================================= */
   .hero{
-    position:relative;overflow:hidden;
+    position:relative;overflow:visible;
     padding:96px 32px 120px;
     border-bottom:1px solid var(--line);
   }
@@ -963,10 +963,11 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     100%{box-shadow:0 0 0 0 rgba(0,200,122,0)}
   }
   .hero h1{
-    font-size:clamp(56px, 10vw, 144px);
+    font-size:clamp(40px, 8vw, 110px);overflow:visible;
     letter-spacing:-0.055em;
-    font-weight:600;line-height:0.92;
+    font-weight:600;line-height:1.1;
     margin:0 0 24px;
+    padding-bottom:16px;
   }
   .hero h1 .highlight{
     background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
@@ -1553,7 +1554,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
 
   <!-- ticker -->
   <div class="ticker">
-    <div class="ticker-track" id="ticker-track"><span class="ticker-item "><span class="dot"></span>XPR Network <b>4,000+ TPS</b></span><span class="ticker-item ok"><span class="dot"></span>0 Gas Fees</span><span class="ticker-item "><span class="dot"></span>750+ Credit Unions</span><span class="ticker-item hot"><span class="dot"></span>17 Stablecoin Pilot</span><span class="ticker-item ok"><span class="dot"></span>GENIUS Act <b>SIGNED ✓</b></span><span class="ticker-item "><span class="dot"></span>CLARITY Act <b>Senate Active</b></span><span class="ticker-item hot"><span class="dot"></span>50,000 XMT fee / stablecoin</span><span class="ticker-item "><span class="dot"></span>MTL Hardcap <b>66.6M</b></span><span class="ticker-item ok"><span class="dot"></span>Sub-0.5s finality</span><span class="ticker-item hot"><span class="dot"></span>A-Chain Live</span><span class="ticker-item "><span class="dot"></span>XPR Network <b>4,000+ TPS</b></span><span class="ticker-item ok"><span class="dot"></span>0 Gas Fees</span><span class="ticker-item "><span class="dot"></span>750+ Credit Unions</span><span class="ticker-item hot"><span class="dot"></span>17 Stablecoin Pilot</span><span class="ticker-item ok"><span class="dot"></span>GENIUS Act <b>SIGNED ✓</b></span><span class="ticker-item "><span class="dot"></span>CLARITY Act <b>Senate Active</b></span><span class="ticker-item hot"><span class="dot"></span>50,000 XMT fee / stablecoin</span><span class="ticker-item "><span class="dot"></span>MTL Hardcap <b>66.6M</b></span><span class="ticker-item ok"><span class="dot"></span>Sub-0.5s finality</span><span class="ticker-item hot"><span class="dot"></span>A-Chain Live</span></div>
+    <div class="ticker-track" id="ticker-track"><span class="ticker-item "><span class="dot"></span>XPR Network <b>4,000+ TPS</b></span><span class="ticker-item ok"><span class="dot"></span>0 Gas Fees</span><span class="ticker-item "><span class="dot"></span>750+ Credit Unions</span><span class="ticker-item hot"><span class="dot"></span>17 Stablecoin Pilot</span><span class="ticker-item ok"><span class="dot"></span>GENIUS Act <b>SIGNED ✓</b></span><span class="ticker-item "><span class="dot"></span>CLARITY Act <b>Senate Active</b></span><span class="ticker-item hot"><span class="dot"></span>50,000 XMT fee / stablecoin</span><span class="ticker-item "><span class="dot"></span>MTL Supply <b>~90.6M</b></span><span class="ticker-item ok"><span class="dot"></span>Sub-0.5s finality</span><span class="ticker-item hot"><span class="dot"></span>A-Chain Live</span><span class="ticker-item "><span class="dot"></span>XPR Network <b>4,000+ TPS</b></span><span class="ticker-item ok"><span class="dot"></span>0 Gas Fees</span><span class="ticker-item "><span class="dot"></span>750+ Credit Unions</span><span class="ticker-item hot"><span class="dot"></span>17 Stablecoin Pilot</span><span class="ticker-item ok"><span class="dot"></span>GENIUS Act <b>SIGNED ✓</b></span><span class="ticker-item "><span class="dot"></span>CLARITY Act <b>Senate Active</b></span><span class="ticker-item hot"><span class="dot"></span>50,000 XMT fee / stablecoin</span><span class="ticker-item "><span class="dot"></span>MTL Supply <b>~90.6M</b></span><span class="ticker-item ok"><span class="dot"></span>Sub-0.5s finality</span><span class="ticker-item hot"><span class="dot"></span>A-Chain Live</span></div>
   </div>
 </header>
 
@@ -1635,8 +1636,8 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
         <div class="note">Credit Unions</div>
       </div>
       <div class="ecos-cell">
-        <div class="label">MTL Hardcap</div>
-        <div class="val num">66.6M</div>
+        <div class="label">MTL Supply</div>
+        <div class="val num">~90.6M</div>
         <div class="note">Fixed supply</div>
       </div>
       <div class="ecos-cell">
@@ -1830,8 +1831,8 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
           </div>
           <div class="info-box amber">
             <b>50,000 XMT admission fee</b>
-            <span data-es=""> por cada stablecoin que entra al basket XMD. Supply hardcapped en 66.6M MTL. Cada nueva Credit Union = demanda estructural sobre MTL.</span>
-            <span data-en=""> per stablecoin entering the XMD basket. Supply hardcapped at 66.6M MTL. Each new Credit Union = structural demand for MTL.</span>
+            <span data-es=""> por cada stablecoin que entra al basket XMD. Supply actual ~90.6M MTL, inflacionario (+6M MTL/año al core de Metal L2). Cada nueva Credit Union = demanda estructural sobre MTL.</span>
+            <span data-en=""> per stablecoin entering the XMD basket. Current supply ~90.6M MTL, inflationary (+6M MTL/yr to Metal L2 core). Each new Credit Union = structural demand for MTL.</span>
           </div>
         </div>
         <div class="calc-outputs">
@@ -1841,7 +1842,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
           </div>
           <div class="out-grid">
             <div class="out-cell primary"><div class="k"><span data-es="">Valor portfolio</span><span data-en="">Portfolio value</span></div><div class="v" id="mtl-pv">$270.00</div></div>
-            <div class="out-cell"><div class="k"><span data-es="">Market cap (hardcap)</span><span data-en="">Fully diluted mcap</span></div><div class="v" id="mtl-mc">$17.98M</div></div>
+            <div class="out-cell"><div class="k"><span data-es="">Market cap (supply actual)</span><span data-en="">Current supply mcap</span></div><div class="v" id="mtl-mc">$17.98M</div></div>
           </div>
           <div class="scen-table">
             <div class="row"><span class="m"><span data-es="">Escenario</span><span data-en="">Scenario</span></span><span class="n"><span data-es="">Precio</span><span data-en="">Price</span></span><span class="n"><span data-es="">Tu valor</span><span data-en="">Your value</span></span></div>
@@ -2198,81 +2199,75 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
 
     <div class="blog-grid">
       <!-- 1 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
-        <div class="card-thumb green">
+      <a href="https://youtu.be/UOnmc-TsiP0" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
+        <div class="card-thumb amber">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">22:14</div>
         </div>
         <div class="card-body">
-          <span class="pill reg">Regulación</span>
-          <h4>Metallicus, Fiserv, Temenos y Jack Henry: ¿Por qué son Partners de FedNow?</h4>
-          <p class="excerpt"><span data-es="">Por qué los cuatro nombres más grandes del core banking están alineados alrededor de un mismo stack de settlement.</span><span data-en="">Why the four biggest names in core banking are aligned around the same settlement stack.</span></p>
-          <div class="card-meta"><span>18 Apr 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill mtl">Tutorial</span>
+          <h4>Cómo acuñar Metal Dólar (XMD)</h4>
+          <p class="excerpt"><span data-es="">Guía paso a paso para acuñar XMD dentro del ecosistema Metallicus. Sin especulación, solo el proceso real.</span><span data-en="">Step-by-step guide to minting XMD within the Metallicus ecosystem. No speculation, just the real process.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
       <!-- 2 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
+      <a href="https://youtu.be/4ncW2vgLS-c" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
         <div class="card-thumb blue">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">17:02</div>
         </div>
         <div class="card-body">
-          <span class="pill xpr">XPR Network</span>
-          <h4>¿Qué hace XPR? Diferencias con Metal Blockchain — Metallicus Essentials</h4>
-          <p class="excerpt"><span data-es="">DPoS, 4,000+ TPS, zero gas. Un desglose claro de dónde encaja XPR en el superstack.</span><span data-en="">DPoS, 4,000+ TPS, zero gas. A clear breakdown of where XPR fits in the superstack.</span></p>
-          <div class="card-meta"><span>11 Apr 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill defi">Tutorial</span>
+          <h4>Cómo stakear en LOAN Protocol</h4>
+          <p class="excerpt"><span data-es="">Cómo depositar y obtener rendimientos en LOAN Protocol. Guía completa con el proceso real en pantalla.</span><span data-en="">How to deposit and earn yield on LOAN Protocol. Full walkthrough with the real on-screen process.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
       <!-- 3 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
+      <a href="https://youtu.be/fNQftwGZizc" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
         <div class="card-thumb green">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">28:41</div>
         </div>
         <div class="card-body">
-          <span class="pill reg">Regulación</span>
-          <h4>Custodia de Cryptoactivos por Instituciones Bancarias — Metallicus: El Gran Ganador</h4>
-          <p class="excerpt"><span data-es="">OCC, FDIC y el efecto dominó sobre quién puede custodiar qué, y por qué Metallicus está bien posicionado.</span><span data-en="">OCC, FDIC, and the domino effect on who can custody what — and why Metallicus is well positioned.</span></p>
-          <div class="card-meta"><span>2 Apr 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill xpr">Tutorial</span>
+          <h4>Cómo comprar los activos de Metallicus</h4>
+          <p class="excerpt"><span data-es="">Dónde y cómo adquirir XPR, MTL, LOAN y METAL. Exchanges, pasos y qué tener en cuenta antes de comprar.</span><span data-en="">Where and how to buy XPR, MTL, LOAN and METAL. Exchanges, steps, and what to consider before buying.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
       <!-- 4 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
-        <div class="card-thumb amber">
+      <a href="https://youtu.be/Yl4e_iGdFH8" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
+        <div class="card-thumb green">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">19:28</div>
         </div>
         <div class="card-body">
-          <span class="pill defi">DeFi</span>
-          <h4>Todo tu TVL nos Pertenece — Repaso del Valor Bloqueado en TDBN</h4>
-          <p class="excerpt"><span data-es="">Desglose pool por pool. Dónde está fluyendo la liquidez dentro del ecosistema este mes.</span><span data-en="">Pool-by-pool breakdown. Where liquidity is flowing within the ecosystem this month.</span></p>
-          <div class="card-meta"><span>26 Mar 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill reg">Tutorial</span>
+          <h4>Configura tu YubiKey y añádela a WebAuth</h4>
+          <p class="excerpt"><span data-es="">Cómo configurar una YubiKey y vincularla a tu billetera WebAuth de XPR Network para máxima seguridad.</span><span data-en="">How to set up a YubiKey and link it to your XPR Network WebAuth wallet for maximum security.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
       <!-- 5 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
-        <div class="card-thumb">
+      <a href="https://youtu.be/d_20W7xs6P8" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
+        <div class="card-thumb blue">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">24:55</div>
         </div>
         <div class="card-body">
-          <span class="pill mtl">MTL</span>
-          <h4>La Pax Tecnológica del Metal Dólar</h4>
-          <p class="excerpt"><span data-es="">XMD, la cesta USDC/PAX/PYUSD, y por qué el fee de admisión de 50,000 XMT reescribe la demanda.</span><span data-en="">XMD, the USDC/PAX/PYUSD basket, and why the 50,000 XMT admission fee rewrites demand.</span></p>
-          <div class="card-meta"><span>14 Mar 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill xpr">Tutorial</span>
+          <h4>Cómo crear tu billetera WebAuth</h4>
+          <p class="excerpt"><span data-es="">Guía completa para crear una billetera WebAuth en XPR Network. Sin seed phrase, con seguridad biométrica.</span><span data-en="">Full guide to creating a WebAuth wallet on XPR Network. No seed phrase, biometric security included.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
       <!-- 6 -->
-      <a href="https://youtube.com/@AllanTDBN" target="_blank" rel="noopener" style="text-decoration:none;display:block;" onclick="window.open(&#39;https://youtube.com/@AllanTDBN&#39;,&#39;_blank&#39;)"><article class="card">
-        <div class="card-thumb green">
+      <a href="https://youtu.be/1JnGQl4Me-o" target="_blank" rel="noopener" style="text-decoration:none;display:block;"><article class="card">
+        <div class="card-thumb amber">
           <div class="play"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;color:#fff"><path d="M8 5v14l11-7z"></path></svg></div>
-          <div class="duration">31:12</div>
         </div>
         <div class="card-body">
-          <span class="pill reg">Regulación</span>
-          <h4>XRP y Metallicus: La Alianza que Cambiará la Banca Digital</h4>
-          <p class="excerpt"><span data-es="">ISO 20022, settlement transfronterizo y el rol complementario de XRP junto al stack Metallicus.</span><span data-en="">ISO 20022, cross-border settlement, and XRP's complementary role alongside the Metallicus stack.</span></p>
-          <div class="card-meta"><span>5 Mar 2026</span><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
+          <span class="pill mtl">Tutorial</span>
+          <h4>Aprendiendo a usar la nueva interfaz de LOAN Protocol</h4>
+          <p class="excerpt"><span data-es="">Tour completo por la nueva interfaz de LOAN Protocol: cómo depositar, retirar y gestionar tu posición.</span><span data-en="">Full tour of the new LOAN Protocol interface: how to deposit, withdraw and manage your position.</span></p>
+          <div class="card-meta"><span class="watch"><span data-es="">Ver</span><span data-en="">Watch</span> →</span></div>
         </div>
       </article></a>
     </div>
@@ -2410,7 +2405,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     {c:'ok', t:'GENIUS Act', b:'SIGNED ✓'},
     {c:'', t:'CLARITY Act', b:'Senate Active'},
     {c:'hot', t:'50,000 XMT fee / stablecoin'},
-    {c:'', t:'MTL Hardcap', b:'66.6M'},
+    {c:'', t:'MTL Supply', b:'~90.6M'},
     {c:'ok', t:'Sub-0.5s finality'},
     {c:'hot', t:'A-Chain Live'},
   ];
