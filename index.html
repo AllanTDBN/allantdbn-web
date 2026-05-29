@@ -1569,6 +1569,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     <a href="https://singular-mochi-4d393a.netlify.app/index.html#about" data-close=""><span data-es="">Sobre</span><span data-en="">About</span></a>
     <a href="https://singular-mochi-4d393a.netlify.app/index.html#tools" data-close=""><span data-es="">Herramientas</span><span data-en="">Tools</span></a>
     <a href="https://singular-mochi-4d393a.netlify.app/index.html#timeline" data-close=""><span data-es="">Timeline</span><span data-en="">Timeline</span></a>
+    <a href="#recursos" data-close=""><span data-es="">Recursos</span><span data-en="">Resources</span></a>
     <a href="https://singular-mochi-4d393a.netlify.app/index.html#blog" data-close="">Blog</a>
     <a href="https://singular-mochi-4d393a.netlify.app/index.html#patreon" data-close="">Patreon</a>
   </nav>
@@ -1753,6 +1754,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
       <button class="tab" data-tab="xpr"><span class="tick">03 / L1 DPOS</span><span class="name">XPR Network</span></button>
       <button class="tab active" data-tab="metal"><span class="tick">04 / BSA L0</span><span class="name">METAL Blockchain</span></button>
       <button class="tab" data-tab="metalx"><span class="tick">05 / DEX</span><span class="name">Metal X</span></button>
+      <button class="tab" data-tab="metalstake"><span class="tick">06 / ON-CHAIN</span><span class="name">METAL Staking</span></button>
     </div>
 
     <!-- LOAN -->
@@ -1765,8 +1767,9 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
           </div>
           <div class="slider-row">
             <div class="head"><span class="lbl"><span data-es="">LOAN staked</span><span data-en="">LOAN staked</span></span><span class="val"><span id="loan-amt">10,020,000</span></span></div>
-            <input type="range" id="loan-tokens" min="0" max="20000000" value="1000000" step="10000">
-            <div class="range-marks"><span>0</span><span>20,000,000</span></div>
+            <input type="range" id="loan-tokens" min="0" max="100000000" value="1000000" step="100000">
+            <div class="range-marks"><span>0</span><span>100,000,000</span></div>
+            <input type="number" id="loan-tokens-manual" min="0" max="100000000" placeholder="Ingresa cantidad exacta de LOAN..." style="margin-top:8px;width:100%;font-size:13px;padding:7px 10px;border-radius:6px;border:1px solid var(--line-2);background:var(--surface);color:#fff;font-family:var(--mono)">
           </div>
           <div class="slider-row">
             <div class="head"><span class="lbl">APR</span><span class="val"><span id="loan-apr-v">12.5</span>%</span></div>
@@ -1775,8 +1778,8 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
           </div>
           <div class="slider-row">
             <div class="head"><span class="lbl"><span data-es="">Precio LOAN (USD)</span><span data-en="">LOAN price (USD)</span></span><span class="val">$<span id="loan-price-v">0.0193</span></span></div>
-            <input type="range" id="loan-price" min="0.0001" max="0.10" value="0.003" step="0.0001">
-            <div class="range-marks"><span>$0.0001</span><span>$0.10</span></div>
+            <input type="range" id="loan-price" min="0.0001" max="3.00" value="0.003" step="0.0001">
+            <div class="range-marks"><span>$0.0001</span><span>$3.00</span></div>
           </div>
           <div class="info-box">
             <b><span data-es="">Rewards en PLS y USDL.</span><span data-en="">Rewards paid in PLS and USDL.</span></b>
@@ -2033,6 +2036,120 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
   </div>
 </section>
 
+
+    <!-- METAL STAKING DASHBOARD -->
+    <div class="tool-panel" id="tool-metalstake">
+      <style>
+        .msd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:24px}
+        .msd-cell{background:var(--surface);padding:20px 22px}
+        .msd-cell .k{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+        .msd-cell .v{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-0.01em;color:#fff;font-variant-numeric:tabular-nums}
+        .msd-cell .v.amber{color:var(--amber)}
+        .msd-cell .v.red{color:var(--red)}
+        .msd-cell .v.green{color:var(--green)}
+        .msd-cell .sub{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:4px}
+        .msd-alert{border:1px solid rgba(249,115,22,0.35);background:rgba(249,115,22,0.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
+        .msd-alert .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+        .msd-alert .txt{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.5}
+        .msd-alert .txt b{color:var(--amber)}
+        .msd-alert.crit{border-color:rgba(255,84,112,0.35);background:rgba(255,84,112,0.05)}
+        .msd-alert.crit .txt b{color:var(--red)}
+        .msd-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+        .msd-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+        .msd-card h4{font-size:15px;font-weight:600;letter-spacing:-0.01em;margin-bottom:4px}
+        .msd-card .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px}
+        .msd-table{width:100%;border-collapse:collapse}
+        .msd-table thead th{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);padding:8px 10px;background:var(--surface-2);text-align:left;border-bottom:1px solid var(--line)}
+        .msd-table tbody tr{border-top:1px solid var(--line);transition:background .12s}
+        .msd-table tbody tr:hover{background:rgba(123,63,242,0.05)}
+        .msd-table td{font-family:var(--mono);font-size:12px;color:var(--muted);padding:9px 10px;vertical-align:middle}
+        .msd-table td.name{color:#fff;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .msd-table td.amt{color:var(--amber);font-variant-numeric:tabular-nums}
+        .msd-table td.end{font-variant-numeric:tabular-nums}
+        .msd-table td.urgent{color:var(--red)}
+        .msd-table td.warn{color:var(--amber)}
+        .msd-table td.ok{color:var(--green)}
+        .msd-bar-wrap{margin-bottom:10px}
+        .msd-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+        .msd-bar-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .msd-bar-track{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+        .msd-bar-fill{height:100%;border-radius:3px}
+        .msd-bar-val{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:70px;text-align:right;white-space:nowrap}
+        .msd-source{font-family:var(--mono);font-size:10px;color:var(--dim);text-align:right;margin-top:8px}
+        .msd-source a{color:var(--dim);text-decoration:underline;text-underline-offset:2px}
+        .msd-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+        .msd-filter-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--line-2);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:0.06em}
+        .msd-filter-btn.active{background:rgba(123,63,242,0.15);border-color:rgba(123,63,242,0.4);color:var(--blue)}
+        .msd-pill{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:0.06em}
+        .msd-pill.crit{background:rgba(255,84,112,0.12);color:var(--red)}
+        .msd-pill.warn{background:rgba(249,115,22,0.12);color:var(--amber)}
+        .msd-pill.ok{background:rgba(0,200,122,0.12);color:var(--green)}
+        @media(max-width:900px){.msd-grid{grid-template-columns:1fr 1fr}.msd-layout{grid-template-columns:1fr}}
+      </style>
+
+      <!-- KPI row -->
+      <div class="msd-grid" id="msd-kpis">
+        <div class="msd-cell"><div class="k">Total stakeado</div><div class="v amber">138,415,264</div><div class="sub">METAL · fuente oficial</div></div>
+        <div class="msd-cell"><div class="k">Validadores activos</div><div class="v">213</div><div class="sub">nodos en red</div></div>
+        <div class="msd-cell"><div class="k">METAL a liberar ≤30d</div><div class="v red" id="msd-expiring30">—</div><div class="sub">presión vendedora potencial</div></div>
+        <div class="msd-cell"><div class="k">METAL a liberar jun–jul</div><div class="v amber" id="msd-jun-jul">—</div><div class="sub">vencimientos próximos 60d</div></div>
+      </div>
+
+      <!-- Alerts -->
+      <div id="msd-alerts"></div>
+
+      <div class="msd-layout">
+        <!-- Expiry calendar -->
+        <div class="msd-card">
+          <h4 data-es="">Calendario de vencimientos</h4>
+          <div class="sub">METAL liberado por período</div>
+          <div class="msd-bar-wrap" id="msd-calendar"></div>
+          <div class="msd-source">Fuente: <a href="https://explorer.metalblockchain.org/validators" target="_blank" rel="noopener">explorer.metalblockchain.org</a> · Actualizado: <span id="msd-ts">—</span></div>
+        </div>
+
+        <!-- Top stakes -->
+        <div class="msd-card">
+          <h4 data-es="">Mayores posiciones</h4>
+          <div class="sub">Top 10 por stake</div>
+          <div class="msd-filter">
+            <button class="msd-filter-btn active" onclick="msdFilter(this,'all')">Todos</button>
+            <button class="msd-filter-btn" onclick="msdFilter(this,'urgent')">≤30d</button>
+            <button class="msd-filter-btn" onclick="msdFilter(this,'warn')">31–90d</button>
+            <button class="msd-filter-btn" onclick="msdFilter(this,'ok')">+90d</button>
+          </div>
+          <div style="overflow-x:auto">
+          <table class="msd-table" id="msd-top-table">
+            <thead><tr><th>Nombre</th><th>METAL</th><th>Vence</th><th>Días</th><th>Uptime</th><th>Estado</th></tr></thead>
+            <tbody id="msd-top-body"></tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full validator table -->
+      <div class="msd-card" style="margin-bottom:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <h4 data-es="">Todos los validadores</h4>
+            <div class="sub" style="margin-bottom:0">Datos on-chain en vivo — <span id="msd-count">213</span> nodos</div>
+          </div>
+          <div class="msd-filter" style="margin-bottom:0">
+            <button class="msd-filter-btn active" onclick="msdTableFilter(this,'all')">Todos</button>
+            <button class="msd-filter-btn" onclick="msdTableFilter(this,'urgent')">Crítico ≤7d</button>
+            <button class="msd-filter-btn" onclick="msdTableFilter(this,'warn')">Atención ≤30d</button>
+            <button class="msd-filter-btn" onclick="msdTableFilter(this,'down')">Uptime &lt;50%</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
+        <table class="msd-table">
+          <thead><tr><th>Nombre</th><th>Stake METAL</th><th>Inicio</th><th>Vence</th><th>Días rest.</th><th>Uptime</th><th>Versión</th><th>Estado</th></tr></thead>
+          <tbody id="msd-full-body"></tbody>
+        </table>
+        </div>
+      </div>
+
+    </div>
+
 <!-- ======================= TIMELINE ======================= -->
 <section id="timeline" data-screen-label="timeline">
   <div class="container">
@@ -2278,6 +2395,153 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
   </div>
 </section>
 
+<!-- ======================= RECURSOS ======================= -->
+<section id="recursos" data-screen-label="recursos" style="background:#08080c;border-bottom:1px solid var(--line)">
+  <div class="container">
+    <div class="section-number"><span>03.5</span><span data-es="">Compendio de enlaces</span><span data-en="">Link directory</span></div>
+    <div class="section-head">
+      <div class="left">
+        <h2><span data-es="">Recursos <em>oficiales</em></span><span data-en="">Official <em>resources</em></span></h2>
+        <p><span data-es="">El compendio más completo de todos los enlaces oficiales del ecosistema Metallicus. Exploradores, whitepapers, wallets, GitHub, redes sociales — todo en un solo lugar.</span><span data-en="">The most complete directory of all official Metallicus ecosystem links. Explorers, whitepapers, wallets, GitHub, social media — all in one place.</span></p>
+      </div>
+    </div>
+
+    <style>
+      .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      .res-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:0}
+      .res-card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+      .res-card-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+      .res-card-ico svg{width:17px;height:17px}
+      .res-card-title{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+      .res-card-sub{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+      .res-link{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--muted);font-size:13px;transition:color .15s}
+      .res-link:first-of-type{border-top:none;padding-top:0}
+      .res-link:hover{color:#fff}
+      .res-link:hover .res-arrow{opacity:1}
+      .res-link-ico{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;flex-shrink:0;background:var(--surface-2)}
+      .res-link-ico svg{width:12px;height:12px;color:var(--dim)}
+      .res-link span{flex:1;line-height:1.3}
+      .res-arrow{font-size:11px;color:var(--dim);opacity:0;transition:opacity .15s;font-family:var(--mono)}
+      .res-tag{font-family:var(--mono);font-size:9px;padding:2px 5px;border-radius:3px;letter-spacing:0.06em;flex-shrink:0}
+      .res-tag.new{background:rgba(0,200,122,0.12);color:var(--green)}
+      .res-tag.wp{background:rgba(123,63,242,0.12);color:var(--blue)}
+      .res-tag.dev{background:rgba(249,115,22,0.12);color:var(--amber)}
+      @media(max-width:960px){.res-grid{grid-template-columns:1fr 1fr}}
+      @media(max-width:600px){.res-grid{grid-template-columns:1fr}}
+    </style>
+
+    <div class="res-grid">
+
+      <!-- METALLICUS (empresa) -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:linear-gradient(135deg,#7B3FF2,#EC4899)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-6 9 6v11a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+          </div>
+          <div><div class="res-card-title">Metallicus</div><div class="res-card-sub">Empresa · TDBN</div></div>
+        </div>
+        <a class="res-link" href="https://www.metallicus.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div><span>metallicus.com — Web oficial</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://www.metallicus.com/products" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><span>Todos los productos</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://www.metallicus.com/news" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8L4 6v14a2 2 0 002 2z"/></svg></div><span>Newsroom oficial</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://www.metallicus.com/stablecoin-pilot" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 16v-4M12 8v.01"/></svg></div><span>Stablecoin Pilot Program</span><span class="res-tag new">ACTIVO</span></a>
+        <a class="res-link" href="https://www.metallicus.com/banking-innovation-program-members" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><span>Banking Innovation Members</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://twitter.com/Metallicus" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@Metallicus en X</span><span class="res-arrow">↗</span></a>
+      </div>
+
+      <!-- XPR NETWORK -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:#1a4a8a">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="12,2 22,7 22,17 12,22 2,17 2,7"/></svg>
+          </div>
+          <div><div class="res-card-title">XPR Network</div><div class="res-card-sub">L1 · DPoS · Gas free</div></div>
+        </div>
+        <a class="res-link" href="https://xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div><span>xprnetwork.org</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://explorer.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><span>Explorer — Mainnet</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://testnet.explorer.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0 0h18"/></svg></div><span>Explorer — Testnet</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://xprnetwork.org/whitepaper.pdf" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div><span>Whitepaper XPR</span><span class="res-tag wp">PDF</span></a>
+        <a class="res-link" href="https://docs.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div><span>Documentación oficial</span><span class="res-tag dev">DOCS</span></a>
+        <a class="res-link" href="https://help.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg></div><span>Help Desk XPR</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://resources.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span>Portal de Recursos (RAM/CPU)</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://gov.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-6 9 6v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><span>Governance DAO</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://github.com/XPRNetwork" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58l-.01-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22l-.01 3.29c0 .32.22.7.83.58C20.57 21.8 24 17.31 24 12c0-6.63-5.37-12-12-12z"/></svg></div><span>GitHub XPRNetwork</span><span class="res-tag dev">OSS</span></a>
+        <a class="res-link" href="https://t.me/XPRNetwork" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.97 9.28c-.15.65-.54.81-1.09.5l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.22-3.07 5.6-5.06c.24-.22-.05-.34-.38-.12L6.8 14.53 3.88 13.6c-.65-.2-.66-.65.13-.96l10.87-4.19c.54-.19 1.01.13.68.73z"/></svg></div><span>Telegram XPR Network</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://twitter.com/XPRNetwork" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@XPRNetwork en X</span><span class="res-arrow">↗</span></a>
+      </div>
+
+      <!-- METAL BLOCKCHAIN -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:#1a1a2e;border:1px solid var(--line-2)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div><div class="res-card-title">Metal Blockchain</div><div class="res-card-sub">L0 · PoS · BSA</div></div>
+        </div>
+        <a class="res-link" href="https://metalblockchain.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div><span>metalblockchain.org</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://explorer.metalblockchain.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><span>Explorer — Mainnet</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://metalblockchain.org/whitepaper.pdf" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div><span>Whitepaper METAL</span><span class="res-tag wp">PDF</span></a>
+        <a class="res-link" href="https://docs.metalblockchain.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div><span>Documentación oficial</span><span class="res-tag dev">DOCS</span></a>
+        <a class="res-link" href="https://wallet.metalblockchain.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><span>Metal Wallet (Desktop)</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://resources.metalblockchain.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div><span>Staking / Recursos</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://github.com/MetalBlockchain" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58l-.01-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22l-.01 3.29c0 .32.22.7.83.58C20.57 21.8 24 17.31 24 12c0-6.63-5.37-12-12-12z"/></svg></div><span>GitHub MetalBlockchain</span><span class="res-tag dev">OSS</span></a>
+        <a class="res-link" href="https://twitter.com/metalblockchain" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@metalblockchain en X</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://t.me/metalblockchain" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.97 9.28c-.15.65-.54.81-1.09.5l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.22-3.07 5.6-5.06c.24-.22-.05-.34-.38-.12L6.8 14.53 3.88 13.6c-.65-.2-.66-.65.13-.96l10.87-4.19c.54-.19 1.01.13.68.73z"/></svg></div><span>Telegram Metal Blockchain</span><span class="res-arrow">↗</span></a>
+      </div>
+
+      <!-- METAL PAY + METAL L2 + METAL DOLLAR -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:#0d3a6e">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          </div>
+          <div><div class="res-card-title">Metal Pay · Metal L2 · XMD</div><div class="res-card-sub">Pagos · L2 · Stablecoin</div></div>
+        </div>
+        <a class="res-link" href="https://metalpay.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div><span>metalpay.com</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://apps.apple.com/app/metal-pay/id1288261419" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div><span>Metal Pay — iOS</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://play.google.com/store/apps/details?id=com.metallicus.metalpay" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83 1-.83 1.5-.5l15 8.5-15 8.5c-.5.33-1.5.33-1.5-.5z"/></svg></div><span>Metal Pay — Android</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://metall2.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><span>metall2.com — Metal L2</span><span class="res-tag new">L2</span></a>
+        <a class="res-link" href="https://metaldollar.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h4.5a2.5 2.5 0 010 5H9m0 0h5"/></svg></div><span>metaldollar.com — XMD</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://twitter.com/metalpay" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@metalpay en X</span><span class="res-arrow">↗</span></a>
+      </div>
+
+      <!-- METAL X + LOAN + WebAuth -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:#0a2a1a">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00c87a" stroke-width="2"><path d="M3 3l18 18M21 3L3 21"/></svg>
+          </div>
+          <div><div class="res-card-title">Metal X · LOAN · WebAuth</div><div class="res-card-sub">DEX · DeFi · Wallet</div></div>
+        </div>
+        <a class="res-link" href="https://metalx.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18M21 3L3 21"/></svg></div><span>metalx.com — DEX oficial</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://app.metalx.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span>Abrir Metal X App</span><span class="res-tag new">LIVE</span></a>
+        <a class="res-link" href="https://app.metalx.com/lending" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 16v-4M12 8v.01"/></svg></div><span>LOAN Protocol en Metal X</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://xprnetwork.org/loan" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><span>LOAN Protocol — Info XPR</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://webauth.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><span>webauth.com — Wallet web</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://wauth.co" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><span>Descargar WebAuth Wallet</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://twitter.com/metalxapp" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@MetalXApp en X</span><span class="res-arrow">↗</span></a>
+      </div>
+
+      <!-- COMUNIDAD + GOBERNANZA + DESARROLLADORES -->
+      <div class="res-card">
+        <div class="res-card-head">
+          <div class="res-card-ico" style="background:rgba(123,63,242,0.2);border:1px solid rgba(123,63,242,0.3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#9B6FFF" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div><div class="res-card-title">Comunidad · Devs · Gov</div><div class="res-card-sub">Social · Código · DAO</div></div>
+        </div>
+        <a class="res-link" href="https://gov.xprnetwork.org" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-6 9 6v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><span>Governance XPR — DAO</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://gov.docs.xprnetwork.org/communities/loan-protocol" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><span>Governance LOAN Protocol</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://github.com/XPRNetwork/xpr-network-dev-skill" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58l-.01-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22l-.01 3.29c0 .32.22.7.83.58C20.57 21.8 24 17.31 24 12c0-6.63-5.37-12-12-12z"/></svg></div><span>XPR Dev Skill (Claude Code)</span><span class="res-tag dev">AI</span></a>
+        <a class="res-link" href="https://github.com/XPRNetwork/xpr-agents" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58l-.01-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22l-.01 3.29c0 .32.22.7.83.58C20.57 21.8 24 17.31 24 12c0-6.63-5.37-12-12-12z"/></svg></div><span>xpr-agents (OpenClaw)</span><span class="res-tag dev">OSS</span></a>
+        <a class="res-link" href="https://agents.protonnz.com" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div><span>Registro de Agentes IA — XPR</span><span class="res-tag new">NEW</span></a>
+        <a class="res-link" href="https://twitter.com/marshallhayner" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2.2h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9.1L1 2.2h7l4.8 6.3 5.4-6.3z"/></svg></div><span>@marshallhayner — CEO</span><span class="res-arrow">↗</span></a>
+        <a class="res-link" href="https://t.me/metalblockchain" target="_blank" rel="noopener"><div class="res-link-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.97 9.28c-.15.65-.54.81-1.09.5l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.22-3.07 5.6-5.06c.24-.22-.05-.34-.38-.12L6.8 14.53 3.88 13.6c-.65-.2-.66-.65.13-.96l10.87-4.19c.54-.19 1.01.13.68.73z"/></svg></div><span>Discord / Telegram dev</span><span class="res-arrow">↗</span></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ======================= PATREON ======================= -->
 <section id="patreon" data-screen-label="patreon">
   <div class="container">
@@ -2468,7 +2732,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     const pct = Math.min(100, mi/3000*100);
     $('loan-amt').textContent = fmt(t);
     $('loan-apr-v').textContent = apr;
-    $('loan-price-v').textContent = p.toFixed(4);
+    $('loan-price-v').textContent = p >= 1 ? p.toFixed(2) : p.toFixed(4);
     $('loan-pv').textContent = usd(pv);
     $('loan-mi').textContent = usd(mi);
     $('loan-ai').textContent = usd(ai);
@@ -2477,6 +2741,18 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     $('loan-bar').style.width = pct+'%';
   }
   ['loan-tokens','loan-apr','loan-price'].forEach(id=>bind(id, calcLoan));
+  // Manual input sync for LOAN staked
+  const loanManual = document.getElementById('loan-tokens-manual');
+  if(loanManual){
+    loanManual.addEventListener('input', function(){
+      const val = Math.min(100000000, Math.max(0, +this.value||0));
+      $('loan-tokens').value = val;
+      calcLoan();
+    });
+    $('loan-tokens').addEventListener('input', function(){
+      loanManual.value = this.value ? this.value : '';
+    });
+  }
   calcLoan();
 
   // ========= MTL =========
@@ -2584,6 +2860,233 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     setTimeout(()=>{ this.innerHTML = '<span data-es>Ver más</span><span data-en>Load more</span>'; this.style.borderColor=''; this.style.color=''; }, 1800);
   });
 })();
+
+  // ========= METAL STAKING DASHBOARD =========
+  (function(){
+    const today = new Date();
+
+    const VALIDATORS = [
+      {name:"V. for short 2025",stake:2150,start:"2026-05-10",end:"2026-05-31",uptime:99.99,ver:"1.13.5"},
+      {name:"METAL X 01",stake:250100,start:"2026-04-27",end:"2026-05-31",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc.",stake:800000,start:"2025-07-25",end:"2026-07-21",uptime:100,ver:"1.13.5"},
+      {name:"Rocket Labs 2%",stake:87400,start:"2026-04-30",end:"2026-05-31",uptime:99.99,ver:"1.13.5"},
+      {name:"JPin",stake:285500,start:"2026-05-07",end:"2026-12-30",uptime:99.99,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [2]",stake:800000,start:"2025-08-02",end:"2026-08-01",uptime:100,ver:"1.13.5"},
+      {name:"Professor NodeX",stake:2049,start:"2026-04-09",end:"2026-07-11",uptime:99.99,ver:"1.13.5"},
+      {name:"ForgeX [1]",stake:1627458,start:"2026-04-20",end:"2026-06-01",uptime:99.99,ver:"1.13.5"},
+      {name:"NodeID-2N22",stake:160000,start:"2026-05-15",end:"2026-07-29",uptime:100,ver:"1.13.5"},
+      {name:"Jesus Loves You [1]",stake:5000,start:"2026-05-07",end:"2026-06-01",uptime:100,ver:"1.13.5"},
+      {name:"BlockEmpowered",stake:40220,start:"2026-03-13",end:"2026-07-31",uptime:99.97,ver:"1.13.5"},
+      {name:"NodeID-2bnH",stake:4000,start:"2025-10-22",end:"2026-10-22",uptime:17.32,ver:"unknown"},
+      {name:"Metallicus, Inc. [3]",stake:800000,start:"2025-07-09",end:"2026-07-06",uptime:100,ver:"1.13.5"},
+      {name:"magic 2 🇨🇦",stake:100000,start:"2026-03-25",end:"2026-06-01",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-2p7X",stake:199995,start:"2026-05-26",end:"2026-08-02",uptime:100,ver:"1.13.5"},
+      {name:"Paulista Nodes: Jardins",stake:500000,start:"2026-03-27",end:"2026-07-27",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-2yF7",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
+      {name:"Metal Castle",stake:100000,start:"2026-04-07",end:"2026-09-02",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-3BVH",stake:224000,start:"2026-04-29",end:"2026-06-22",uptime:99.99,ver:"1.13.5"},
+      {name:"NodeID-3U3U",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
+      {name:"MsJb 🇦🇺💙",stake:600000,start:"2025-12-22",end:"2026-06-22",uptime:99.96,ver:"1.13.5"},
+      {name:"NodeID-3Wxw",stake:600000,start:"2026-05-24",end:"2026-07-19",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [4]",stake:800000,start:"2025-07-09",end:"2026-07-08",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-3oTu",stake:1000000,start:"2025-12-12",end:"2026-12-02",uptime:98.74,ver:"1.12.0"},
+      {name:"ForgeX [2]",stake:2247416,start:"2026-05-14",end:"2026-05-29",uptime:100,ver:"1.13.5"},
+      {name:"LATAM METAL NODE",stake:1048000,start:"2026-05-07",end:"2026-12-20",uptime:100,ver:"1.13.5"},
+      {name:"Neuron",stake:10137,start:"2026-05-17",end:"2026-06-21",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-4R9K",stake:4427,start:"2026-04-03",end:"2026-07-04",uptime:100,ver:"1.13.5"},
+      {name:"Ptoy Modern Wealth 2.0",stake:92500,start:"2026-04-25",end:"2026-05-28",uptime:99.98,ver:"1.13.5"},
+      {name:"Metal Key",stake:35000,start:"2026-04-06",end:"2026-09-30",uptime:100,ver:"1.13.5"},
+      {name:"M G S",stake:116442,start:"2026-05-08",end:"2026-06-12",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [5]",stake:800000,start:"2025-07-11",end:"2026-07-08",uptime:99.99,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [6]",stake:800000,start:"2025-08-02",end:"2026-07-31",uptime:100,ver:"1.13.5"},
+      {name:"Metal.Solar.Central",stake:70000,start:"2025-08-15",end:"2026-08-15",uptime:99.92,ver:"1.13.5"},
+      {name:"KSTO",stake:20999,start:"2026-04-22",end:"2026-07-13",uptime:99.94,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [7]",stake:800000,start:"2025-07-14",end:"2026-07-13",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-5r4d",stake:4780,start:"2026-05-22",end:"2026-06-12",uptime:0,ver:"unknown"},
+      {name:"Ant007x2",stake:17138,start:"2026-05-19",end:"2026-12-19",uptime:100,ver:"1.13.5"},
+      {name:"Mr.TV",stake:5601,start:"2026-04-20",end:"2026-07-20",uptime:100,ver:"1.13.5"},
+      {name:"Good Fortune",stake:374610,start:"2026-05-15",end:"2026-07-05",uptime:100,ver:"1.13.5"},
+      {name:"Zeta Node",stake:24278,start:"2026-02-28",end:"2026-05-30",uptime:99.88,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [8]",stake:800000,start:"2025-07-25",end:"2026-07-24",uptime:100,ver:"1.13.5"},
+      {name:"Kellerkind_n2",stake:200000,start:"2026-04-26",end:"2026-07-26",uptime:99.93,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [9]",stake:800000,start:"2025-07-25",end:"2026-07-23",uptime:100,ver:"1.13.5"},
+      {name:"Platinum X",stake:456900,start:"2026-03-23",end:"2026-07-05",uptime:100,ver:"1.13.5"},
+      {name:"METAL Miners",stake:2564,start:"2026-03-28",end:"2026-06-30",uptime:99.97,ver:"1.13.5"},
+      {name:"Digital Metal",stake:3616,start:"2026-04-26",end:"2026-07-12",uptime:99.94,ver:"1.13.5"},
+      {name:"Metal Leeds",stake:43950,start:"2026-05-01",end:"2026-08-31",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [10]",stake:800000,start:"2025-07-11",end:"2026-07-10",uptime:100,ver:"1.13.5"},
+      {name:"METAL Forge",stake:54191,start:"2026-03-25",end:"2026-06-25",uptime:99.99,ver:"1.13.5"},
+      {name:"Moon X",stake:261949,start:"2026-04-30",end:"2026-05-30",uptime:100,ver:"1.13.5"},
+      {name:"MsJb Metal Monsters",stake:600000,start:"2026-03-22",end:"2026-06-22",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [11]",stake:800000,start:"2025-07-11",end:"2026-07-10",uptime:100,ver:"1.13.5"},
+      {name:"PBR",stake:98031,start:"2026-04-23",end:"2026-05-31",uptime:100,ver:"1.13.5"},
+      {name:"Paulista Nodes: Trianon",stake:500000,start:"2026-04-27",end:"2026-08-27",uptime:100,ver:"1.13.5"},
+      {name:"ForgeX [3]",stake:2247416,start:"2026-05-14",end:"2026-05-29",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-9AfG",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-9DLe",stake:100190,start:"2025-11-08",end:"2026-11-07",uptime:99.99,ver:"1.13.5"},
+      {name:"Amari Labs [1]",stake:600000,start:"2026-04-30",end:"2026-05-31",uptime:99.93,ver:"1.13.5"},
+      {name:"Metal.Solar.East",stake:680000,start:"2025-06-30",end:"2026-06-30",uptime:99.99,ver:"1.13.5"},
+      {name:"Metal.Solar.West",stake:708000,start:"2026-03-27",end:"2027-03-27",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-AYbJ",stake:320000,start:"2026-05-14",end:"2026-06-30",uptime:100,ver:"1.13.5"},
+      {name:"Proton NZ",stake:152667,start:"2026-01-27",end:"2026-06-29",uptime:99.99,ver:"1.13.5"},
+      {name:"TotalProton",stake:394000,start:"2026-01-05",end:"2026-12-27",uptime:99.83,ver:"1.13.5"},
+      {name:"NodeID-L7rL",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
+      {name:"Paulista Nodes: Morumbi",stake:500000,start:"2026-02-27",end:"2026-06-27",uptime:100,ver:"1.13.5"},
+      {name:"Amari Labs [2]",stake:600000,start:"2026-04-30",end:"2026-05-31",uptime:100,ver:"1.13.5"},
+      {name:"Amari Labs [3]",stake:292500,start:"2026-04-30",end:"2026-05-31",uptime:100,ver:"1.13.5"},
+      {name:"Metal Cali Skulls",stake:580860,start:"2026-04-04",end:"2026-06-29",uptime:99.84,ver:"1.13.5"},
+      {name:"Kellerkind_n1",stake:200000,start:"2025-09-27",end:"2026-05-31",uptime:99.85,ver:"1.13.5"},
+      {name:"Paulista Nodes: Mooca",stake:500000,start:"2026-05-27",end:"2026-09-27",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-BRyA",stake:38317,start:"2026-04-02",end:"2026-07-02",uptime:99.99,ver:"1.13.5"},
+      {name:"A 6% METAL Node",stake:32220,start:"2026-02-01",end:"2026-08-01",uptime:99.99,ver:"1.13.5"},
+      {name:"AbtSec - MADblocks",stake:385104,start:"2026-05-17",end:"2026-06-20",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [12]",stake:800000,start:"2025-07-25",end:"2026-07-22",uptime:100,ver:"1.13.5"},
+      {name:"ProtonOgun",stake:100000,start:"2026-04-01",end:"2026-07-01",uptime:99.99,ver:"1.13.5"},
+      {name:"Black Wolf",stake:148513,start:"2026-05-02",end:"2026-06-30",uptime:99.89,ver:"1.13.5"},
+      {name:"CryptoBasiks",stake:67209,start:"2026-04-29",end:"2026-08-30",uptime:99.99,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [13]",stake:800000,start:"2025-07-23",end:"2026-07-22",uptime:100,ver:"1.13.5"},
+      {name:"METAL v1",stake:600000,start:"2026-05-01",end:"2026-05-31",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [14]",stake:800000,start:"2025-07-23",end:"2026-07-21",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-EWTCNmpg",stake:261949,start:"2026-04-30",end:"2026-05-30",uptime:100,ver:"1.13.5"},
+      {name:"Gator Node",stake:70000,start:"2026-03-05",end:"2026-06-05",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-8etvSV",stake:500000,start:"2026-03-03",end:"2026-05-31",uptime:99.98,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [15]",stake:800000,start:"2025-07-17",end:"2026-07-16",uptime:100,ver:"1.13.5"},
+      {name:"Studio 22",stake:152555,start:"2026-04-21",end:"2026-06-01",uptime:100,ver:"1.13.5"},
+      {name:"Moon Bags #1",stake:110677,start:"2026-04-24",end:"2026-06-23",uptime:100,ver:"1.13.5"},
+      {name:"EeBWuJerm",stake:380000,start:"2026-04-20",end:"2026-06-13",uptime:100,ver:"1.13.5"},
+      {name:"Metal Lord",stake:63133,start:"2026-02-01",end:"2026-06-01",uptime:99.99,ver:"1.13.5"},
+      {name:"NodeID-HiT5",stake:210000,start:"2026-04-14",end:"2026-06-04",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [16]",stake:800000,start:"2025-07-01",end:"2026-06-27",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-HwPM",stake:226600,start:"2026-05-15",end:"2026-08-11",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [17]",stake:800000,start:"2025-07-03",end:"2026-07-02",uptime:100,ver:"1.13.5"},
+      {name:"Dean Portman",stake:1032236,start:"2026-05-26",end:"2026-06-16",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [18]",stake:800000,start:"2025-07-01",end:"2026-06-28",uptime:100,ver:"1.13.5"},
+      {name:"NodeID-KDtH",stake:445000,start:"2026-05-26",end:"2026-06-22",uptime:99.9,ver:"1.13.5"},
+      {name:"Metal.Solar.East [2]",stake:680000,start:"2025-06-30",end:"2026-06-30",uptime:99.99,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [19]",stake:800000,start:"2025-07-16",end:"2026-07-15",uptime:100,ver:"1.13.5"},
+      {name:"Proton NZ 2",stake:175000,start:"2026-05-06",end:"2026-10-07",uptime:99.86,ver:"1.13.5"},
+      {name:"NodeID-Q5j4",stake:365000,start:"2026-05-08",end:"2026-07-01",uptime:100,ver:"1.13.5"},
+      {name:"Metallicus, Inc. [20]",stake:800000,start:"2025-07-07",end:"2026-07-05",uptime:100,ver:"1.13.5"},
+    ];
+
+    function daysUntil(endStr){
+      const d = new Date(endStr);
+      return Math.round((d - today) / 86400000);
+    }
+
+    function urgency(days){
+      if(days <= 7) return 'urgent';
+      if(days <= 30) return 'warn';
+      return 'ok';
+    }
+
+    function fmt(n){return n.toLocaleString('es-CL',{maximumFractionDigits:0})}
+
+    // Enrich
+    const data = VALIDATORS.map(v => ({...v, days: daysUntil(v.end), urg: urgency(daysUntil(v.end))}));
+    data.sort((a,b) => a.days - b.days);
+
+    // KPIs
+    const total = data.reduce((s,v) => s + v.stake, 0);
+    const exp30 = data.filter(v => v.days <= 30).reduce((s,v) => s + v.stake, 0);
+    const avg = Math.round(total / data.length);
+    // Use official explorer total
+    document.getElementById('msd-expiring30').textContent = fmt(exp30);
+    // Jun+Jul bucket from full dataset
+    const junJul = data.filter(v => {
+      const d = new Date(v.end); return (d.getFullYear()===2026 && (d.getMonth()===5||d.getMonth()===6));
+    }).reduce((s,v)=>s+v.stake,0);
+    document.getElementById('msd-jun-jul').textContent = fmt(junJul);
+    document.getElementById('msd-ts').textContent = today.toLocaleDateString('es-CL');
+
+    // Alerts
+    const critNodes = data.filter(v => v.days <= 7 && v.stake >= 100000);
+    const warnNodes = data.filter(v => v.days > 7 && v.days <= 30 && v.stake >= 200000);
+    let alertHtml = '';
+    if(critNodes.length){
+      const critStake = critNodes.reduce((s,v)=>s+v.stake,0);
+      alertHtml += `<div class="msd-alert crit"><div class="ico">⚠️</div><div class="txt"><b>Alerta crítica — ${fmt(critStake)} METAL vencen en ≤7 días</b> · ${critNodes.length} nodo(s) grande(s) próximos a liberar. Posible presión vendedora inminente.</div></div>`;
+    }
+    if(warnNodes.length){
+      const warnStake = warnNodes.reduce((s,v)=>s+v.stake,0);
+      alertHtml += `<div class="msd-alert"><div class="ico">🔔</div><div class="txt"><b>${fmt(warnStake)} METAL vencen en 8–30 días</b> · ${warnNodes.length} nodo(s) significativo(s). Monitorear actividad en wallets.</div></div>`;
+    }
+    document.getElementById('msd-alerts').innerHTML = alertHtml;
+
+    // Calendar bars
+    // Monthly expiry buckets (on known ~203 nodes; total official = 138.4M METAL)
+    const buckets = {'Mayo 2026':0,'Junio 2026':0,'Julio 2026':0,'Ago–Sep 2026':0,'Oct–Dic 2026':0,'2027+':0};
+    data.forEach(v => {
+      const d = new Date(v.end);
+      const yr = d.getFullYear(); const mo = d.getMonth()+1;
+      if(yr===2026 && mo===5) buckets['Mayo 2026'] += v.stake;
+      else if(yr===2026 && mo===6) buckets['Junio 2026'] += v.stake;
+      else if(yr===2026 && mo===7) buckets['Julio 2026'] += v.stake;
+      else if(yr===2026 && (mo===8||mo===9)) buckets['Ago–Sep 2026'] += v.stake;
+      else if(yr===2026 && mo>=10) buckets['Oct–Dic 2026'] += v.stake;
+      else buckets['2027+'] += v.stake;
+    });
+    const maxBucket = Math.max(...Object.values(buckets));
+    const colors = {'Mayo 2026':'#ff5470','Junio 2026':'#F97316','Julio 2026':'#F97316','Ago–Sep 2026':'#7B3FF2','Oct–Dic 2026':'#7B3FF2','2027+':'#00c87a'};
+    let calHtml = '';
+    Object.entries(buckets).forEach(([label, val]) => {
+      const pct = maxBucket > 0 ? Math.round((val/maxBucket)*100) : 0;
+      calHtml += `<div class="msd-bar-row">
+        <div class="msd-bar-lbl">${label}</div>
+        <div class="msd-bar-track"><div class="msd-bar-fill" style="width:${pct}%;background:${colors[label]}"></div></div>
+        <div class="msd-bar-val">${fmt(val)} METAL</div>
+      </div>`;
+    });
+    calHtml += '<div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px">* Basado en 203 nodos visibles en el explorador. Total oficial: 138.4M METAL.</div>';
+    document.getElementById('msd-calendar').innerHTML = calHtml;
+
+    // Top table
+    let currentFilter = 'all';
+    function renderTopTable(filter){
+      currentFilter = filter;
+      const sorted = [...data].sort((a,b) => b.stake - a.stake);
+      const filtered = filter === 'all' ? sorted.slice(0,10) : sorted.filter(v => v.urg === filter).slice(0,10);
+      let rows = '';
+      filtered.forEach(v => {
+        const cls = v.urg === 'urgent' ? 'urgent' : v.urg === 'warn' ? 'warn' : 'ok';
+        const pill = v.urg === 'urgent' ? '<span class="msd-pill crit">CRÍTICO</span>' : v.urg === 'warn' ? '<span class="msd-pill warn">ATENCIÓN</span>' : '<span class="msd-pill ok">OK</span>';
+        rows += `<tr><td class="name" title="${v.name}">${v.name}</td><td class="amt">${fmt(v.stake)}</td><td>${v.end}</td><td class="${cls}">${v.days}d</td><td>${v.uptime.toFixed(1)}%</td><td>${pill}</td></tr>`;
+      });
+      document.getElementById('msd-top-body').innerHTML = rows || '<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:16px">Sin nodos en este rango</td></tr>';
+    }
+    renderTopTable('all');
+    window.msdFilter = function(btn, filter){
+      document.querySelectorAll('.msd-filter .msd-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTopTable(filter);
+    };
+
+    // Full table
+    let tableFilter = 'all';
+    function renderFullTable(filter){
+      tableFilter = filter;
+      let filtered = [...data];
+      if(filter === 'urgent') filtered = data.filter(v => v.days <= 7);
+      else if(filter === 'warn') filtered = data.filter(v => v.days <= 30);
+      else if(filter === 'down') filtered = data.filter(v => v.uptime < 50);
+      document.getElementById('msd-count').textContent = filtered.length;
+      let rows = '';
+      filtered.forEach(v => {
+        const cls = v.urg === 'urgent' ? 'urgent' : v.urg === 'warn' ? 'warn' : 'ok';
+        const pill = v.urg === 'urgent' ? '<span class="msd-pill crit">CRÍTICO</span>' : v.urg === 'warn' ? '<span class="msd-pill warn">ATENCIÓN</span>' : '<span class="msd-pill ok">OK</span>';
+        const uptimeCls = v.uptime < 50 ? 'urgent' : v.uptime < 90 ? 'warn' : '';
+        rows += `<tr><td class="name" title="${v.name}">${v.name}</td><td class="amt">${fmt(v.stake)}</td><td>${v.start}</td><td>${v.end}</td><td class="${cls}">${v.days}d</td><td class="${uptimeCls}">${v.uptime.toFixed(1)}%</td><td style="color:var(--dim)">${v.ver}</td><td>${pill}</td></tr>`;
+      });
+      document.getElementById('msd-full-body').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:16px">Sin nodos en este rango</td></tr>';
+    }
+    renderFullTable('all');
+    window.msdTableFilter = function(btn, filter){
+      document.querySelectorAll('#tool-metalstake .msd-card:last-child .msd-filter .msd-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFullTable(filter);
+    };
+  })();
+
 </script>
 
 
