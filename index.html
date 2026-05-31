@@ -2040,114 +2040,113 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     <!-- METAL STAKING DASHBOARD -->
     <div class="tool-panel" id="tool-metalstake">
       <style>
-        .msd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:24px}
-        .msd-cell{background:var(--surface);padding:20px 22px}
-        .msd-cell .k{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
-        .msd-cell .v{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-0.01em;color:#fff;font-variant-numeric:tabular-nums}
-        .msd-cell .v.amber{color:var(--amber)}
-        .msd-cell .v.red{color:var(--red)}
-        .msd-cell .v.green{color:var(--green)}
-        .msd-cell .sub{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:4px}
-        .msd-alert{border:1px solid rgba(249,115,22,0.35);background:rgba(249,115,22,0.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
-        .msd-alert .ico{font-size:18px;flex-shrink:0;margin-top:1px}
-        .msd-alert .txt{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.5}
-        .msd-alert .txt b{color:var(--amber)}
-        .msd-alert.crit{border-color:rgba(255,84,112,0.35);background:rgba(255,84,112,0.05)}
-        .msd-alert.crit .txt b{color:var(--red)}
-        .msd-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
-        .msd-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
-        .msd-card h4{font-size:15px;font-weight:600;letter-spacing:-0.01em;margin-bottom:4px}
-        .msd-card .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px}
+        .msd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+        .msd-cell{background:var(--surface);padding:18px 22px}
+        .msd-cell .k{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+        .msd-cell .v{font-family:var(--mono);font-size:20px;font-weight:500;color:#fff;font-variant-numeric:tabular-nums}
+        .msd-cell .v.amber{color:var(--amber)} .msd-cell .v.red{color:var(--red)} .msd-cell .v.green{color:var(--green)}
+        .msd-cell .sub{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:3px}
+        .msd-status{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+        .msd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+        .msd-dot.live{background:#00c87a;box-shadow:0 0 6px #00c87a88}
+        .msd-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+        .msd-dot.error{background:var(--red)}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .msd-alert{border:1px solid rgba(249,115,22,0.35);background:rgba(249,115,22,0.06);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.5}
+        .msd-alert b{color:var(--amber)} .msd-alert.crit{border-color:rgba(255,84,112,0.35);background:rgba(255,84,112,0.05)} .msd-alert.crit b{color:var(--red)}
+        .msd-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+        .msd-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+        .msd-card h4{font-size:14px;font-weight:600;margin-bottom:3px}
+        .msd-card .sub{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px}
+        .msd-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+        .msd-bar-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:100px}
+        .msd-bar-track{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+        .msd-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+        .msd-bar-val{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:80px;text-align:right}
         .msd-table{width:100%;border-collapse:collapse}
-        .msd-table thead th{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);padding:8px 10px;background:var(--surface-2);text-align:left;border-bottom:1px solid var(--line)}
+        .msd-table thead th{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);padding:7px 8px;background:var(--surface-2);text-align:left;border-bottom:1px solid var(--line)}
         .msd-table tbody tr{border-top:1px solid var(--line);transition:background .12s}
         .msd-table tbody tr:hover{background:rgba(123,63,242,0.05)}
-        .msd-table td{font-family:var(--mono);font-size:12px;color:var(--muted);padding:9px 10px;vertical-align:middle}
-        .msd-table td.name{color:#fff;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .msd-table td{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:8px;vertical-align:middle}
+        .msd-table td.name{color:#fff;font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .msd-table td.amt{color:var(--amber);font-variant-numeric:tabular-nums}
-        .msd-table td.end{font-variant-numeric:tabular-nums}
-        .msd-table td.urgent{color:var(--red)}
-        .msd-table td.warn{color:var(--amber)}
-        .msd-table td.ok{color:var(--green)}
-        .msd-bar-wrap{margin-bottom:10px}
-        .msd-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-        .msd-bar-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .msd-bar-track{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
-        .msd-bar-fill{height:100%;border-radius:3px}
-        .msd-bar-val{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:70px;text-align:right;white-space:nowrap}
-        .msd-source{font-family:var(--mono);font-size:10px;color:var(--dim);text-align:right;margin-top:8px}
-        .msd-source a{color:var(--dim);text-decoration:underline;text-underline-offset:2px}
-        .msd-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-        .msd-filter-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--line-2);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:0.06em}
-        .msd-filter-btn.active{background:rgba(123,63,242,0.15);border-color:rgba(123,63,242,0.4);color:var(--blue)}
-        .msd-pill{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:0.06em}
+        .msd-pill{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em}
         .msd-pill.crit{background:rgba(255,84,112,0.12);color:var(--red)}
         .msd-pill.warn{background:rgba(249,115,22,0.12);color:var(--amber)}
         .msd-pill.ok{background:rgba(0,200,122,0.12);color:var(--green)}
+        .msd-filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+        .msd-fbtn{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--line-2);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+        .msd-fbtn.active{background:rgba(123,63,242,0.15);border-color:rgba(123,63,242,0.4);color:var(--blue)}
+        .msd-source{font-family:var(--mono);font-size:10px;color:var(--dim);text-align:right;margin-top:10px}
+        .msd-source a{color:var(--dim);text-decoration:underline}
         @media(max-width:900px){.msd-grid{grid-template-columns:1fr 1fr}.msd-layout{grid-template-columns:1fr}}
       </style>
 
-      <!-- KPI row -->
-      <div class="msd-grid" id="msd-kpis">
-        <div class="msd-cell"><div class="k">Total stakeado</div><div class="v amber">138,415,264</div><div class="sub">METAL · fuente oficial</div></div>
-        <div class="msd-cell"><div class="k">Validadores activos</div><div class="v">213</div><div class="sub">nodos en red</div></div>
-        <div class="msd-cell"><div class="k">METAL a liberar ≤30d</div><div class="v red" id="msd-expiring30">—</div><div class="sub">presión vendedora potencial</div></div>
-        <div class="msd-cell"><div class="k">METAL a liberar jun–jul</div><div class="v amber" id="msd-jun-jul">—</div><div class="sub">vencimientos próximos 60d</div></div>
+      <!-- Status bar -->
+      <div class="msd-status">
+        <div class="msd-dot loading" id="msd-dot"></div>
+        <span id="msd-status-txt">Cargando datos en tiempo real desde la P-Chain...</span>
+      </div>
+
+      <!-- KPIs -->
+      <div class="msd-grid">
+        <div class="msd-cell"><div class="k">Total stakeado</div><div class="v amber" id="msd-total">—</div><div class="sub">METAL (P-Chain live)</div></div>
+        <div class="msd-cell"><div class="k">Validadores activos</div><div class="v" id="msd-count">—</div><div class="sub">nodos en red</div></div>
+        <div class="msd-cell"><div class="k">METAL a liberar ≤30d</div><div class="v red" id="msd-exp30">—</div><div class="sub">presión vendedora potencial</div></div>
+        <div class="msd-cell"><div class="k">Delegadores totales</div><div class="v" id="msd-delegators">—</div><div class="sub">stakers individuales</div></div>
       </div>
 
       <!-- Alerts -->
       <div id="msd-alerts"></div>
 
       <div class="msd-layout">
-        <!-- Expiry calendar -->
+        <!-- Calendar -->
         <div class="msd-card">
-          <h4 data-es="">Calendario de vencimientos</h4>
-          <div class="sub">METAL liberado por período</div>
-          <div class="msd-bar-wrap" id="msd-calendar"></div>
-          <div class="msd-source">Fuente: <a href="https://explorer.metalblockchain.org/validators" target="_blank" rel="noopener">explorer.metalblockchain.org</a> · Actualizado: <span id="msd-ts">—</span></div>
+          <h4>METAL a liberarse</h4>
+          <div class="sub">Vencimientos por período</div>
+          <div id="msd-calendar"></div>
+          <div class="msd-source">Live · <a href="https://explorer.metalblockchain.org/validators" target="_blank">explorer.metalblockchain.org</a> · <span id="msd-ts">—</span></div>
         </div>
 
         <!-- Top stakes -->
         <div class="msd-card">
-          <h4 data-es="">Mayores posiciones</h4>
+          <h4>Mayores posiciones</h4>
           <div class="sub">Top 10 por stake</div>
           <div class="msd-filter">
-            <button class="msd-filter-btn active" onclick="msdFilter(this,'all')">Todos</button>
-            <button class="msd-filter-btn" onclick="msdFilter(this,'urgent')">≤30d</button>
-            <button class="msd-filter-btn" onclick="msdFilter(this,'warn')">31–90d</button>
-            <button class="msd-filter-btn" onclick="msdFilter(this,'ok')">+90d</button>
+            <button class="msd-fbtn active" onclick="msdTopFilter(this,'all')">Todos</button>
+            <button class="msd-fbtn" onclick="msdTopFilter(this,'urgent')">≤30d</button>
+            <button class="msd-fbtn" onclick="msdTopFilter(this,'warn')">31–90d</button>
+            <button class="msd-fbtn" onclick="msdTopFilter(this,'ok')">+90d</button>
           </div>
           <div style="overflow-x:auto">
-          <table class="msd-table" id="msd-top-table">
-            <thead><tr><th>Nombre</th><th>METAL</th><th>Vence</th><th>Días</th><th>Uptime</th><th>Estado</th></tr></thead>
-            <tbody id="msd-top-body"></tbody>
-          </table>
+            <table class="msd-table">
+              <thead><tr><th>Nombre / NodeID</th><th>METAL</th><th>Vence</th><th>Estado</th></tr></thead>
+              <tbody id="msd-top-body"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- Full validator table -->
-      <div class="msd-card" style="margin-bottom:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
-          <div>
-            <h4 data-es="">Todos los validadores</h4>
-            <div class="sub" style="margin-bottom:0">Datos on-chain en vivo — <span id="msd-count">213</span> nodos</div>
-          </div>
+      <!-- Full table -->
+      <div class="msd-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+          <div><h4>Todos los validadores</h4><div class="sub" style="margin-bottom:0">P-Chain · <span id="msd-full-count">—</span> nodos</div></div>
           <div class="msd-filter" style="margin-bottom:0">
-            <button class="msd-filter-btn active" onclick="msdTableFilter(this,'all')">Todos</button>
-            <button class="msd-filter-btn" onclick="msdTableFilter(this,'urgent')">Crítico ≤7d</button>
-            <button class="msd-filter-btn" onclick="msdTableFilter(this,'warn')">Atención ≤30d</button>
-            <button class="msd-filter-btn" onclick="msdTableFilter(this,'down')">Uptime &lt;50%</button>
+            <button class="msd-fbtn active" onclick="msdFullFilter(this,'all')">Todos</button>
+            <button class="msd-fbtn" onclick="msdFullFilter(this,'critical')">Crítico ≤7d</button>
+            <button class="msd-fbtn" onclick="msdFullFilter(this,'warn')">≤30d</button>
+            <button class="msd-fbtn" onclick="msdFullFilter(this,'big')">+1M METAL</button>
           </div>
         </div>
-        <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
-        <table class="msd-table">
-          <thead><tr><th>Nombre</th><th>Stake METAL</th><th>Inicio</th><th>Vence</th><th>Días rest.</th><th>Uptime</th><th>Versión</th><th>Estado</th></tr></thead>
-          <tbody id="msd-full-body"></tbody>
-        </table>
+        <div style="overflow-x:auto;max-height:440px;overflow-y:auto">
+          <table class="msd-table">
+            <thead><tr><th>Nombre / NodeID</th><th>Stake METAL</th><th>Delegadores</th><th>Inicio</th><th>Vence</th><th>Días rest.</th><th>Uptime</th><th>Estado</th></tr></thead>
+            <tbody id="msd-full-body"></tbody>
+          </table>
         </div>
       </div>
 
+    </div>
     </div>
 
 <!-- ======================= TIMELINE ======================= -->
@@ -2861,230 +2860,158 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
   });
 })();
 
-  // ========= METAL STAKING DASHBOARD =========
+  // ========= METAL STAKING DASHBOARD — LIVE P-CHAIN =========
   (function(){
+    const PCHAIN_RPC = 'https://api.metalblockchain.org/ext/bc/P';
     const today = new Date();
 
-    const VALIDATORS = [
-      {name:"V. for short 2025",stake:2150,start:"2026-05-10",end:"2026-05-31",uptime:99.99,ver:"1.13.5"},
-      {name:"METAL X 01",stake:250100,start:"2026-04-27",end:"2026-05-31",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc.",stake:800000,start:"2025-07-25",end:"2026-07-21",uptime:100,ver:"1.13.5"},
-      {name:"Rocket Labs 2%",stake:87400,start:"2026-04-30",end:"2026-05-31",uptime:99.99,ver:"1.13.5"},
-      {name:"JPin",stake:285500,start:"2026-05-07",end:"2026-12-30",uptime:99.99,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [2]",stake:800000,start:"2025-08-02",end:"2026-08-01",uptime:100,ver:"1.13.5"},
-      {name:"Professor NodeX",stake:2049,start:"2026-04-09",end:"2026-07-11",uptime:99.99,ver:"1.13.5"},
-      {name:"ForgeX [1]",stake:1627458,start:"2026-04-20",end:"2026-06-01",uptime:99.99,ver:"1.13.5"},
-      {name:"NodeID-2N22",stake:160000,start:"2026-05-15",end:"2026-07-29",uptime:100,ver:"1.13.5"},
-      {name:"Jesus Loves You [1]",stake:5000,start:"2026-05-07",end:"2026-06-01",uptime:100,ver:"1.13.5"},
-      {name:"BlockEmpowered",stake:40220,start:"2026-03-13",end:"2026-07-31",uptime:99.97,ver:"1.13.5"},
-      {name:"NodeID-2bnH",stake:4000,start:"2025-10-22",end:"2026-10-22",uptime:17.32,ver:"unknown"},
-      {name:"Metallicus, Inc. [3]",stake:800000,start:"2025-07-09",end:"2026-07-06",uptime:100,ver:"1.13.5"},
-      {name:"magic 2 🇨🇦",stake:100000,start:"2026-03-25",end:"2026-06-01",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-2p7X",stake:199995,start:"2026-05-26",end:"2026-08-02",uptime:100,ver:"1.13.5"},
-      {name:"Paulista Nodes: Jardins",stake:500000,start:"2026-03-27",end:"2026-07-27",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-2yF7",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
-      {name:"Metal Castle",stake:100000,start:"2026-04-07",end:"2026-09-02",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-3BVH",stake:224000,start:"2026-04-29",end:"2026-06-22",uptime:99.99,ver:"1.13.5"},
-      {name:"NodeID-3U3U",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
-      {name:"MsJb 🇦🇺💙",stake:600000,start:"2025-12-22",end:"2026-06-22",uptime:99.96,ver:"1.13.5"},
-      {name:"NodeID-3Wxw",stake:600000,start:"2026-05-24",end:"2026-07-19",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [4]",stake:800000,start:"2025-07-09",end:"2026-07-08",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-3oTu",stake:1000000,start:"2025-12-12",end:"2026-12-02",uptime:98.74,ver:"1.12.0"},
-      {name:"ForgeX [2]",stake:2247416,start:"2026-05-14",end:"2026-05-29",uptime:100,ver:"1.13.5"},
-      {name:"LATAM METAL NODE",stake:1048000,start:"2026-05-07",end:"2026-12-20",uptime:100,ver:"1.13.5"},
-      {name:"Neuron",stake:10137,start:"2026-05-17",end:"2026-06-21",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-4R9K",stake:4427,start:"2026-04-03",end:"2026-07-04",uptime:100,ver:"1.13.5"},
-      {name:"Ptoy Modern Wealth 2.0",stake:92500,start:"2026-04-25",end:"2026-05-28",uptime:99.98,ver:"1.13.5"},
-      {name:"Metal Key",stake:35000,start:"2026-04-06",end:"2026-09-30",uptime:100,ver:"1.13.5"},
-      {name:"M G S",stake:116442,start:"2026-05-08",end:"2026-06-12",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [5]",stake:800000,start:"2025-07-11",end:"2026-07-08",uptime:99.99,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [6]",stake:800000,start:"2025-08-02",end:"2026-07-31",uptime:100,ver:"1.13.5"},
-      {name:"Metal.Solar.Central",stake:70000,start:"2025-08-15",end:"2026-08-15",uptime:99.92,ver:"1.13.5"},
-      {name:"KSTO",stake:20999,start:"2026-04-22",end:"2026-07-13",uptime:99.94,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [7]",stake:800000,start:"2025-07-14",end:"2026-07-13",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-5r4d",stake:4780,start:"2026-05-22",end:"2026-06-12",uptime:0,ver:"unknown"},
-      {name:"Ant007x2",stake:17138,start:"2026-05-19",end:"2026-12-19",uptime:100,ver:"1.13.5"},
-      {name:"Mr.TV",stake:5601,start:"2026-04-20",end:"2026-07-20",uptime:100,ver:"1.13.5"},
-      {name:"Good Fortune",stake:374610,start:"2026-05-15",end:"2026-07-05",uptime:100,ver:"1.13.5"},
-      {name:"Zeta Node",stake:24278,start:"2026-02-28",end:"2026-05-30",uptime:99.88,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [8]",stake:800000,start:"2025-07-25",end:"2026-07-24",uptime:100,ver:"1.13.5"},
-      {name:"Kellerkind_n2",stake:200000,start:"2026-04-26",end:"2026-07-26",uptime:99.93,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [9]",stake:800000,start:"2025-07-25",end:"2026-07-23",uptime:100,ver:"1.13.5"},
-      {name:"Platinum X",stake:456900,start:"2026-03-23",end:"2026-07-05",uptime:100,ver:"1.13.5"},
-      {name:"METAL Miners",stake:2564,start:"2026-03-28",end:"2026-06-30",uptime:99.97,ver:"1.13.5"},
-      {name:"Digital Metal",stake:3616,start:"2026-04-26",end:"2026-07-12",uptime:99.94,ver:"1.13.5"},
-      {name:"Metal Leeds",stake:43950,start:"2026-05-01",end:"2026-08-31",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [10]",stake:800000,start:"2025-07-11",end:"2026-07-10",uptime:100,ver:"1.13.5"},
-      {name:"METAL Forge",stake:54191,start:"2026-03-25",end:"2026-06-25",uptime:99.99,ver:"1.13.5"},
-      {name:"Moon X",stake:261949,start:"2026-04-30",end:"2026-05-30",uptime:100,ver:"1.13.5"},
-      {name:"MsJb Metal Monsters",stake:600000,start:"2026-03-22",end:"2026-06-22",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [11]",stake:800000,start:"2025-07-11",end:"2026-07-10",uptime:100,ver:"1.13.5"},
-      {name:"PBR",stake:98031,start:"2026-04-23",end:"2026-05-31",uptime:100,ver:"1.13.5"},
-      {name:"Paulista Nodes: Trianon",stake:500000,start:"2026-04-27",end:"2026-08-27",uptime:100,ver:"1.13.5"},
-      {name:"ForgeX [3]",stake:2247416,start:"2026-05-14",end:"2026-05-29",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-9AfG",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-9DLe",stake:100190,start:"2025-11-08",end:"2026-11-07",uptime:99.99,ver:"1.13.5"},
-      {name:"Amari Labs [1]",stake:600000,start:"2026-04-30",end:"2026-05-31",uptime:99.93,ver:"1.13.5"},
-      {name:"Metal.Solar.East",stake:680000,start:"2025-06-30",end:"2026-06-30",uptime:99.99,ver:"1.13.5"},
-      {name:"Metal.Solar.West",stake:708000,start:"2026-03-27",end:"2027-03-27",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-AYbJ",stake:320000,start:"2026-05-14",end:"2026-06-30",uptime:100,ver:"1.13.5"},
-      {name:"Proton NZ",stake:152667,start:"2026-01-27",end:"2026-06-29",uptime:99.99,ver:"1.13.5"},
-      {name:"TotalProton",stake:394000,start:"2026-01-05",end:"2026-12-27",uptime:99.83,ver:"1.13.5"},
-      {name:"NodeID-L7rL",stake:2000000,start:"2026-05-18",end:"2026-06-08",uptime:100,ver:"1.13.5"},
-      {name:"Paulista Nodes: Morumbi",stake:500000,start:"2026-02-27",end:"2026-06-27",uptime:100,ver:"1.13.5"},
-      {name:"Amari Labs [2]",stake:600000,start:"2026-04-30",end:"2026-05-31",uptime:100,ver:"1.13.5"},
-      {name:"Amari Labs [3]",stake:292500,start:"2026-04-30",end:"2026-05-31",uptime:100,ver:"1.13.5"},
-      {name:"Metal Cali Skulls",stake:580860,start:"2026-04-04",end:"2026-06-29",uptime:99.84,ver:"1.13.5"},
-      {name:"Kellerkind_n1",stake:200000,start:"2025-09-27",end:"2026-05-31",uptime:99.85,ver:"1.13.5"},
-      {name:"Paulista Nodes: Mooca",stake:500000,start:"2026-05-27",end:"2026-09-27",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-BRyA",stake:38317,start:"2026-04-02",end:"2026-07-02",uptime:99.99,ver:"1.13.5"},
-      {name:"A 6% METAL Node",stake:32220,start:"2026-02-01",end:"2026-08-01",uptime:99.99,ver:"1.13.5"},
-      {name:"AbtSec - MADblocks",stake:385104,start:"2026-05-17",end:"2026-06-20",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [12]",stake:800000,start:"2025-07-25",end:"2026-07-22",uptime:100,ver:"1.13.5"},
-      {name:"ProtonOgun",stake:100000,start:"2026-04-01",end:"2026-07-01",uptime:99.99,ver:"1.13.5"},
-      {name:"Black Wolf",stake:148513,start:"2026-05-02",end:"2026-06-30",uptime:99.89,ver:"1.13.5"},
-      {name:"CryptoBasiks",stake:67209,start:"2026-04-29",end:"2026-08-30",uptime:99.99,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [13]",stake:800000,start:"2025-07-23",end:"2026-07-22",uptime:100,ver:"1.13.5"},
-      {name:"METAL v1",stake:600000,start:"2026-05-01",end:"2026-05-31",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [14]",stake:800000,start:"2025-07-23",end:"2026-07-21",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-EWTCNmpg",stake:261949,start:"2026-04-30",end:"2026-05-30",uptime:100,ver:"1.13.5"},
-      {name:"Gator Node",stake:70000,start:"2026-03-05",end:"2026-06-05",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-8etvSV",stake:500000,start:"2026-03-03",end:"2026-05-31",uptime:99.98,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [15]",stake:800000,start:"2025-07-17",end:"2026-07-16",uptime:100,ver:"1.13.5"},
-      {name:"Studio 22",stake:152555,start:"2026-04-21",end:"2026-06-01",uptime:100,ver:"1.13.5"},
-      {name:"Moon Bags #1",stake:110677,start:"2026-04-24",end:"2026-06-23",uptime:100,ver:"1.13.5"},
-      {name:"EeBWuJerm",stake:380000,start:"2026-04-20",end:"2026-06-13",uptime:100,ver:"1.13.5"},
-      {name:"Metal Lord",stake:63133,start:"2026-02-01",end:"2026-06-01",uptime:99.99,ver:"1.13.5"},
-      {name:"NodeID-HiT5",stake:210000,start:"2026-04-14",end:"2026-06-04",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [16]",stake:800000,start:"2025-07-01",end:"2026-06-27",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-HwPM",stake:226600,start:"2026-05-15",end:"2026-08-11",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [17]",stake:800000,start:"2025-07-03",end:"2026-07-02",uptime:100,ver:"1.13.5"},
-      {name:"Dean Portman",stake:1032236,start:"2026-05-26",end:"2026-06-16",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [18]",stake:800000,start:"2025-07-01",end:"2026-06-28",uptime:100,ver:"1.13.5"},
-      {name:"NodeID-KDtH",stake:445000,start:"2026-05-26",end:"2026-06-22",uptime:99.9,ver:"1.13.5"},
-      {name:"Metal.Solar.East [2]",stake:680000,start:"2025-06-30",end:"2026-06-30",uptime:99.99,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [19]",stake:800000,start:"2025-07-16",end:"2026-07-15",uptime:100,ver:"1.13.5"},
-      {name:"Proton NZ 2",stake:175000,start:"2026-05-06",end:"2026-10-07",uptime:99.86,ver:"1.13.5"},
-      {name:"NodeID-Q5j4",stake:365000,start:"2026-05-08",end:"2026-07-01",uptime:100,ver:"1.13.5"},
-      {name:"Metallicus, Inc. [20]",stake:800000,start:"2025-07-07",end:"2026-07-05",uptime:100,ver:"1.13.5"},
-    ];
+    function fmt(n){ return (+n).toLocaleString('es-CL',{maximumFractionDigits:0}); }
+    function nMetal(n){ return (n/1e9); } // nMETAL → METAL
+    function daysUntil(ts){ return Math.round((ts*1000 - Date.now())/86400000); }
+    function urg(d){ return d<=7?'critical':d<=30?'warn':d<=90?'soon':'ok'; }
+    function shortID(id){ return id.length>16 ? id.slice(0,8)+'…'+id.slice(-6) : id; }
+    function fmtDate(ts){ return new Date(ts*1000).toLocaleDateString('es-CL'); }
 
-    function daysUntil(endStr){
-      const d = new Date(endStr);
-      return Math.round((d - today) / 86400000);
+    function setStatus(state, msg){
+      const dot = document.getElementById('msd-dot');
+      const txt = document.getElementById('msd-status-txt');
+      dot.className = 'msd-dot ' + state;
+      txt.textContent = msg;
     }
 
-    function urgency(days){
-      if(days <= 7) return 'urgent';
-      if(days <= 30) return 'warn';
-      return 'ok';
+    async function loadValidators(){
+      setStatus('loading','Consultando P-Chain API en tiempo real...');
+      try {
+        const res = await fetch(PCHAIN_RPC, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({jsonrpc:'2.0',id:1,method:'platform.getCurrentValidators',params:{}})
+        });
+        const data = await res.json();
+        if(!data.result || !data.result.validators) throw new Error('Sin datos');
+        render(data.result.validators);
+        setStatus('live','Datos en tiempo real · P-Chain · ' + new Date().toLocaleTimeString('es-CL'));
+        document.getElementById('msd-ts').textContent = new Date().toLocaleString('es-CL');
+      } catch(e) {
+        setStatus('error','Error al conectar con la P-Chain. Reintentando en 30s... (' + e.message + ')');
+        setTimeout(loadValidators, 30000);
+      }
     }
 
-    function fmt(n){return n.toLocaleString('es-CL',{maximumFractionDigits:0})}
+    let ALL_VALIDATORS = [];
 
-    // Enrich
-    const data = VALIDATORS.map(v => ({...v, days: daysUntil(v.end), urg: urgency(daysUntil(v.end))}));
-    data.sort((a,b) => a.days - b.days);
+    function render(validators){
+      ALL_VALIDATORS = validators.map(v => {
+        const stake = nMetal(v.stakeAmount || v.weight || 0);
+        const endTs = parseInt(v.endTime);
+        const days = daysUntil(endTs);
+        const delegators = (v.delegators||[]).length;
+        const delegatedStake = (v.delegators||[]).reduce((s,d)=>s+nMetal(d.stakeAmount||0),0);
+        return {
+          nodeID: v.nodeID,
+          name: v.nodeID, // explorer shows name via nodeID mapping — use shortID
+          stake, endTs, days, delegators, delegatedStake,
+          totalStake: stake + delegatedStake,
+          uptime: parseFloat(v.uptime||1)*100,
+          startTs: parseInt(v.startTime),
+          urg: urg(days)
+        };
+      }).sort((a,b) => a.days - b.days);
 
-    // KPIs
-    const total = data.reduce((s,v) => s + v.stake, 0);
-    const exp30 = data.filter(v => v.days <= 30).reduce((s,v) => s + v.stake, 0);
-    const avg = Math.round(total / data.length);
-    // Use official explorer total
-    document.getElementById('msd-expiring30').textContent = fmt(exp30);
-    // Jun+Jul bucket from full dataset
-    const junJul = data.filter(v => {
-      const d = new Date(v.end); return (d.getFullYear()===2026 && (d.getMonth()===5||d.getMonth()===6));
-    }).reduce((s,v)=>s+v.stake,0);
-    document.getElementById('msd-jun-jul').textContent = fmt(junJul);
-    document.getElementById('msd-ts').textContent = today.toLocaleDateString('es-CL');
+      // KPIs
+      const totalStake = ALL_VALIDATORS.reduce((s,v)=>s+v.stake,0);
+      const totalDelegators = ALL_VALIDATORS.reduce((s,v)=>s+v.delegators,0);
+      const exp30 = ALL_VALIDATORS.filter(v=>v.days<=30).reduce((s,v)=>s+v.stake,0);
+      document.getElementById('msd-total').textContent = fmt(Math.round(totalStake));
+      document.getElementById('msd-count').textContent = ALL_VALIDATORS.length;
+      document.getElementById('msd-exp30').textContent = fmt(Math.round(exp30));
+      document.getElementById('msd-delegators').textContent = fmt(totalDelegators);
+      document.getElementById('msd-full-count').textContent = ALL_VALIDATORS.length;
 
-    // Alerts
-    const critNodes = data.filter(v => v.days <= 7 && v.stake >= 100000);
-    const warnNodes = data.filter(v => v.days > 7 && v.days <= 30 && v.stake >= 200000);
-    let alertHtml = '';
-    if(critNodes.length){
-      const critStake = critNodes.reduce((s,v)=>s+v.stake,0);
-      alertHtml += `<div class="msd-alert crit"><div class="ico">⚠️</div><div class="txt"><b>Alerta crítica — ${fmt(critStake)} METAL vencen en ≤7 días</b> · ${critNodes.length} nodo(s) grande(s) próximos a liberar. Posible presión vendedora inminente.</div></div>`;
+      // Alerts
+      const crit = ALL_VALIDATORS.filter(v=>v.days<=7&&v.stake>=100000);
+      const warn = ALL_VALIDATORS.filter(v=>v.days>7&&v.days<=30&&v.stake>=200000);
+      let alertHtml = '';
+      if(crit.length){
+        const s = crit.reduce((x,v)=>x+v.stake,0);
+        alertHtml += `<div class="msd-alert crit">⚠️ <b>Alerta crítica — ${fmt(Math.round(s))} METAL vencen en ≤7 días</b> · ${crit.length} nodo(s) con +100K METAL. Posible presión vendedora inminente.</div>`;
+      }
+      if(warn.length){
+        const s = warn.reduce((x,v)=>x+v.stake,0);
+        alertHtml += `<div class="msd-alert">🔔 <b>${fmt(Math.round(s))} METAL vencen en 8–30 días</b> · ${warn.length} nodo(s) significativo(s). Monitorear actividad.</div>`;
+      }
+      document.getElementById('msd-alerts').innerHTML = alertHtml;
+
+      // Calendar
+      const buckets = {'Mayo':0,'Junio':0,'Julio':0,'Ago–Sep':0,'Oct–Dic':0,'2027+':0};
+      const colors  = {'Mayo':'#ff5470','Junio':'#F97316','Julio':'#F97316','Ago–Sep':'#7B3FF2','Oct–Dic':'#7B3FF2','2027+':'#00c87a'};
+      ALL_VALIDATORS.forEach(v=>{
+        const d = new Date(v.endTs*1000); const yr=d.getFullYear(); const mo=d.getMonth()+1;
+        if(yr===2026&&mo===5) buckets['Mayo']+=v.stake;
+        else if(yr===2026&&mo===6) buckets['Junio']+=v.stake;
+        else if(yr===2026&&mo===7) buckets['Julio']+=v.stake;
+        else if(yr===2026&&(mo===8||mo===9)) buckets['Ago–Sep']+=v.stake;
+        else if(yr===2026&&mo>=10) buckets['Oct–Dic']+=v.stake;
+        else buckets['2027+']+=v.stake;
+      });
+      const maxB = Math.max(...Object.values(buckets))||1;
+      document.getElementById('msd-calendar').innerHTML = Object.entries(buckets).map(([lbl,val])=>`
+        <div class="msd-bar-row">
+          <div class="msd-bar-lbl">${lbl}</div>
+          <div class="msd-bar-track"><div class="msd-bar-fill" style="width:${Math.round(val/maxB*100)}%;background:${colors[lbl]}"></div></div>
+          <div class="msd-bar-val">${fmt(Math.round(val))} METAL</div>
+        </div>`).join('');
+
+      renderTopTable('all');
+      renderFullTable('all');
     }
-    if(warnNodes.length){
-      const warnStake = warnNodes.reduce((s,v)=>s+v.stake,0);
-      alertHtml += `<div class="msd-alert"><div class="ico">🔔</div><div class="txt"><b>${fmt(warnStake)} METAL vencen en 8–30 días</b> · ${warnNodes.length} nodo(s) significativo(s). Monitorear actividad en wallets.</div></div>`;
-    }
-    document.getElementById('msd-alerts').innerHTML = alertHtml;
 
-    // Calendar bars
-    // Monthly expiry buckets (on known ~203 nodes; total official = 138.4M METAL)
-    const buckets = {'Mayo 2026':0,'Junio 2026':0,'Julio 2026':0,'Ago–Sep 2026':0,'Oct–Dic 2026':0,'2027+':0};
-    data.forEach(v => {
-      const d = new Date(v.end);
-      const yr = d.getFullYear(); const mo = d.getMonth()+1;
-      if(yr===2026 && mo===5) buckets['Mayo 2026'] += v.stake;
-      else if(yr===2026 && mo===6) buckets['Junio 2026'] += v.stake;
-      else if(yr===2026 && mo===7) buckets['Julio 2026'] += v.stake;
-      else if(yr===2026 && (mo===8||mo===9)) buckets['Ago–Sep 2026'] += v.stake;
-      else if(yr===2026 && mo>=10) buckets['Oct–Dic 2026'] += v.stake;
-      else buckets['2027+'] += v.stake;
-    });
-    const maxBucket = Math.max(...Object.values(buckets));
-    const colors = {'Mayo 2026':'#ff5470','Junio 2026':'#F97316','Julio 2026':'#F97316','Ago–Sep 2026':'#7B3FF2','Oct–Dic 2026':'#7B3FF2','2027+':'#00c87a'};
-    let calHtml = '';
-    Object.entries(buckets).forEach(([label, val]) => {
-      const pct = maxBucket > 0 ? Math.round((val/maxBucket)*100) : 0;
-      calHtml += `<div class="msd-bar-row">
-        <div class="msd-bar-lbl">${label}</div>
-        <div class="msd-bar-track"><div class="msd-bar-fill" style="width:${pct}%;background:${colors[label]}"></div></div>
-        <div class="msd-bar-val">${fmt(val)} METAL</div>
-      </div>`;
-    });
-    calHtml += '<div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px">* Basado en 203 nodos visibles en el explorador. Total oficial: 138.4M METAL.</div>';
-    document.getElementById('msd-calendar').innerHTML = calHtml;
+    function pillHtml(u){ return u==='critical'?'<span class="msd-pill crit">CRÍTICO</span>':u==='warn'?'<span class="msd-pill warn">ATENCIÓN</span>':u==='soon'?'<span class="msd-pill warn">PRONTO</span>':'<span class="msd-pill ok">OK</span>'; }
 
-    // Top table
-    let currentFilter = 'all';
     function renderTopTable(filter){
-      currentFilter = filter;
-      const sorted = [...data].sort((a,b) => b.stake - a.stake);
-      const filtered = filter === 'all' ? sorted.slice(0,10) : sorted.filter(v => v.urg === filter).slice(0,10);
-      let rows = '';
-      filtered.forEach(v => {
-        const cls = v.urg === 'urgent' ? 'urgent' : v.urg === 'warn' ? 'warn' : 'ok';
-        const pill = v.urg === 'urgent' ? '<span class="msd-pill crit">CRÍTICO</span>' : v.urg === 'warn' ? '<span class="msd-pill warn">ATENCIÓN</span>' : '<span class="msd-pill ok">OK</span>';
-        rows += `<tr><td class="name" title="${v.name}">${v.name}</td><td class="amt">${fmt(v.stake)}</td><td>${v.end}</td><td class="${cls}">${v.days}d</td><td>${v.uptime.toFixed(1)}%</td><td>${pill}</td></tr>`;
-      });
-      document.getElementById('msd-top-body').innerHTML = rows || '<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:16px">Sin nodos en este rango</td></tr>';
+      const sorted = [...ALL_VALIDATORS].sort((a,b)=>b.stake-a.stake);
+      const rows = (filter==='all'?sorted:sorted.filter(v=>v.urg===filter)).slice(0,10);
+      document.getElementById('msd-top-body').innerHTML = rows.length ? rows.map(v=>`
+        <tr><td class="name" title="${v.nodeID}">${shortID(v.nodeID)}</td>
+        <td class="amt">${fmt(Math.round(v.stake))}</td>
+        <td style="font-variant-numeric:tabular-nums">${fmtDate(v.endTs)}</td>
+        <td>${pillHtml(v.urg)}</td></tr>`).join('') :
+        '<tr><td colspan="4" style="text-align:center;color:var(--dim);padding:14px">Sin nodos en este rango</td></tr>';
     }
-    renderTopTable('all');
-    window.msdFilter = function(btn, filter){
-      document.querySelectorAll('.msd-filter .msd-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderTopTable(filter);
-    };
 
-    // Full table
-    let tableFilter = 'all';
     function renderFullTable(filter){
-      tableFilter = filter;
-      let filtered = [...data];
-      if(filter === 'urgent') filtered = data.filter(v => v.days <= 7);
-      else if(filter === 'warn') filtered = data.filter(v => v.days <= 30);
-      else if(filter === 'down') filtered = data.filter(v => v.uptime < 50);
-      document.getElementById('msd-count').textContent = filtered.length;
-      let rows = '';
-      filtered.forEach(v => {
-        const cls = v.urg === 'urgent' ? 'urgent' : v.urg === 'warn' ? 'warn' : 'ok';
-        const pill = v.urg === 'urgent' ? '<span class="msd-pill crit">CRÍTICO</span>' : v.urg === 'warn' ? '<span class="msd-pill warn">ATENCIÓN</span>' : '<span class="msd-pill ok">OK</span>';
-        const uptimeCls = v.uptime < 50 ? 'urgent' : v.uptime < 90 ? 'warn' : '';
-        rows += `<tr><td class="name" title="${v.name}">${v.name}</td><td class="amt">${fmt(v.stake)}</td><td>${v.start}</td><td>${v.end}</td><td class="${cls}">${v.days}d</td><td class="${uptimeCls}">${v.uptime.toFixed(1)}%</td><td style="color:var(--dim)">${v.ver}</td><td>${pill}</td></tr>`;
-      });
-      document.getElementById('msd-full-body').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:16px">Sin nodos en este rango</td></tr>';
+      let rows = ALL_VALIDATORS;
+      if(filter==='critical') rows = rows.filter(v=>v.days<=7);
+      else if(filter==='warn') rows = rows.filter(v=>v.days<=30);
+      else if(filter==='big') rows = rows.filter(v=>v.stake>=1000000);
+      document.getElementById('msd-full-count').textContent = rows.length;
+      const urgCls = u => u==='critical'?'style="color:var(--red)"':u==='warn'?'style="color:var(--amber)"':'';
+      document.getElementById('msd-full-body').innerHTML = rows.length ? rows.map(v=>`
+        <tr>
+          <td class="name" title="${v.nodeID}">${shortID(v.nodeID)}</td>
+          <td class="amt">${fmt(Math.round(v.stake))}</td>
+          <td style="color:var(--muted)">${v.delegators}</td>
+          <td style="color:var(--dim)">${fmtDate(v.startTs)}</td>
+          <td style="color:var(--dim)">${fmtDate(v.endTs)}</td>
+          <td ${urgCls(v.urg)}>${v.days}d</td>
+          <td style="color:${v.uptime<80?'var(--red)':v.uptime<95?'var(--amber)':'var(--green)'}">${v.uptime.toFixed(1)}%</td>
+          <td>${pillHtml(v.urg)}</td>
+        </tr>`).join('') :
+        '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:14px">Sin nodos</td></tr>';
     }
-    renderFullTable('all');
-    window.msdTableFilter = function(btn, filter){
-      document.querySelectorAll('#tool-metalstake .msd-card:last-child .msd-filter .msd-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderFullTable(filter);
-    };
+
+    window.msdTopFilter = function(btn,f){ document.querySelectorAll('#tool-metalstake .msd-card:nth-child(2) .msd-fbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderTopTable(f); };
+    window.msdFullFilter = function(btn,f){ document.querySelectorAll('#tool-metalstake .msd-card:last-child .msd-filter .msd-fbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderFullTable(f); };
+
+    // Load on tab activation
+    const tabBtn = document.querySelector('[data-tab="metalstake"]');
+    if(tabBtn) tabBtn.addEventListener('click', function(){
+      if(ALL_VALIDATORS.length === 0) loadValidators();
+    });
+    // Also auto-load if tab is active on page load
+    if(document.getElementById('tool-metalstake') && document.getElementById('tool-metalstake').classList.contains('active')){
+      loadValidators();
+    }
   })();
 
 </script>
