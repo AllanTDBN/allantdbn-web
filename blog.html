@@ -1073,24 +1073,24 @@ ngb-alert{display:block}
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
   
-  // Language toggle
+  // Language toggle — works with <button data-lang="es/en">
   const langBtn = document.getElementById('lang-toggle');
   if(langBtn){
     let lang = localStorage.getItem('lang') || 'es';
     function setLang(l){
-      lang = l; localStorage.setItem('lang',l);
-      $$('[data-es]').forEach(el => el.style.display = l==='es'?'':'none');
-      $$('[data-en]').forEach(el => el.style.display = l==='en'?'':'none');
-      const btns = langBtn.querySelectorAll('span');
-      if(btns[0]) btns[0].classList.toggle('active', l==='es');
-      if(btns[1]) btns[1].classList.toggle('active', l==='en');
+      lang = l;
+      localStorage.setItem('lang', l);
+      $$('[data-es]').forEach(el => el.style.display = l==='es' ? '' : 'none');
+      $$('[data-en]').forEach(el => el.style.display = l==='en' ? '' : 'none');
+      langBtn.querySelectorAll('button[data-lang]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === l);
+      });
     }
-    setLang(lang);
     langBtn.addEventListener('click', function(e){
-      const t = e.target.closest('span');
-      if(!t) return;
-      setLang(t.textContent.trim().toLowerCase()==='es'?'es':'en');
+      const btn = e.target.closest('button[data-lang]');
+      if(btn) setLang(btn.getAttribute('data-lang'));
     });
+    setLang(lang);
   }
   
   // Mobile menu
