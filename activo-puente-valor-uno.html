@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Por qué el activo puente tiene que valer uno — AllanTDBN</title>
+  <meta name="description" content="Del patrón oro al Metal Dollar: por qué ningún activo volátil puede ser el puente del sistema financiero global, y por qué XRP no cumple ninguna de las condiciones históricas que hacen funcionar un activo puente." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0A1628; --card:#0F1E33; --deep:#070F1C;
+      --line:rgba(255,255,255,0.07); --line-gold:rgba(201,168,76,0.22);
+      --gold:#C9A84C; --gold-dim:rgba(201,168,76,0.09);
+      --blue:#2E86DE; --blue-dim:rgba(46,134,222,0.09);
+      --green:#27AE60; --green-dim:rgba(39,174,96,0.09);
+      --red:#E74C3C; --red-dim:rgba(231,76,60,0.09);
+      --text:#F0EDE5; --text2:#A8B4C4; --dim:#546070;
+      --mono:'JetBrains Mono',monospace;
+      --sans:'Inter',system-ui,sans-serif;
+      --rainbow:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#27ae60,#2e86de,#9b59b6);
+    }
+    html { scroll-behavior: smooth; }
+    body { background:var(--bg); color:var(--text2); font-family:var(--sans); font-size:16px; line-height:1.75; }
+
+    #prog { position:fixed; top:0; left:0; height:3px; background:var(--rainbow); width:0%; z-index:200; transition:width .1s linear; }
+
+    .nav { position:sticky; top:0; z-index:100; background:rgba(10,22,40,0.93); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); padding:0 32px; display:flex; align-items:center; justify-content:space-between; height:52px; }
+    .nav-brand { font-family:var(--mono); font-size:11px; color:var(--dim); letter-spacing:.06em; }
+    .nav-toc { display:flex; gap:20px; list-style:none; }
+    .nav-toc a { font-size:11px; font-weight:500; color:var(--dim); text-decoration:none; letter-spacing:.03em; transition:color .15s; }
+    .nav-toc a:hover { color:var(--gold); }
+    @media(max-width:700px){ .nav-toc { display:none; } }
+
+    .hero { position:relative; overflow:hidden; background:var(--deep); padding:80px 32px 72px; text-align:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--rainbow); }
+    .hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+    .hero-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
+    .hero-tag { font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; display:inline-block; }
+    .hero h1 { font-size:clamp(30px,5.5vw,56px); font-weight:900; line-height:1.08; color:var(--text); letter-spacing:-.03em; margin-bottom:10px; }
+    .hero h1 em { font-style:normal; color:var(--gold); }
+    .hero-sub { font-size:clamp(15px,2vw,18px); color:var(--text2); line-height:1.7; max-width:580px; margin:0 auto 40px; }
+    .thesis { display:inline-block; background:var(--gold-dim); border:1px solid var(--line-gold); border-left:3px solid var(--gold); border-radius:4px; padding:14px 22px; font-size:15px; color:var(--text); line-height:1.6; text-align:left; max-width:560px; }
+
+    .wrap { max-width:780px; margin:0 auto; padding:64px 32px 80px; }
+    .sec { margin-bottom:72px; }
+    .sec-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+    .sec h2 { font-size:clamp(22px,3.5vw,32px); font-weight:800; color:var(--text); line-height:1.2; margin-bottom:24px; letter-spacing:-.02em; }
+    p { margin-bottom:18px; }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text); font-weight:600; }
+    h3 { font-size:19px; font-weight:700; color:var(--text); margin:32px 0 16px; }
+
+    .div { height:1px; background:linear-gradient(90deg,transparent,var(--line-gold),transparent); margin:64px 0; }
+
+    .pull { border-left:3px solid var(--gold); padding:4px 0 4px 24px; margin:32px 0; }
+    .pull p { font-size:18px; font-weight:600; color:var(--text); line-height:1.55; font-style:italic; margin:0; }
+
+    .formula-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:2px; margin:32px 0; }
+    .formula-card { background:var(--card); border:1px solid var(--line); padding:20px 22px; }
+    .formula-label { font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--dim); text-transform:uppercase; margin-bottom:10px; }
+    .formula-val { font-family:var(--mono); font-size:22px; font-weight:600; color:var(--gold); margin-bottom:6px; }
+    .formula-note { font-size:13px; color:var(--text2); line-height:1.5; }
+
+    .bonanza { background:var(--green-dim); border:1px solid rgba(39,174,96,0.2); border-left:3px solid var(--green); border-radius:4px; padding:24px 28px; margin:28px 0; }
+    .bonanza-title { font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--green); text-transform:uppercase; margin-bottom:16px; }
+    .bonanza-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px; }
+    .bonanza-val { font-family:var(--mono); font-size:24px; font-weight:700; color:var(--green); margin-bottom:4px; }
+    .bonanza-lbl { font-size:12px; color:var(--text2); line-height:1.4; }
+
+    .triffin { background:var(--card); border:1px solid var(--line-gold); border-radius:6px; overflow:hidden; margin:32px 0; }
+    .triffin-head { background:var(--gold-dim); border-bottom:1px solid var(--line-gold); padding:14px 24px; font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; text-align:center; }
+    .triffin-body { display:flex; }
+    .triffin-col { flex:1; padding:28px 24px; }
+    .triffin-col:first-child { border-right:1px solid var(--line); }
+    .triffin-col-tag { font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.06em; margin-bottom:14px; text-transform:uppercase; }
+    .tag-a { color:var(--blue); } .tag-b { color:var(--red); }
+    .triffin-col p { font-size:14px; color:var(--text2); line-height:1.7; margin:0; }
+    .triffin-vs { display:flex; align-items:center; justify-content:center; padding:0 10px; flex-shrink:0; font-family:var(--mono); font-size:13px; font-weight:700; color:var(--red); border-left:1px solid var(--line); border-right:1px solid var(--line); background:var(--red-dim); }
+    .triffin-verdict { border-top:1px solid var(--line); padding:16px 24px; text-align:center; font-size:14px; color:var(--red); font-style:italic; background:var(--red-dim); }
+    @media(max-width:600px){ .triffin-body{flex-direction:column} .triffin-col:first-child{border-right:none;border-bottom:1px solid var(--line)} .triffin-vs{padding:12px;border:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line)} }
+
+    .markets { border:1px solid var(--line); border-radius:6px; overflow:hidden; margin:32px 0; }
+    .markets-head { background:var(--card); border-bottom:1px solid var(--line); padding:12px 20px; font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--dim); text-transform:uppercase; display:grid; grid-template-columns:1fr 140px 1fr; gap:16px; }
+    .mkt-row { display:grid; grid-template-columns:1fr 140px 1fr; gap:16px; padding:14px 20px; border-bottom:1px solid var(--line); align-items:start; }
+    .mkt-row:last-child { border-bottom:none; }
+    .mkt-name { font-size:14px; font-weight:700; color:var(--text); }
+    .mkt-since { font-size:12px; color:var(--dim); margin-top:3px; }
+    .mkt-size { font-family:var(--mono); font-size:15px; font-weight:700; color:var(--red); }
+    .mkt-note { font-size:13px; color:var(--text2); line-height:1.5; }
+    @media(max-width:600px){ .markets-head,.mkt-row{grid-template-columns:1fr} }
+
+    .soros { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-left:3px solid var(--red); border-radius:4px; padding:24px 28px; margin:28px 0; }
+    .soros-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--red); text-transform:uppercase; margin-bottom:12px; }
+    .soros p { font-size:15px; color:var(--text2); margin:0; line-height:1.7; }
+
+    .inflation-box { background:var(--card); border:1px solid var(--line); border-top:2px solid var(--red); border-radius:4px; padding:24px 28px; margin:28px 0; }
+    .inflation-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--red); text-transform:uppercase; margin-bottom:12px; }
+    .inflation-box p { font-size:15px; color:var(--text2); margin:0; line-height:1.7; }
+
+    .conds { margin:32px 0; display:flex; flex-direction:column; gap:2px; }
+    .cond { background:var(--card); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+    .cond-header { display:flex; gap:16px; padding:20px 24px; align-items:flex-start; }
+    .cond-n { flex-shrink:0; width:28px; height:28px; border:1px solid var(--line-gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); margin-top:2px; }
+    .cond-body { flex:1; }
+    .cond-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .cond-text { font-size:14px; color:var(--text2); line-height:1.65; }
+    .cond-verdicts { display:flex; gap:0; border-top:1px solid var(--line); }
+    .verdict { flex:1; padding:12px 16px; font-size:13px; font-weight:500; display:flex; align-items:flex-start; gap:8px; line-height:1.4; }
+    .verdict-no { background:var(--red-dim); color:#E8A09A; }
+    .verdict-yes { background:var(--green-dim); color:#7ECDA0; border-left:1px solid var(--line); }
+    .verdict-icon { flex-shrink:0; font-size:14px; font-weight:700; }
+    @media(max-width:600px){ .cond-verdicts{flex-direction:column} .verdict-yes{border-left:none;border-top:1px solid var(--line)} }
+
+    .vol-stat { display:flex; align-items:center; gap:20px; background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-radius:4px; padding:20px 24px; margin:28px 0; flex-wrap:wrap; }
+    .vol-num { font-family:var(--mono); font-size:44px; font-weight:900; color:var(--red); line-height:1; flex-shrink:0; }
+    .vol-label { font-size:14px; color:var(--text2); line-height:1.6; }
+    .vol-label strong { color:var(--text); display:block; font-size:16px; margin-bottom:4px; }
+
+    .issue-box { background:var(--card); border:1px solid var(--line); border-top:2px solid var(--red); border-radius:6px; overflow:hidden; margin:28px 0; }
+    .issue-head { padding:14px 24px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--red); text-transform:uppercase; }
+    .issue-item { display:flex; gap:14px; padding:14px 24px; border-bottom:1px solid var(--line); align-items:flex-start; }
+    .issue-item:last-child { border-bottom:none; }
+    .issue-x { color:var(--red); font-size:14px; flex-shrink:0; margin-top:2px; font-weight:700; }
+    .issue-text { font-size:14px; color:var(--text2); line-height:1.65; }
+    .issue-text strong { color:var(--text); }
+
+    .stable-stat { display:flex; align-items:center; gap:20px; background:var(--green-dim); border:1px solid rgba(39,174,96,0.2); border-radius:4px; padding:20px 24px; margin:28px 0; flex-wrap:wrap; }
+    .stable-num { font-family:var(--mono); font-size:44px; font-weight:900; color:var(--green); line-height:1; flex-shrink:0; }
+    .stable-label { font-size:14px; color:var(--text2); line-height:1.6; }
+    .stable-label strong { color:var(--text); display:block; font-size:16px; margin-bottom:4px; }
+
+    .sol-box { background:var(--card); border:1px solid var(--line); border-top:2px solid var(--green); border-radius:6px; overflow:hidden; margin:28px 0; }
+    .sol-head { padding:14px 24px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--green); text-transform:uppercase; }
+    .sol-item { display:flex; gap:14px; padding:14px 24px; border-bottom:1px solid var(--line); align-items:flex-start; }
+    .sol-item:last-child { border-bottom:none; }
+    .sol-check { color:var(--green); font-size:14px; flex-shrink:0; margin-top:2px; font-weight:700; }
+    .sol-text { font-size:14px; color:var(--text2); line-height:1.65; }
+    .sol-text strong { color:var(--text); }
+
+    .forex-compare { display:flex; gap:2px; flex-wrap:wrap; margin:28px 0; }
+    .forex-col { flex:1 1 240px; padding:22px 24px; border-radius:4px; }
+    .forex-before { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); }
+    .forex-after  { background:var(--green-dim); border:1px solid rgba(39,174,96,0.2); }
+    .forex-tag { font-family:var(--mono); font-size:10px; letter-spacing:.1em; font-weight:700; text-transform:uppercase; margin-bottom:12px; }
+    .ftag-before { color:var(--red); } .ftag-after { color:var(--green); }
+    .forex-col p { font-size:14px; color:var(--text2); line-height:1.65; margin:0; }
+
+    .final { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line-gold); border-radius:6px; padding:48px 40px; margin-top:64px; text-align:center; }
+    .final::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--rainbow); }
+    .final-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; }
+    .final p { font-size:clamp(16px,2.5vw,20px); color:var(--text); line-height:1.7; max-width:600px; margin:0 auto 16px; font-weight:500; }
+    .final p:last-child { margin-bottom:0; }
+    .final strong { color:var(--gold); }
+    @media(max-width:600px){ .final{padding:32px 24px} }
+
+    .footnotes { border-top:1px solid var(--line); padding-top:48px; margin-top:64px; }
+    .fn-title { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:28px; }
+    .fn { display:flex; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--line); }
+    .fn:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .fn-n { flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); padding-top:2px; }
+    .fn-text { font-size:13px; color:var(--dim); line-height:1.65; }
+    .fn-text a { color:var(--gold); text-decoration:underline; text-underline-offset:3px; }
+    .fn-ref { font-family:var(--mono); font-size:10px; color:var(--gold); font-weight:700; vertical-align:super; text-decoration:none; margin-left:1px; }
+
+    .disclaimer { text-align:center; padding:32px; font-size:12px; color:var(--dim); border-top:1px solid var(--line); margin-top:48px; }
+
+    @media(max-width:600px){ .hero,.wrap{padding-left:20px;padding-right:20px} }
+  </style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Economía monetaria · Tesis central</div>
+    <h1>Por qué el activo puente<br>tiene que valer <em>uno</em></h1>
+    <p class="hero-sub">Desde Bretton Woods hasta el Metal Dollar: la historia demuestra que un activo puente volátil no es un activo puente. Es un activo especulativo con un nombre más respetable.</p>
+    <div class="thesis">
+      Un activo que fluctúa no puede ser el puente del sistema financiero global. Cuando el puente tiembla, el sistema colapsa. La historia ya lo demostró una vez. XRP repite el error. El Metal Dollar lo evita por diseño.
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- I: PATRÓN ORO -->
+  <section class="sec" id="patron">
+    <div class="sec-tag">I — El sistema que funcionó</div>
+    <h2>El patrón oro: cuando las monedas sí valían lo que decían valer</h2>
+
+    <p>Para responder por qué el activo puente tiene que valer uno, hay que entender primero el único sistema en la historia moderna donde eso fue literalmente verdad. No como promesa ni como objetivo: como definición legal verificable y matemáticamente exacta.</p>
+
+    <p>Bajo el sistema de Bretton Woods, vigente de 1944 a 1971, cada moneda nacional tenía una paridad fija con el oro, y a través del oro, con todas las demás monedas.<a href="#fn1" class="fn-ref">[1]</a> El dólar americano se definió como 1/35 de onza troy de oro. La libra esterlina como 1/12.5 de onza. El franco francés, el marco alemán, el yen japonés: todos tenían su equivalente exacto en oro.</p>
+
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="formula-label">Dólar americano (USD)</div>
+        <div class="formula-val">1/35 oz</div>
+        <div class="formula-note">Una onza troy de oro valía exactamente $35.00. Definido por ley. Sin negociación posible.</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-label">Libra esterlina (GBP)</div>
+        <div class="formula-val">1/12.5 oz</div>
+        <div class="formula-note">Una onza troy equivalía a £12.50. Definida por el Banco de Inglaterra.</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-label">Tipo de cambio USD/GBP</div>
+        <div class="formula-val">£1 = $2.80</div>
+        <div class="formula-note">35 ÷ 12.5 = 2.80. Aritmética pura. Sin mercado. Sin spread. Sin intermediario.</div>
+      </div>
+    </div>
+
+    <p>Aquí está el punto que la mayoría ignora: <strong>el tipo de cambio no lo fijaba ningún banco central de forma discrecional</strong>. Lo calculaba la división. Si una libra contenía 2.8 veces más oro que un dólar, una libra valía exactamente 2.80 dólares. Siempre. No había negociación posible porque no había precio que descubrir: ya estaba en la definición misma de cada moneda.</p>
+
+    <p>Si llegabas con dólares al Banco de Inglaterra queriendo libras esterlinas, el banco hacía la aritmética y te entregaba las libras correspondientes. Sin spread. Sin comisión de conversión. Sin intermediario que lucrara con la diferencia. La conversión era infraestructura, no negocio.<a href="#fn2" class="fn-ref">[2]</a></p>
+
+    <div class="pull"><p>"El patrón oro no era un sistema de confianza. Era un sistema de matemáticas. Y las matemáticas no especulan."</p></div>
+
+    <h3>¿Por qué tenía valor el oro si no había un mercado libre de compraventa?</h3>
+
+    <p>Esta pregunta merece respuesta directa. El oro no tenía valor porque existiera un mercado especulativo sobre él. Tenía valor por tres razones simultáneas.</p>
+    <p>Primera: <strong>demanda industrial verificable</strong>. El oro no corroe, conduce electricidad y es divisible. Siempre tuvo usos físicos reales que le daban un piso de valor independiente de cualquier sistema monetario.</p>
+    <p>Segunda: <strong>consenso institucional vinculante</strong>. Los bancos centrales acordaron honrar la conversión a precio fijo. Francia podía llegar con dólares a la Fed americana y exigir su equivalente en oro. Ese compromiso era auditable y ejecutable.</p>
+    <p>Tercera, y más importante: <strong>escasez física no manipulable</strong>. El oro no podía imprimirse, crearse por decreto ni inflarse. Su oferta crecía solo al ritmo de la minería global, históricamente entre 1% y 2% anual. Esa limitación física era la garantía contra el abuso monetario que ninguna promesa política puede ofrecer.</p>
+
+    <div class="bonanza">
+      <div class="bonanza-title">La bonanza del patrón oro · 1944–1971</div>
+      <div class="bonanza-grid">
+        <div><div class="bonanza-val">2.5%</div><div class="bonanza-lbl">Inflación promedio anual en EEUU. Hoy el promedio post-1971 es ~4%.<a href="#fn3" class="fn-ref">[3]</a></div></div>
+        <div><div class="bonanza-val">$0</div><div class="bonanza-lbl">Mercado Forex. No existía. No había nada que especular porque los tipos eran fijos.</div></div>
+        <div><div class="bonanza-val">$0</div><div class="bonanza-lbl">Derivados de divisas. Innecesarios. El riesgo cambiario no existía por diseño.</div></div>
+        <div><div class="bonanza-val">Fijo</div><div class="bonanza-lbl">Tipo de cambio por definición matemática. No por mercado. Sin intermediario.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- II: COLAPSO 1971 -->
+  <section class="sec" id="colapso">
+    <div class="sec-tag">II — El momento en que todo cambió</div>
+    <h2>1971: Nixon cierra la ventanilla. El mundo cambia para siempre.</h2>
+
+    <p>El 15 de agosto de 1971, un domingo por la noche, el presidente Richard Nixon apareció en televisión y anunció que Estados Unidos suspendía unilateralmente la convertibilidad del dólar en oro.<a href="#fn4" class="fn-ref">[4]</a> La medida fue presentada como temporal. Nunca se revirtió.</p>
+
+    <p>En un instante, todos los tipos de cambio del mundo quedaron sin ancla. Las monedas comenzaron a flotar según la oferta y la demanda, las expectativas de inflación, los flujos de capital y la política monetaria de cada banco central. Por primera vez en la historia moderna, <strong>no había ningún activo externo que limitara la creación de dinero</strong>.</p>
+
+    <p>Nixon no tomó esa decisión por maldad ni por ignorancia. La tomó porque el sistema ya estaba roto desde adentro, por una contradicción estructural que Robert Triffin había identificado once años antes y que hacía el colapso matemáticamente inevitable.</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- III: TRIFFIN -->
+  <section class="sec" id="triffin">
+    <div class="sec-tag">III — La contradicción que nadie pudo resolver</div>
+    <h2>El dilema de Triffin: por qué Bretton Woods estaba condenado desde el primer día</h2>
+
+    <p>En 1960, el economista belga-americano Robert Triffin se presentó ante el Congreso de los Estados Unidos con un argumento que nadie quería escuchar: el sistema de Bretton Woods era estructuralmente inviable, y el tiempo le daría la razón sin excepción.<a href="#fn5" class="fn-ref">[5]</a></p>
+
+    <p>El argumento era elegante en su precisión. Para que el comercio internacional funcione, el mundo necesita una reserva de liquidez que todos acepten. Desde 1944, esa reserva era el dólar. Pero si el dólar es la reserva global, el mundo necesita <em>más</em> dólares cada año a medida que el comercio crece. La única forma de que el mundo tenga más dólares es que Estados Unidos los emita. Y la única forma de que Estados Unidos emita más dólares de los que recibe es teniendo un <strong>déficit de balanza de pagos permanente</strong>.</p>
+
+    <p>Aquí la trampa se cierra. Ese déficit permanente acumula dólares en manos de bancos centrales extranjeros que representan derechos sobre las reservas de oro americanas. Si en algún momento los dólares en circulación exterior superan el oro disponible, la promesa de convertir a $35 la onza se vuelve técnicamente imposible. El sistema colapsa por sí solo.</p>
+
+    <div class="triffin">
+      <div class="triffin-head">El dilema de Triffin — Formulación formal</div>
+      <div class="triffin-body">
+        <div class="triffin-col">
+          <div class="triffin-col-tag tag-a">Escenario A</div>
+          <p>Estados Unidos mantiene el déficit. El mundo tiene liquidez. Pero las reservas de oro se agotan relativamente a los dólares en circulación. La confianza en la conversión colapsa eventualmente.</p>
+        </div>
+        <div class="triffin-vs">vs</div>
+        <div class="triffin-col">
+          <div class="triffin-col-tag tag-b">Escenario B</div>
+          <p>Estados Unidos elimina el déficit. La confianza en el dólar se restaura. Pero el mundo se queda sin liquidez internacional. El comercio global se contrae. Recesión sistémica.</p>
+        </div>
+      </div>
+      <div class="triffin-verdict">En ambos casos el sistema colapsa. No hay salida dentro de las reglas del juego.</div>
+    </div>
+
+    <p>Para 1971, los dólares en manos de bancos centrales extranjeros superaban con creces las reservas de oro americanas. Francia ya había comenzado a canjear dólares masivamente. Nixon no rompió el sistema: admitió públicamente que ya estaba roto.</p>
+
+    <p>La lección del dilema de Triffin es directa: <strong>ninguna moneda nacional puede ser simultáneamente buena para su país emisor y buena para el sistema global</strong>. El emisor tomará decisiones para su economía que serán nocivas para el resto. Siempre. Sin excepción. No es un defecto de gestión: es una imposibilidad estructural.</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- IV: MERCADOS -->
+  <section class="sec" id="mercados">
+    <div class="sec-tag">IV — Lo que creó la inestabilidad</div>
+    <h2>Los mercados que nacieron de la ruptura. Y lo que realmente son.</h2>
+
+    <p>Cuando Nixon cerró la ventanilla del oro en 1971, no solo rompió un sistema monetario. Creó de la nada varios de los mercados más grandes del mundo. Mercados que no existían antes. Mercados que no podían existir antes. Porque antes no había nada que especular.</p>
+
+    <p>Es importante llamar a estas cosas por su nombre: <strong>estos mercados no crean valor económico real</strong>. No producen bienes ni servicios útiles. Redistribuyen el valor que ya existe, capturando una porción de cada transacción que antes no tenía costo de conversión. Son una nueva capa de intermediación que la ruptura de Bretton Woods hizo posible y necesaria simultáneamente.</p>
+
+    <div class="markets">
+      <div class="markets-head"><span>Mercado</span><span>Tamaño</span><span>Lo que realmente hace</span></div>
+      <div class="mkt-row">
+        <div><div class="mkt-name">Mercado Forex</div><div class="mkt-since">Nació: 1971. Antes: no existía.</div></div>
+        <div class="mkt-size">$7.5T/día</div>
+        <div class="mkt-note">Cobra por convertir entre monedas que antes se convertían gratis mediante aritmética. Cada transacción paga un spread que bajo el patrón oro era cero.</div>
+      </div>
+      <div class="mkt-row">
+        <div><div class="mkt-name">Derivados de divisas</div><div class="mkt-since">Nacieron: 1972. Antes: innecesarios.</div></div>
+        <div class="mkt-size">$600T nocional</div>
+        <div class="mkt-note">Seguros contra un riesgo que el patrón oro eliminaba por diseño. Las empresas pagan para protegerse de fluctuaciones que antes no existían.</div>
+      </div>
+      <div class="mkt-row">
+        <div><div class="mkt-name">Bonos soberanos especulativos</div><div class="mkt-since">Explosión: post-1971.</div></div>
+        <div class="mkt-size">$130T</div>
+        <div class="mkt-note">Con inflación variable los bonos se vuelven activos especulativos. Los hedge funds apuestan sobre tasas de interés que bajo el patrón oro eran estables.</div>
+      </div>
+      <div class="mkt-row">
+        <div><div class="mkt-name">Oro especulativo</div><div class="mkt-since">Liberado: agosto 1971.</div></div>
+        <div class="mkt-size">$35 → $2.800/oz</div>
+        <div class="mkt-note">La ironía perfecta: el activo ancla se convirtió en el activo más especulado. Bajo el patrón oro su precio no existía como mercado libre.</div>
+      </div>
+      <div class="mkt-row">
+        <div><div class="mkt-name">Hedge funds de divisas</div><div class="mkt-since">Explosión: años 80–90.</div></div>
+        <div class="mkt-size">$4T+ AUM</div>
+        <div class="mkt-note">Fondos cuya razón de existir es que los tipos de cambio sean impredecibles. Su negocio es exactamente el caos que el patrón oro eliminaba.</div>
+      </div>
+    </div>
+
+    <div class="soros">
+      <div class="soros-tag">El caso más ilustrativo · Miércoles Negro, 16 de septiembre de 1992</div>
+      <p>George Soros identificó que el gobierno británico no podría sostener la libra dentro de la banda del Sistema Monetario Europeo. Apostó $10 mil millones contra la libra.<a href="#fn6" class="fn-ref">[6]</a> El Banco de Inglaterra gastó £27 mil millones de reservas intentando defenderla. Fracasó. La libra cayó un 15% en horas. Soros ganó <strong>mil millones de dólares en un solo día</strong>, sin producir nada, sin crear nada. Esa riqueza salió directamente del bolsillo de los contribuyentes británicos y de los tenedores de libras esterlinas. <strong>Bajo el patrón oro, esta operación era matemáticamente imposible</strong>: no había tipo de cambio que especular porque estaba fijado por el contenido de oro de cada moneda.</p>
+    </div>
+
+    <div class="inflation-box">
+      <div class="inflation-tag">El impuesto que nadie votó · El señoreaje como robo sistemático</div>
+      <p>La inflación que el abandono del patrón oro habilitó no es un fenómeno natural ni inevitable. Es un mecanismo de transferencia de riqueza. Cuando se emite más dinero del que la economía real produce, el poder adquisitivo de cada unidad existente cae. Quien tenía ahorros pierde. Quien tiene activos reales gana. La inflación es un <strong>impuesto sobre el ahorro y la prudencia fiscal</strong> que beneficia a los deudores y a los propietarios de activos a expensas de los trabajadores y ahorradores.<a href="#fn7" class="fn-ref">[7]</a> Los economistas lo llaman señoreaje. Los afectados deberían llamarlo lo que es: una transferencia sistemática, legal y permanente, cuyos costos recaen siempre sobre quienes menos tienen.</p>
+    </div>
+
+    <p><strong>La suma de todo esto:</strong> la ruptura de Bretton Woods no solo desestabilizó el sistema monetario. Creó industrias enteras cuya razón de existir es la inestabilidad misma. Si el sistema se estabilizara, esos mercados perderían su razón de ser. Por eso tienen tanto interés en que la volatilidad continúe.</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- V: CONDICIONES -->
+  <section class="sec" id="condiciones">
+    <div class="sec-tag">V — Las condiciones derivadas de la historia</div>
+    <h2>Lo que tiene que cumplir un activo puente global. Sin excepción.</h2>
+
+    <p>Las condiciones que debe cumplir un activo puente no son arbitrarias ni ideológicas. Se derivan directamente de los fracasos que la historia ha documentado. Cada condición es la lección de un colapso específico.</p>
+
+    <div class="conds">
+      <div class="cond">
+        <div class="cond-header">
+          <div class="cond-n">1</div>
+          <div class="cond-body">
+            <div class="cond-title">Debe ser estable en valor</div>
+            <div class="cond-text">Un activo que fluctúa no puede ser puente. Si el valor del activo cambia entre el momento en que A envía y el momento en que B recibe, el sistema introduce riesgo cambiario en lugar de eliminarlo. El patrón oro funcionó porque una onza de oro era siempre una onza de oro. La volatilidad no es un defecto menor: es la negación misma del concepto de activo puente.</div>
+          </div>
+        </div>
+        <div class="cond-verdicts">
+          <div class="verdict verdict-no"><span class="verdict-icon">✕</span> XRP: volatilidad anualizada 100–130%. Puede perder el 30% de su valor en horas durante una transacción.</div>
+          <div class="verdict verdict-yes"><span class="verdict-icon">✓</span> XMD: siempre $1.00. Canasta de stablecoins respaldadas por bonos del Tesoro americano. Por diseño, no por promesa.</div>
+        </div>
+      </div>
+      <div class="cond">
+        <div class="cond-header">
+          <div class="cond-n">2</div>
+          <div class="cond-body">
+            <div class="cond-title">No debe ser gobernado por ningún estado</div>
+            <div class="cond-text">El oro funcionó como activo puente durante décadas no porque su respaldo fuera perfecto, sino porque ningún gobierno podía unilateralmente cambiar sus reglas. Cuando el dólar tomó ese rol, el dilema de Triffin hizo inevitable la crisis: la Fed toma decisiones para la economía americana, y el mundo paga las consecuencias. El problema no es el respaldo del activo puente sino quién controla su emisión y sus parámetros. Un activo cuya gobernanza depende de un estado reproduce el mismo problema independientemente de con qué esté respaldado. El XMD en su etapa actual usa stablecoins respaldadas por bonos del Tesoro americano, lo que no lo hace neutral en términos de respaldo, pero sí lo es en términos de gobernanza: ningún estado puede modificar unilateralmente sus parámetros, porque esa decisión la toma la Metal DAO.</div>
+          </div>
+        </div>
+        <div class="cond-verdicts">
+          <div class="verdict verdict-no"><span class="verdict-icon">✕</span> ODL: gobernado por Ripple Inc. Una empresa privada decide unilateralmente las condiciones, los corredores y quién tiene acceso. La gobernanza del sistema no es neutral.</div>
+          <div class="verdict verdict-yes"><span class="verdict-icon">✓</span> XMD: gobernado por la Metal DAO. Ningún estado ni empresa puede cambiar sus parámetros unilateralmente. La gobernanza es colectiva y on-chain.</div>
+        </div>
+      </div>
+      <div class="cond">
+        <div class="cond-header">
+          <div class="cond-n">3</div>
+          <div class="cond-body">
+            <div class="cond-title">Debe ser accesible sin permiso</div>
+            <div class="cond-text">Un activo puente que requiere autorización de una empresa para ser utilizado no es infraestructura neutral: es un negocio privado con poder de veto. El sistema SWIFT ha sido usado como arma geopolítica, demostrando que cualquier infraestructura controlada puede convertirse en instrumento de presión política. Un activo puente genuinamente neutral debe ser accesible por cualquier participante sin intermediario que pueda negar el acceso.</div>
+          </div>
+        </div>
+        <div class="cond-verdicts">
+          <div class="verdict verdict-no"><span class="verdict-icon">✕</span> XRP/ODL: requiere permiso de Ripple Inc. El ODL vive dentro de RippleNet, su red privada y permisionada.</div>
+          <div class="verdict verdict-yes"><span class="verdict-icon">✓</span> XMD: contrato inteligente público en XPR Network. Sin gatekeeper. Sin empresa que pueda negar el acceso.</div>
+        </div>
+      </div>
+      <div class="cond">
+        <div class="cond-header">
+          <div class="cond-n">4</div>
+          <div class="cond-body">
+            <div class="cond-title">Debe acuñarse, no comprarse</div>
+            <div class="cond-text">Si el activo puente se compra en un mercado, existe un precio de mercado, y si existe un precio, existe volatilidad. Más importante aún: existen intermediarios que capturan valor en cada transacción. Bajo el patrón oro, nadie compraba oro para hacer transferencias internacionales: los bancos centrales simplemente hacían la aritmética. El activo puente del futuro debe funcionar igual: emisión directa, sin spread, sin intermediario.</div>
+          </div>
+        </div>
+        <div class="cond-verdicts">
+          <div class="verdict verdict-no"><span class="verdict-icon">✕</span> XRP: se compra en exchanges. Cada operación implica spread, fees y exposición al precio de mercado.</div>
+          <div class="verdict verdict-yes"><span class="verdict-icon">✓</span> XMD: se acuña depositando stablecoins de reserva en el contrato. No hay a quién comprarle. Sin spread. Sin intermediario.</div>
+        </div>
+      </div>
+      <div class="cond">
+        <div class="cond-header">
+          <div class="cond-n">5</div>
+          <div class="cond-body">
+            <div class="cond-title">Su liquidez no debe depender de la especulación</div>
+            <div class="cond-text">Un activo cuya capacidad de liquidación depende de que su precio suba por especulación introduce una dependencia perversa entre especuladores de corto plazo e infraestructura financiera global. Es el equivalente a que el ancho de la autopista dependiera del precio del asfalto en bolsa. La liquidez de una infraestructura de pagos global debe venir de sus usuarios institucionales, no de su cotización en mercados secundarios.</div>
+          </div>
+        </div>
+        <div class="cond-verdicts">
+          <div class="verdict verdict-no"><span class="verdict-icon">✕</span> XRP: los defensores de XRP reconocen que el precio debe subir para que el ODL escale.</div>
+          <div class="verdict verdict-yes"><span class="verdict-icon">✓</span> XMD: liquidez crece con más emisores institucionales. Completamente independiente del precio en mercados secundarios.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- VI: XRP -->
+  <section class="sec" id="xrp">
+    <div class="sec-tag">VI — El contraejemplo</div>
+    <h2>Por qué XRP no puede ser el activo puente. No es una opinión: es aritmética.</h2>
+
+    <div class="vol-stat">
+      <div class="vol-num">~115%</div>
+      <div class="vol-label">
+        <strong>Volatilidad anualizada de XRP</strong>
+        Promedio 2022–2025.<a href="#fn8" class="fn-ref">[8]</a>
+      </div>
+    </div>
+
+    <div class="issue-box">
+      <div class="issue-head">Por qué XRP falla en cada condición del activo puente</div>
+      <div class="issue-item">
+        <div class="issue-x">✕</div>
+        <div class="issue-text"><strong>No es estable.</strong> Con volatilidad anualizada de 100–130%, XRP puede perder el 30% de su valor en horas. Un activo puente global que cae 30% durante una transacción no facilita los pagos: los destruye. El patrón oro funcionó porque una onza siempre era una onza. XRP no cumple esta condición básica ni por aproximación.</div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-x">✕</div>
+        <div class="issue-text"><strong>El ODL es privado y permisionado.</strong> La comunidad XRP confunde el XRP Ledger (blockchain pública) con el ODL (producto comercial de Ripple Inc. dentro de RippleNet, su red privada). Para usar el ODL necesitas un acuerdo comercial con Ripple. Eso no es infraestructura neutral: es un negocio privado con poder de veto.</div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-x">✕</div>
+        <div class="issue-text"><strong>Su liquidez depende de la especulación.</strong> Los propios defensores de XRP argumentan que el precio debe subir para que la "cañería" sea suficientemente amplia para liquidar volúmenes institucionales. Ningún banco central aceptará que su infraestructura de pagos dependa de la especulación de mercado.</div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-x">✕</div>
+        <div class="issue-text"><strong>El mercado ya dio su veredicto.</strong> Según análisis de CryptoSlate (2026)<a href="#fn9" class="fn-ref">[9]</a>, cada acuerdo institucional de Ripple anunciado en 2026 ha sido seguido de una caída en el precio de XRP. Las instituciones usan RippleNet, pero no compran XRP. La adopción institucional no genera demanda del token. La desconexión es estructural, no coyuntural.</div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-x">✕</div>
+        <div class="issue-text"><strong>Ripple lanzó RLUSD, su propia stablecoin.</strong> Eso es una confesión implícita: si XRP fuera suficiente como activo estable, RLUSD no existiría. Ripple sabe que las instituciones necesitan estabilidad. Pero si los bancos liquidan en RLUSD de punta a punta, no necesitan XRP en absoluto.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- VII: XMD -->
+  <section class="sec" id="xmd">
+    <div class="sec-tag">VII — La solución</div>
+    <h2>Por qué el Metal Dollar sí puede ser el activo puente. Y lo que eso significa.</h2>
+
+    <div class="stable-stat">
+      <div class="stable-num">$1.00</div>
+      <div class="stable-label">
+        <strong>Valor del XMD. Siempre.</strong>
+        No como objetivo. No como promesa. Como resultado matemático de su diseño: el XMD es una canasta de stablecoins respaldadas por bonos del Tesoro americano. No puede fluctuar porque su respaldo no fluctúa en términos nominales. Es la misma lógica que hacía funcionar el patrón oro: la paridad es matemática, no política.
+      </div>
+    </div>
+
+    <div class="sol-box">
+      <div class="sol-head">Por qué el XMD cumple cada condición</div>
+      <div class="sol-item">
+        <div class="sol-check">✓</div>
+        <div class="sol-text"><strong>Siempre vale uno.</strong> La canasta de stablecoins (USDC, PYUSD, USDP, RLUSD) está respaldada por bonos del Tesoro americano. El XMD no puede valer más ni menos de un dólar por diseño contractual, no por promesa política. Como el oro bajo Bretton Woods: la paridad es matemática.</div>
+      </div>
+      <div class="sol-item">
+        <div class="sol-check">✓</div>
+        <div class="sol-text"><strong>Se acuña, no se compra.</strong> No hay a quién comprarle XMD. Los bancos y cooperativas depositan sus stablecoins de reserva en el contrato inteligente y el protocolo emite XMD directamente. Sin exchange, sin spread, sin intermediario. Exactamente como funcionaba el banco central bajo el patrón oro: aritmética, no mercado.</div>
+      </div>
+      <div class="sol-item">
+        <div class="sol-check">✓</div>
+        <div class="sol-text"><strong>Sin permiso por naturaleza.</strong> El XMD es un contrato inteligente público desplegado en XPR Network. Cualquier banco, fintech o institución puede interactuar con él directamente sin pedirle autorización a Metallicus. Sin gatekeeper. Sin poder de veto.</div>
+      </div>
+      <div class="sol-item">
+        <div class="sol-check">✓</div>
+        <div class="sol-text"><strong>Gobernado por la Metal DAO.</strong> Las decisiones sobre qué stablecoins entran a la canasta, sus ratios y las fees del protocolo las votan los holders de MTL. Sin junta directiva privada. Sin interés doméstico de ningún estado. Sin dilema de Triffin.</div>
+      </div>
+      <div class="sol-item">
+        <div class="sol-check">✓</div>
+        <div class="sol-text"><strong>Liquidez institucional, no especulativa.</strong> La liquidez del XMD crece cuando más bancos y cooperativas emiten sus stablecoins y las depositan en el contrato. No depende de que ningún token suba de precio. Eso desacopla la infraestructura de la especulación de mercado.</div>
+      </div>
+    </div>
+
+    <h3>Lo que el XMD hace al Forex: no lo reduce. Lo elimina.</h3>
+
+    <p>Este punto merece precisión porque tiene consecuencias enormes. Si el euro estable y el dólar estable están ambos dentro de la canasta del XMD, la conversión entre ellos no ocurre en un mercado. Ocurre dentro del contrato inteligente, a valor matemáticamente fijo, sin comprador, sin vendedor, sin spread, sin market maker. No hay nada que intermediar porque no hay nada que descubrir: el precio ya está en la definición de la canasta.<a href="#fn10" class="fn-ref">[10]</a></p>
+
+    <p>Eso no reduce el Forex entre esas monedas. Lo <strong>elimina estructuralmente</strong>. Es exactamente lo que el patrón oro hacía con los tipos de cambio: no los reducía, los hacía innecesarios porque la conversión era aritmética.</p>
+
+    <div class="forex-compare">
+      <div class="forex-col forex-before">
+        <div class="forex-tag ftag-before">Sistema actual (post-1971)</div>
+        <p>USD → mercado Forex → EUR. Dos transacciones de mercado. Dos spreads. Dos market makers cobrando. Un riesgo de deslizamiento. Un costo que no existía bajo el patrón oro y que no crea ningún valor económico real.</p>
+      </div>
+      <div class="forex-col forex-after">
+        <div class="forex-tag ftag-after">Con XMD (ambas en la canasta)</div>
+        <p>USD-stablecoin → XMD → EUR-stablecoin. Una operación matemática dentro del contrato. Cero spreads. Cero market makers. Cero riesgo de deslizamiento. Como el patrón oro: conversión aritmética, no mercado.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CONCLUSIÓN -->
+  <section class="sec">
+    <div class="sec-tag">VIII — El círculo que se cierra</div>
+    <h2>Estamos volviendo al principio. Pero esta vez sin necesitar el permiso de nadie.</h2>
+
+    <p>El patrón oro funcionó durante décadas porque resolvía el problema central de cualquier sistema de pagos internacional: la conversión entre unidades de valor tenía que ser matemáticamente exacta, sin intermediarios que capturaran el proceso, y basada en un ancla que ningún gobierno pudiera manipular.</p>
+
+    <p>Cuando ese sistema colapsó en 1971, no fue porque fuera un mal sistema. Fue porque tenía dos limitaciones insuperables en su época: el oro no podía emitirse elásticamente según las necesidades del comercio global, y el dilema de Triffin hacía imposible que cualquier moneda nacional sirviera al mismo tiempo a su país emisor y al sistema global.</p>
+
+    <p>Lo que siguió fue la creación de mercados enteros cuyo único propósito es cobrar por la inestabilidad que el fin del patrón oro creó. El Forex, los derivados de divisas, los hedge funds de divisas: todos existen porque alguien tiene que proveer liquidez para un riesgo que antes no existía. Y todos cobran por ese servicio. Cada año. Sobre cada transacción internacional del planeta. Sin crear ningún valor.</p>
+
+    <p>El Metal Dollar no es una propuesta nueva. Es la aplicación de los principios que hicieron funcionar el patrón oro, resolviendo las dos limitaciones que tenía: la inelasticidad del oro físico se resuelve con una canasta de stablecoins que puede crecer con la demanda; el dilema de Triffin se resuelve porque el XMD no es el pasivo de ningún estado y ningún emisor puede manipularlo para su beneficio doméstico.</p>
+
+    <p>Y la diferencia crítica respecto a todos los intentos anteriores es que el XMD no requiere un tratado internacional ni una decisión política coordinada entre estados. El dólar seguirá existiendo como la moneda mayoritaria de la canasta, igual que en los Derechos Especiales de Giro del FMI. Lo que cambia es que deja de ser el único. Ningún estado desaparece. Ninguno cede su moneda. El contrato inteligente hace el resto.</p>
+
+    <div class="final">
+      <div class="final-tag">La tesis en una frase</div>
+      <p>Un activo puente volátil no es un activo puente: es un activo especulativo con ambiciones de infraestructura. <strong>XRP no puede ser el Fénix</strong> porque el sistema que le da su único uso institucional real — el ODL — vive dentro de RippleNet, una red privada y permisionada controlada por Ripple. No es infraestructura neutral: es un negocio privado con poder de veto sobre quién participa.</p>
+      <p><strong>El Metal Dollar puede serlo</strong> por la misma razón que el oro funcionó durante décadas: porque su valor es matemático, no político. Porque no se compra: se acuña. Porque nadie puede negarle el acceso a quien lo necesite. Porque su liquidez viene de instituciones reales, no de especuladores.</p>
+      <p>Estamos volviendo al principio. Esta vez sobre blockchain. Y esta vez sin necesitar el permiso de nadie.</p>
+    </div>
+  </section>
+
+  <!-- FOOTNOTES -->
+  <aside class="footnotes">
+    <div class="fn-title">Notas y referencias</div>
+    <div class="fn" id="fn1">
+      <div class="fn-n">[1]</div>
+      <div class="fn-text">Eichengreen, B. (1996). <em>Globalizing Capital: A History of the International Monetary System</em>. Princeton University Press. La descripción canónica del sistema de Bretton Woods, sus mecanismos de paridad fija y el rol del dólar como moneda de reserva anclada al oro.</div>
+    </div>
+    <div class="fn" id="fn2">
+      <div class="fn-n">[2]</div>
+      <div class="fn-text">Dam, K.W. (1982). <em>The Rules of the Game: Reform and Evolution in the International Monetary System</em>. University of Chicago Press. Análisis detallado de cómo funcionaban los mecanismos de conversión entre bancos centrales bajo Bretton Woods.</div>
+    </div>
+    <div class="fn" id="fn3">
+      <div class="fn-n">[3]</div>
+      <div class="fn-text">U.S. Bureau of Labor Statistics. <em>CPI Historical Data 1913–present</em>. La inflación promedio durante Bretton Woods (1944–1971) fue ~2.5% anual, frente al promedio post-1971 de ~4%. <a href="https://www.bls.gov/cpi/" target="_blank" rel="noopener">bls.gov/cpi</a></div>
+    </div>
+    <div class="fn" id="fn4">
+      <div class="fn-n">[4]</div>
+      <div class="fn-text">Nixon, R. (1971, 15 de agosto). <em>Address to the Nation Outlining a New Economic Policy: "The Challenge of Peace."</em> The American Presidency Project, UCSB. <a href="https://www.presidency.ucsb.edu/documents/address-the-nation-outlining-new-economic-policy-the-challenge-peace" target="_blank" rel="noopener">presidency.ucsb.edu</a></div>
+    </div>
+    <div class="fn" id="fn5">
+      <div class="fn-n">[5]</div>
+      <div class="fn-text">Triffin, R. (1960). <em>Gold and the Dollar Crisis: The Future of Convertibility</em>. Yale University Press. Presentado originalmente ante el Joint Economic Committee del Congreso de los Estados Unidos, octubre de 1959.</div>
+    </div>
+    <div class="fn" id="fn6">
+      <div class="fn-n">[6]</div>
+      <div class="fn-text">Mallaby, S. (2010). <em>More Money Than God: Hedge Funds and the Making of a New Elite</em>. Penguin Press, cap. 7. El análisis más detallado de la operación Soros contra la libra esterlina en septiembre de 1992 y sus consecuencias para el Sistema Monetario Europeo.</div>
+    </div>
+    <div class="fn" id="fn7">
+      <div class="fn-n">[7]</div>
+      <div class="fn-text">Keynes, J.M. (1919). <em>The Economic Consequences of the Peace</em>. Macmillan. Keynes: "By a continuing process of inflation, governments can confiscate, secretly and unobserved, an important part of the wealth of their citizens." La descripción más citada del impuesto inflacionario como transferencia encubierta de riqueza.</div>
+    </div>
+    <div class="fn" id="fn8">
+      <div class="fn-n">[8]</div>
+      <div class="fn-text">Bank for International Settlements (2024). <em>Quarterly Review: Crypto asset volatility</em>. BIS, Basilea. Datos de volatilidad histórica de XRP comparados con monedas de mercados emergentes y activos de reserva tradicionales. <a href="https://www.bis.org/statistics" target="_blank" rel="noopener">bis.org/statistics</a></div>
+    </div>
+    <div class="fn" id="fn9">
+      <div class="fn-n">[9]</div>
+      <div class="fn-text">CryptoSlate (2026, marzo). "XRP faces a brutal 2026 paradox as XRPL adoption surges and the token captures little value." <a href="https://cryptoslate.com/xrp-faces-a-brutal-2026-paradox-as-xrpl-adoption-surges-and-the-token-captures-little-value/" target="_blank" rel="noopener">cryptoslate.com</a></div>
+    </div>
+    <div class="fn" id="fn10">
+      <div class="fn-n">[10]</div>
+      <div class="fn-text">Hayner, M. [@MarshallHayner]. (2025). Posts en X (Twitter) sobre la integración del euro estable al Metal Dollar. Ver también: metalhomecoming.com para el contexto técnico del MIP-002 y la arquitectura multicanasta del XMD.</div>
+    </div>
+  </aside>
+
+  <div class="disclaimer">
+    Este artículo es informativo y no constituye asesoría financiera.<br>
+    Las referencias a activos digitales son descriptivas, no recomendaciones de inversión.
+  </div>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('prog').style.width = (s/h*100)+'%';
+  });
+</script>
+</body>
+</html>

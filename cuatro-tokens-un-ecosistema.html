@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuatro tokens. Un ecosistema. — AllanTDBN</title>
+  <meta name="description" content="MTL, METAL, XPR y LOAN no son tokens independientes. Son capas de una misma infraestructura diseñada para que el Metal Dollar (XMD) sea el sistema de liquidación financiera global." />
+  <style>
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060E1A;
+      --bg-card: #0B1624;
+      --bg-deep: #040C14;
+      --border: rgba(255,255,255,0.05);
+      --border-gold: rgba(201,168,76,0.18);
+      --border-blue: rgba(46,134,222,0.15);
+      --border-green: rgba(39,174,96,0.15);
+      --border-purple: rgba(155,89,182,0.15);
+      --border-teal: rgba(26,188,156,0.15);
+      --border-orange: rgba(230,126,34,0.15);
+      --gold: #C9A84C;
+      --gold-dim: rgba(201,168,76,0.07);
+      --blue: #2E86DE;
+      --blue-dim: rgba(46,134,222,0.07);
+      --green: #27AE60;
+      --green-dim: rgba(39,174,96,0.07);
+      --purple: #9B59B6;
+      --purple-dim: rgba(155,89,182,0.07);
+      --orange: #E67E22;
+      --teal: #1ABC9C;
+      --teal-dim: rgba(26,188,156,0.07);
+      --red: #E74C3C;
+      --text-primary: #F0EDE5;
+      --text-secondary: #A8B4C4;
+      --text-muted: #4A5A6E;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #040C14 0%, var(--bg) 100%);
+      padding: 80px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.05) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 50%, rgba(46,134,222,0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; max-width: 720px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.07);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px; padding: 5px 16px;
+      font-size: 10px; color: var(--gold); font-weight: 700;
+      letter-spacing: 2px; margin-bottom: 28px; font-family: monospace;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5.5vw, 54px);
+      font-weight: 900; color: var(--text-primary);
+      margin: 0 0 16px; line-height: 1.1; letter-spacing: -1.5px;
+    }
+    .hero h1 .accent { color: var(--gold); }
+    .hero h1 .sub { font-size: 0.65em; color: var(--text-secondary); letter-spacing: -0.5px; display: block; }
+    .hero-desc {
+      font-size: 16px; color: var(--text-secondary);
+      line-height: 1.8; max-width: 520px; margin: 0 auto 36px;
+    }
+    .token-pills { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .token-pill {
+      border-radius: 8px; padding: 10px 16px; text-align: center;
+      font-size: 16px; font-weight: 800; font-family: monospace;
+    }
+    .pill-mtl  { background: var(--gold-dim);   border: 1px solid var(--border-gold);   color: var(--gold); }
+    .pill-metal{ background: var(--blue-dim);   border: 1px solid var(--border-blue);   color: var(--blue); }
+    .pill-xpr  { background: var(--green-dim);  border: 1px solid var(--border-green);  color: var(--green); }
+    .pill-loan { background: var(--purple-dim); border: 1px solid var(--border-purple); color: var(--purple); }
+    .pill-xmd  { background: var(--teal-dim);   border: 1px solid var(--border-teal);   color: var(--teal); }
+
+    /* ── CONTENT ── */
+    .content { max-width: 760px; margin: 0 auto; padding: 60px 24px 48px; }
+    section { margin-bottom: 8px; }
+
+    .tag {
+      font-size: 10px; letter-spacing: 3px; color: var(--gold);
+      font-weight: 700; margin-bottom: 12px;
+      text-transform: uppercase; font-family: monospace;
+    }
+    .tag-blue   { color: var(--blue); }
+    .tag-green  { color: var(--green); }
+    .tag-purple { color: var(--purple); }
+    .tag-teal   { color: var(--teal); }
+
+    h2 {
+      font-size: clamp(22px, 3.5vw, 30px); font-weight: 800;
+      color: var(--text-primary); margin: 0 0 20px;
+      line-height: 1.25; letter-spacing: -0.3px;
+    }
+    .prose {
+      font-size: 15px; color: var(--text-secondary);
+      line-height: 1.85; margin-bottom: 16px;
+    }
+
+    /* ── CHIP ── */
+    .chip {
+      display: inline-flex; align-items: center;
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 11px; font-weight: 700; font-family: monospace;
+      vertical-align: middle;
+    }
+    .chip-MTL  { background: var(--gold-dim);   border: 1px solid var(--border-gold);   color: var(--gold); }
+    .chip-METAL{ background: var(--blue-dim);   border: 1px solid var(--border-blue);   color: var(--blue); }
+    .chip-XPR  { background: var(--green-dim);  border: 1px solid var(--border-green);  color: var(--green); }
+    .chip-LOAN { background: var(--purple-dim); border: 1px solid var(--border-purple); color: var(--purple); }
+    .chip-XMD  { background: var(--teal-dim);   border: 1px solid var(--border-teal);   color: var(--teal); }
+
+    /* ── DIVIDER ── */
+    .divider { display: flex; align-items: center; gap: 16px; margin: 52px 0; }
+    .div-l { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border-gold)); }
+    .div-d { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; opacity: 0.4; }
+    .div-r { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-gold), transparent); }
+
+    /* ── ECOSYSTEM MAP ── */
+    .ecosystem-map {
+      background: var(--bg-deep); border: 1px solid var(--border-gold);
+      border-radius: 16px; padding: 28px; margin: 28px 0;
+    }
+    .eco-title {
+      font-size: 11px; letter-spacing: 2px; color: var(--gold);
+      font-weight: 700; text-align: center; margin-bottom: 24px; font-family: monospace;
+    }
+    .eco-layers { display: flex; flex-direction: column; gap: 2px; }
+    .eco-layer {
+      border-radius: 10px; padding: 16px 20px;
+      transition: all 0.2s ease; cursor: default;
+    }
+    .eco-layer:hover { opacity: 1; }
+    .eco-layer-inner { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+    .eco-layer-left { flex-shrink: 0; }
+    .eco-sublabel { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); font-family: monospace; margin-bottom: 4px; }
+    .eco-name { font-size: 14px; font-weight: 800; }
+    .eco-body { flex: 1; min-width: 200px; }
+    .eco-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .eco-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .eco-tag { font-size: 11px; border-radius: 4px; padding: 2px 8px; }
+    .eco-chip-wrap { flex-shrink: 0; }
+    .eco-hint { text-align: center; margin-top: 16px; font-size: 11px; color: var(--text-muted); font-style: italic; }
+
+    .layer-metal { background: var(--blue-dim);   border: 1px solid var(--border-blue);   border-left: 3px solid var(--blue); }
+    .layer-xpr   { background: var(--green-dim);  border: 1px solid var(--border-green);  border-left: 3px solid var(--green); }
+    .layer-mtl   { background: var(--gold-dim);   border: 1px solid var(--border-gold);   border-left: 3px solid var(--gold); }
+    .layer-xmd   { background: var(--teal-dim);   border: 1px solid var(--border-teal);   border-left: 3px solid var(--teal); }
+
+    .eco-tag-metal { background: var(--blue-dim);   border: 1px solid var(--border-blue);   color: var(--blue); }
+    .eco-tag-xpr   { background: var(--green-dim);  border: 1px solid var(--border-green);  color: var(--green); }
+    .eco-tag-mtl   { background: var(--gold-dim);   border: 1px solid var(--border-gold);   color: var(--gold); }
+    .eco-tag-xmd   { background: var(--teal-dim);   border: 1px solid var(--border-teal);   color: var(--teal); }
+
+    /* ── TOKEN CARD ── */
+    .token-card {
+      border-radius: 12px; padding: 28px; margin-bottom: 2px;
+    }
+    .tc-mtl  { background: var(--bg-card); border: 1px solid var(--border-gold);   border-top: 3px solid var(--gold); }
+    .tc-metal{ background: var(--bg-card); border: 1px solid var(--border-blue);   border-top: 3px solid var(--blue); }
+    .tc-xpr  { background: var(--bg-card); border: 1px solid var(--border-green);  border-top: 3px solid var(--green); }
+    .tc-loan { background: var(--bg-card); border: 1px solid var(--border-purple); border-top: 3px solid var(--purple); }
+
+    .tc-role { font-size: 10px; letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; font-family: monospace; text-transform: uppercase; }
+    .tc-title { font-size: clamp(18px, 3vw, 24px); font-weight: 800; color: var(--text-primary); margin: 0 0 6px; line-height: 1.2; }
+    .tc-origin { font-size: 12px; color: var(--text-muted); font-style: italic; margin-bottom: 20px; }
+    .tc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; margin-bottom: 20px; }
+    .tc-box { background: rgba(255,255,255,0.02); border-radius: 8px; padding: 16px; }
+    .tc-box-colored-gold   { background: var(--gold-dim);   border: 1px solid var(--border-gold); }
+    .tc-box-colored-blue   { background: var(--blue-dim);   border: 1px solid var(--border-blue); }
+    .tc-box-colored-green  { background: var(--green-dim);  border: 1px solid var(--border-green); }
+    .tc-box-colored-purple { background: var(--purple-dim); border: 1px solid var(--border-purple); }
+    .tc-box-label { font-size: 10px; letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+    .tc-box-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+    .mip002-box { background: rgba(230,126,34,0.06); border: 1px solid rgba(230,126,34,0.15); border-radius: 8px; padding: 14px 18px; }
+    .mip002-label { font-size: 10px; letter-spacing: 1px; color: var(--orange); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+    .mip002-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ── LOAN-001 ── */
+    .loan001-box {
+      background: var(--bg-deep); border: 1px solid var(--border-purple);
+      border-radius: 12px; padding: 28px; margin: 24px 0;
+    }
+    .loan001-eyebrow { font-size: 10px; letter-spacing: 2px; color: var(--purple); font-weight: 700; margin-bottom: 16px; font-family: monospace; text-transform: uppercase; }
+    .loan001-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+    .loan001-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.7; }
+    .loan001-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 2px; margin-bottom: 20px; }
+    .loan001-tier { border-radius: 8px; padding: 16px; text-align: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
+    .loan001-tier.highlight { background: var(--purple-dim); border: 1px solid var(--border-purple); }
+    .loan001-tier-amount { font-size: 13px; font-weight: 800; color: var(--purple); font-family: monospace; margin-bottom: 6px; }
+    .loan001-tier-discount { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+    .loan001-tier-discount.free { color: var(--green); }
+    .loan001-tier-discount.std { color: var(--text-primary); }
+    .loan001-tier-note { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+    .loan001-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; }
+    .loan001-info { background: rgba(255,255,255,0.02); border-radius: 8px; padding: 14px; }
+    .loan001-info-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+    .loan001-info-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── FLYWHEEL ── */
+    .flywheel-title { font-size: 11px; letter-spacing: 2px; color: var(--gold); font-weight: 700; margin-bottom: 20px; font-family: monospace; text-transform: uppercase; }
+    .flywheel-steps { display: flex; flex-direction: column; gap: 2px; }
+    .flywheel-step { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .flywheel-num { flex-shrink: 0; width: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; font-family: monospace; }
+    .flywheel-body { padding: 14px 18px; flex: 1; }
+    .flywheel-label-row { display: flex; gap: 10px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
+    .flywheel-label { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .flywheel-detail { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    .fw-mtl  { background: var(--gold-dim);   border-right: 1px solid var(--border-gold);   color: var(--gold); }
+    .fw-xmd  { background: var(--teal-dim);   border-right: 1px solid var(--border-teal);   color: var(--teal); }
+    .fw-loan { background: var(--purple-dim); border-right: 1px solid var(--border-purple); color: var(--purple); }
+    .fw-xpr  { background: var(--green-dim);  border-right: 1px solid var(--border-green);  color: var(--green); }
+
+    /* ── XMD SECTION ── */
+    .xmd-model-box { background: rgba(26,188,156,0.06); border: 1px solid rgba(26,188,156,0.15); border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+    .xmd-model-label { font-size: 10px; letter-spacing: 1px; color: var(--teal); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+    .xmd-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .xmd-model-col-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+    .xmd-model-col-text { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── SUPERCHAIN ── */
+    .superchain-box { background: var(--bg-deep); border: 1px solid var(--border-blue); border-radius: 12px; padding: 28px; margin: 28px 0; }
+    .superchain-eyebrow { font-size: 10px; letter-spacing: 2px; color: var(--blue); font-weight: 700; margin-bottom: 16px; font-family: monospace; text-transform: uppercase; }
+    .superchain-title { font-size: 18px; font-weight: 800; color: var(--text-primary); margin: 0 0 16px; }
+    .superchain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2px; margin-top: 20px; }
+    .superchain-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+    .sc-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+    .sc-before { font-size: 12px; color: var(--red); text-decoration: line-through; margin-bottom: 4px; }
+    .sc-after { font-size: 13px; font-weight: 700; color: var(--green); }
+    .superchain-note { background: rgba(46,134,222,0.05); border: 1px solid var(--border-blue); border-radius: 8px; padding: 14px 18px; margin-top: 16px; font-size: 14px; color: var(--blue); line-height: 1.7; }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-table { background: var(--bg-deep); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 28px 0; }
+    .summary-header { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 10px; letter-spacing: 2px; color: var(--gold); font-weight: 700; font-family: monospace; text-transform: uppercase; }
+    .summary-row { display: flex; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-token-cell { flex-shrink: 0; width: 80px; padding: 14px 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; font-family: monospace; }
+    .st-mtl  { background: var(--gold-dim);   border-right: 1px solid var(--border-gold);   color: var(--gold); }
+    .st-metal{ background: var(--blue-dim);   border-right: 1px solid var(--border-blue);   color: var(--blue); }
+    .st-xpr  { background: var(--green-dim);  border-right: 1px solid var(--border-green);  color: var(--green); }
+    .st-loan { background: var(--purple-dim); border-right: 1px solid var(--border-purple); color: var(--purple); }
+    .st-xmd  { background: var(--teal-dim);   border-right: 1px solid var(--border-teal);   color: var(--teal); }
+    .summary-role { flex: 2 1 180px; padding: 12px 16px; border-right: 1px solid var(--border); }
+    .summary-role-name { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .summary-role-sub { font-size: 11px; color: var(--text-muted); }
+    .summary-supply { flex: 1 1 120px; padding: 12px 16px; border-right: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+    .summary-key { flex: 2 1 180px; padding: 12px 16px; font-size: 11px; line-height: 1.5; }
+
+    /* ── FINAL CALLOUT ── */
+    .final-callout {
+      background: var(--gold-dim); border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 32px; text-align: center; margin-top: 32px;
+    }
+    .final-callout-label { font-size: 10px; letter-spacing: 3px; color: var(--gold); font-weight: 700; margin-bottom: 16px; font-family: monospace; text-transform: uppercase; }
+    .final-callout p { font-size: clamp(15px, 2.5vw, 18px); color: var(--text-primary); line-height: 1.85; margin: 0 auto; max-width: 520px; font-style: italic; }
+    .disclaimer { font-size: 11px; color: var(--text-muted); margin-top: 28px; text-align: center; line-height: 1.7; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 60px 16px 48px; }
+      .content { padding: 40px 16px 32px; }
+      .summary-token-cell { width: 60px; }
+      .summary-supply { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Guía del ecosistema Metallicus</div>
+      <h1>
+        Cuatro tokens.<br>
+        <span class="accent">Un ecosistema.</span><br>
+        <span class="sub">Todo girando alrededor del Fénix.</span>
+      </h1>
+      <p class="hero-desc">MTL, METAL, XPR y LOAN no son tokens independientes. Son capas de una misma infraestructura diseñada para que el Metal Dollar (XMD) pueda ser el sistema de liquidación financiera global.</p>
+      <div class="token-pills">
+        <div class="token-pill pill-mtl">MTL</div>
+        <div class="token-pill pill-metal">METAL</div>
+        <div class="token-pill pill-xpr">XPR</div>
+        <div class="token-pill pill-loan">LOAN</div>
+        <div class="token-pill pill-xmd">XMD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- INTRO -->
+    <section>
+      <div class="tag">Punto de partida</div>
+      <h2>La confusión más común: ¿en qué invierto?</h2>
+      <p class="prose">Quien llega al ecosistema Metallicus por primera vez se encuentra con cinco tokens distintos y ninguna explicación clara de cómo se relacionan. Muchos asumen que son competidores o que hay que elegir uno. Están equivocados.</p>
+      <p class="prose">Cada token tiene un rol específico e irremplazable dentro de la arquitectura. Juntos forman una estructura de capas donde cada nivel necesita al anterior para funcionar, y todos convergen en un único objetivo: hacer que el <span class="chip chip-XMD">XMD</span> sea el activo de liquidación más conveniente, seguro y accesible del mundo.</p>
+      <p class="prose">El <span class="chip chip-XMD">XMD</span> es el Metal Dollar: siempre vale un dólar, no se compra sino que se acuña, y es el centro gravitacional de todo lo que vamos a explicar. Es el Fénix que The Economist predijo en 1988. El resto del ecosistema existe para que ese Fénix pueda volar.</p>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- PIRÁMIDE -->
+    <section style="margin-bottom:8px">
+      <div class="tag">La visión completa</div>
+      <h2>Una pirámide. Un propósito. Todo converge en el Fénix.</h2>
+      <p class="prose">Antes de entrar en el detalle de cada token, hay que ver el conjunto. Como la pirámide del billete de dólar, el ecosistema Metallicus tiene una base que sostiene todo y una cúspide que le da sentido a todo lo demás. La cúspide no es el token más caro ni el más especulado. Es el más estable. Es el Fénix.</p>
+
+      <!-- SVG PIRÁMIDE EQUILÁTERA -->
+      <div style="margin:32px 0;text-align:center">
+        <svg viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;height:auto">
+          <defs>
+            <linearGradient id="bgGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#040C14"/>
+              <stop offset="100%" stop-color="#07101C"/>
+            </linearGradient>
+            <linearGradient id="gRainbow2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stop-color="#e74c3c" stop-opacity="0.85"/>
+              <stop offset="25%"  stop-color="#f1c40f" stop-opacity="0.85"/>
+              <stop offset="50%"  stop-color="#27ae60" stop-opacity="0.85"/>
+              <stop offset="75%"  stop-color="#2e86de" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#9b59b6" stop-opacity="0.85"/>
+            </linearGradient>
+            <linearGradient id="gGold2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.1"/>
+              <stop offset="50%" stop-color="#C9A84C" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#C9A84C" stop-opacity="0.1"/>
+            </linearGradient>
+            <linearGradient id="gPurple2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#9B59B6" stop-opacity="0.1"/>
+              <stop offset="50%" stop-color="#9B59B6" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#9B59B6" stop-opacity="0.1"/>
+            </linearGradient>
+            <linearGradient id="gGreen2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#27AE60" stop-opacity="0.1"/>
+              <stop offset="50%" stop-color="#27AE60" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#27AE60" stop-opacity="0.1"/>
+            </linearGradient>
+            <linearGradient id="gGold2b" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.08"/>
+              <stop offset="50%" stop-color="#C9A84C" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#C9A84C" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="gBlue2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#2E86DE" stop-opacity="0.12"/>
+              <stop offset="50%" stop-color="#2E86DE" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#2E86DE" stop-opacity="0.12"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background -->
+          <rect width="800" height="560" fill="url(#bgGrad2)" rx="14"/>
+
+          <!--
+            Triángulo equilátero perfecto:
+            Apex:  (400, 30)
+            Base izq: (20, 530)
+            Base der: (780, 530)
+            Altura total = 500px
+            Cada capa ocupa 500/6 ≈ 83.3px de altura
+            En y = 30 + k*83.3, el ancho del triángulo = 760 * (k*83.3/500)
+            x_izq = 400 - 380*(k/6), x_der = 400 + 380*(k/6)
+
+            Cortes horizontales:
+            y0 = 30   → x=400 (apex)
+            y1 = 113  → x_izq=273, x_der=527
+            y2 = 197  → x_izq=146, x_der=654  [ajustado para 6 capas]
+            y3 = 280  → x_izq=19,  x_der=781
+
+            Voy a usar 6 capas de altura igual = 500/6 = 83.33px
+            Layer cuts at y = 30, 113.3, 196.7, 280, 363.3, 446.7, 530
+
+            At fraction f from apex (0=apex,1=base):
+            x_l = 400 - 380*f
+            x_r = 400 + 380*f
+
+            f=0:     y=30,   xl=400, xr=400
+            f=1/6:   y=113,  xl=337, xr=463
+            f=2/6:   y=197,  xl=274, xr=526
+            f=3/6:   y=280,  xl=210, xr=590
+            f=4/6:   y=363,  xl=147, xr=653
+            f=5/6:   y=447,  xl=84,  xr=716
+            f=6/6:   y=530,  xl=20,  xr=780
+          -->
+
+          <!-- LAYER 0 (apex): XMD — y30→y113 -->
+          <polygon points="400,30 337,113 463,113" fill="url(#gRainbow2)" stroke="#1ABC9C" stroke-width="2"/>
+          <!-- Eye subtle -->
+          <circle cx="400" cy="48" r="7" fill="none" stroke="rgba(26,188,156,0.5)" stroke-width="1.2"/>
+          <circle cx="400" cy="48" r="2.5" fill="#1ABC9C" opacity="0.7"/>
+          <!-- XMD chip -->
+          <rect x="372" y="58" width="56" height="18" rx="9" fill="rgba(26,188,156,0.25)" stroke="#1ABC9C" stroke-width="1"/>
+          <text x="400" y="71" text-anchor="middle" fill="#1ABC9C" font-family="monospace" font-size="10" font-weight="700">XMD</text>
+          <!-- label inside triangle only -->
+          <text x="400" y="100" text-anchor="middle" fill="#F0EDE5" font-family="Inter,sans-serif" font-size="11" font-weight="700">El Fénix</text>
+
+          <!-- LAYER 1: MTL — y113→y197 -->
+          <polygon points="337,117 463,117 526,197 274,197" fill="url(#gGold2)" stroke="#C9A84C" stroke-width="1.5"/>
+          <rect x="369" y="134" width="62" height="22" rx="11" fill="rgba(201,168,76,0.22)" stroke="#C9A84C" stroke-width="1"/>
+          <text x="400" y="150" text-anchor="middle" fill="#C9A84C" font-family="monospace" font-size="11" font-weight="700">MTL</text>
+          <text x="400" y="187" text-anchor="middle" fill="#A8B4C4" font-family="Inter,sans-serif" font-size="12">Gobernanza del Fénix · Gas Metal L2</text>
+
+          <!-- LAYER 2: LOAN — y197→y280 -->
+          <polygon points="274,201 526,201 590,280 210,280" fill="url(#gPurple2)" stroke="#9B59B6" stroke-width="1.5"/>
+          <rect x="369" y="218" width="62" height="22" rx="11" fill="rgba(155,89,182,0.22)" stroke="#9B59B6" stroke-width="1"/>
+          <text x="400" y="234" text-anchor="middle" fill="#9B59B6" font-family="monospace" font-size="11" font-weight="700">LOAN</text>
+          <text x="400" y="270" text-anchor="middle" fill="#A8B4C4" font-family="Inter,sans-serif" font-size="12">Demanda de colateral · Tasas de crédito</text>
+
+          <!-- LAYER 3: XPR — y280→y363 -->
+          <polygon points="210,284 590,284 653,363 147,363" fill="url(#gGreen2)" stroke="#27AE60" stroke-width="1.5"/>
+          <rect x="369" y="302" width="62" height="22" rx="11" fill="rgba(39,174,96,0.22)" stroke="#27AE60" stroke-width="1"/>
+          <text x="400" y="318" text-anchor="middle" fill="#27AE60" font-family="monospace" font-size="11" font-weight="700">XPR</text>
+          <text x="400" y="353" text-anchor="middle" fill="#A8B4C4" font-family="Inter,sans-serif" font-size="12">Accesibilidad · Cero fees · Metal DEX</text>
+
+          <!-- LAYER 4: METAL L2 — y363→y447 -->
+          <polygon points="147,367 653,367 716,447 84,447" fill="url(#gGold2b)" stroke="rgba(201,168,76,0.55)" stroke-width="1.5"/>
+          <rect x="357" y="385" width="86" height="22" rx="11" fill="rgba(201,168,76,0.15)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <text x="400" y="401" text-anchor="middle" fill="#C9A84C" font-family="monospace" font-size="11" font-weight="700">METAL L2</text>
+          <text x="400" y="437" text-anchor="middle" fill="#A8B4C4" font-family="Inter,sans-serif" font-size="12">DeFi EVM · Volumen Ethereum en L0</text>
+
+          <!-- LAYER 5 (base): METAL L0 — y447→y530 -->
+          <polygon points="84,451 716,451 780,530 20,530" fill="url(#gBlue2)" stroke="#2E86DE" stroke-width="2"/>
+          <rect x="351" y="469" width="98" height="22" rx="11" fill="rgba(46,134,222,0.22)" stroke="#2E86DE" stroke-width="1"/>
+          <text x="400" y="485" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="11" font-weight="700">METAL · L0</text>
+          <text x="400" y="520" text-anchor="middle" fill="#A8B4C4" font-family="Inter,sans-serif" font-size="12">Los cimientos · Subredes soberanas · ISO 20022</text>
+
+          <!-- Base slab -->
+          <rect x="0" y="530" width="800" height="18" rx="0" fill="rgba(46,134,222,0.18)" stroke="#2E86DE" stroke-width="0.5"/>
+          <text x="400" y="544" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="9" letter-spacing="4">METAL BLOCKCHAIN · CAPA CERO</text>
+        </svg>
+      </div>
+
+      <!-- Paragraph below pyramid -->
+      <div style="background:var(--bg-deep);border:1px solid var(--border-gold);border-radius:12px;padding:28px 32px;margin-top:8px">
+        <div class="tag" style="margin-bottom:16px">Lo que cada capa aporta al Fénix</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span class="chip chip-METAL" style="flex-shrink:0;margin-top:2px">METAL</span>
+            <span style="font-size:14px;color:var(--text-secondary);line-height:1.65">El XMD no puede existir sin una infraestructura soberana que lo valide. Metal Blockchain L0 es esa base: las subredes institucionales, el compliance nativo y el consenso Snowman que hacen posible que el Fénix opere en un entorno regulado.</span>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span class="chip chip-XPR" style="flex-shrink:0;margin-top:2px">XPR</span>
+            <span style="font-size:14px;color:var(--text-secondary);line-height:1.65">El XMD no puede llegar a personas normales sin una red de cero fees y acceso sin wallet Web3 compleja. XPR Network es la capa de accesibilidad masiva: sin ella el Fénix solo existe para instituciones.</span>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span class="chip chip-MTL" style="flex-shrink:0;margin-top:2px">MTL</span>
+            <span style="font-size:14px;color:var(--text-secondary);line-height:1.65">El XMD no puede gobernarse a sí mismo sin un token de gobernanza con historia y comunidad detrás. MTL es quien decide qué entra a la canasta, con qué ratios, y bajo qué condiciones. Sin MTL el Fénix no tiene rumbo.</span>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span class="chip chip-LOAN" style="flex-shrink:0;margin-top:2px">LOAN</span>
+            <span style="font-size:14px;color:var(--text-secondary);line-height:1.65">El XMD no puede tener demanda estructural sin un sistema de crédito que lo use como colateral. LOAN Protocol genera esa demanda: quien pide crédito deja XMD como respaldo, lo que mantiene el Fénix en circulación activa.</span>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex-shrink:0;margin-top:2px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;color:var(--gold);font-family:monospace">L2</span>
+            <span style="font-size:14px;color:var(--text-secondary);line-height:1.65">El XMD no puede capturar el volumen de DeFi de Ethereum sin una capa compatible con EVM dentro del L0. Metal L2 es el puente que trae ese mundo a un entorno regulado, escalable y soberano.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECOSYSTEM MAP -->
+    <section>
+      <div class="tag">Arquitectura</div>
+      <h2>Cómo se apilan las capas</h2>
+      <p class="prose">Antes de entrar en el detalle de cada token, es útil ver cómo encajan en la arquitectura global del ecosistema.</p>
+
+      <div class="ecosystem-map">
+        <div class="eco-title">ARQUITECTURA DEL ECOSISTEMA METALLICUS</div>
+        <div class="eco-layers">
+
+          <div class="eco-layer layer-metal">
+            <div class="eco-layer-inner">
+              <div class="eco-layer-left">
+                <div class="eco-sublabel">CAPA 0</div>
+                <div class="eco-name" style="color:var(--blue)">Metal Blockchain</div>
+              </div>
+              <div class="eco-body">
+                <div class="eco-desc">Infraestructura base para instituciones financieras. La capa soberana sobre la que todo corre.</div>
+                <div class="eco-tags">
+                  <span class="eco-tag eco-tag-metal">Validadores con staking METAL</span>
+                  <span class="eco-tag eco-tag-metal">Subnets institucionales</span>
+                  <span class="eco-tag eco-tag-metal">Compliance nativo</span>
+                  <span class="eco-tag eco-tag-metal">ISO 20022</span>
+                </div>
+              </div>
+              <div class="eco-chip-wrap"><span class="chip chip-METAL">METAL</span></div>
+            </div>
+          </div>
+
+          <div class="eco-layer layer-xpr">
+            <div class="eco-layer-inner">
+              <div class="eco-layer-left">
+                <div class="eco-sublabel">CAPA 1</div>
+                <div class="eco-name" style="color:var(--green)">XPR Network</div>
+              </div>
+              <div class="eco-body">
+                <div class="eco-desc">Red de transacciones sin fees para usuarios. Instituciones compran planes de recursos en XPR.</div>
+                <div class="eco-tags">
+                  <span class="eco-tag eco-tag-xpr">Cero fees usuarios finales</span>
+                  <span class="eco-tag eco-tag-xpr">Planes de recursos institucionales</span>
+                  <span class="eco-tag eco-tag-xpr">Metal DEX (100M XPR = 0 fees)</span>
+                  <span class="eco-tag eco-tag-xpr">WebAuth Wallet</span>
+                </div>
+              </div>
+              <div class="eco-chip-wrap"><span class="chip chip-XPR">XPR</span></div>
+            </div>
+          </div>
+
+          <div class="eco-layer layer-mtl">
+            <div class="eco-layer-inner">
+              <div class="eco-layer-left">
+                <div class="eco-sublabel">CAPA 2</div>
+                <div class="eco-name" style="color:var(--gold)">Metal L2 → Subnet</div>
+              </div>
+              <div class="eco-body">
+                <div class="eco-desc">MIP-002 Homecoming: migra de OP Stack a subnet soberana de Metal Blockchain con MTL como gas token.</div>
+                <div class="eco-tags">
+                  <span class="eco-tag eco-tag-mtl">MTL = gas token (MIP-002)</span>
+                  <span class="eco-tag eco-tag-mtl">Finality 0.5 segundos</span>
+                  <span class="eco-tag eco-tag-mtl">0 costos de DA</span>
+                  <span class="eco-tag eco-tag-mtl">Ejemplo para la Superchain</span>
+                </div>
+              </div>
+              <div class="eco-chip-wrap"><span class="chip chip-MTL">MTL</span></div>
+            </div>
+          </div>
+
+          <div class="eco-layer layer-xmd">
+            <div class="eco-layer-inner">
+              <div class="eco-layer-left">
+                <div class="eco-sublabel">NÚCLEO</div>
+                <div class="eco-name" style="color:var(--teal)">Metal Dollar (XMD)</div>
+              </div>
+              <div class="eco-body">
+                <div class="eco-desc">El Fénix. Centro gravitacional del ecosistema. Siempre vale $1. Todo gira alrededor de él.</div>
+                <div class="eco-tags">
+                  <span class="eco-tag eco-tag-xmd">Canasta: USDC + PYUSD + USDP + RLUSD</span>
+                  <span class="eco-tag eco-tag-xmd">Base del Metal DEX</span>
+                  <span class="eco-tag eco-tag-xmd">Gobernado por Metal DAO (MTL)</span>
+                  <span class="eco-tag eco-tag-xmd">Admisión: 50.000 MTL/XMT</span>
+                </div>
+              </div>
+              <div class="eco-chip-wrap"><span class="chip chip-XMD">XMD</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- MTL -->
+    <section>
+      <div class="tag">Token 1 de 4</div>
+      <div class="token-card tc-mtl">
+        <div class="tc-role" style="color:var(--gold)">El token fundacional · Gobernanza del Fénix</div>
+        <div class="tc-title"><span class="chip chip-MTL">MTL</span> <span style="color:var(--gold)">—</span> El más antiguo. El más importante para el XMD.</div>
+        <div class="tc-origin">Token ERC-20 original de Metallicus. Dentro de XPR Network se llama XMT (MTL envuelto). Son el mismo activo.</div>
+        <div class="tc-grid">
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">UTILIDAD</div>
+            <div class="tc-box-text">Los holders de MTL/XMT gobiernan el Metal Dollar a través de la Metal DAO: votan qué stablecoins entran a la canasta del XMD, sus ratios, las fees de swap y los parámetros del protocolo.</div>
+          </div>
+          <div class="tc-box tc-box-colored-gold">
+            <div class="tc-box-label" style="color:var(--gold)">INSTITUCIONAL</div>
+            <div class="tc-box-text">Cada institución o cooperativa que quiere unirse al XMD paga una admission fee de 50.000 XMT directamente al tesoro de XPR Network. Con más de 1.000 cooperativas en el pipeline, eso es potencialmente 50 millones de MTL absorbidos solo por admission fees.</div>
+          </div>
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">ESCASEZ</div>
+            <div class="tc-box-text">Supply circulante de aproximadamente 90.6 millones de tokens. Si 2.400 cooperativas se unen al XMD, las admission fees absorberían prácticamente todo el supply circulante actual.</div>
+          </div>
+        </div>
+        <div class="mip002-box">
+          <div class="mip002-label">MIP-002 HOMECOMING</div>
+          <div class="mip002-text">Con MIP-002, MTL se convierte en el gas token nativo de la subnet de Metal Blockchain. Cada transacción en la subnet — cada swap, cada mint, cada transferencia — requiere MTL. No es opcional. Es demanda estructural generada por cada acción dentro del ecosistema.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- METAL -->
+    <section>
+      <div class="tag tag-blue">Token 2 de 4</div>
+      <div class="token-card tc-metal">
+        <div class="tc-role" style="color:var(--blue)">La capa cero · Infraestructura soberana</div>
+        <div class="tc-title"><span class="chip chip-METAL">METAL</span> <span style="color:var(--blue)">—</span> La base sobre la que todo corre.</div>
+        <div class="tc-origin">Token nativo de Metal Blockchain, la capa cero diseñada específicamente para instituciones financieras reguladas.</div>
+        <div class="tc-grid">
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">UTILIDAD</div>
+            <div class="tc-box-text">METAL es el token de staking para los validadores de Metal Blockchain. Los nodos que validan transacciones en la red principal deben hacer staking de METAL. La red usa consenso Snowman, descentralizado por diseño, con finality en segundos.</div>
+          </div>
+          <div class="tc-box tc-box-colored-blue">
+            <div class="tc-box-label" style="color:var(--blue)">INSTITUCIONAL</div>
+            <div class="tc-box-text">Metal Blockchain es la infraestructura de capa cero para instituciones financieras. Cumple con regulación nativamente, soporta ISO 20022, permite crear subnets privadas con sus propias reglas de acceso y privacidad, y se conecta al ecosistema público cuando necesita interoperar.</div>
+          </div>
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">ESCASEZ</div>
+            <div class="tc-box-text">Supply total de 666.6 millones. 333.3 millones destinados a recompensas de staking en escala decreciente.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- XPR -->
+    <section>
+      <div class="tag tag-green">Token 3 de 4</div>
+      <div class="token-card tc-xpr">
+        <div class="tc-role" style="color:var(--green)">La red sin fees · Motor de adopción masiva</div>
+        <div class="tc-title"><span class="chip chip-XPR">XPR</span> <span style="color:var(--green)">—</span> Cero fees para usuarios. Recursos para instituciones.</div>
+        <div class="tc-origin">Token nativo de XPR Network, la red pública donde opera el Metal DEX.</div>
+        <div class="tc-grid">
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">UTILIDAD</div>
+            <div class="tc-box-text">XPR tiene dos dimensiones de uso. Para usuarios finales: la red XPR Network tiene cero fees por diseño. Para instituciones: las empresas compran planes de recursos en XPR para procesar volúmenes institucionales. Adicionalmente, stakear 100 millones de XPR da cero fees en el Metal DEX.</div>
+          </div>
+          <div class="tc-box tc-box-colored-green">
+            <div class="tc-box-label" style="color:var(--green)">INSTITUCIONAL</div>
+            <div class="tc-box-text">Los usuarios finales no pagan nada, pero las instituciones que quieren mover volúmenes grandes necesitan comprar recursos en XPR. Eso crea demanda estructural de XPR proporcional al crecimiento institucional de la red, sin que el usuario común sienta ninguna fricción.</div>
+          </div>
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">ESCASEZ</div>
+            <div class="tc-box-text">Supply total de ~32.2 mil millones de tokens. Supply circulante total de ~29.2 mil millones (Ethereum: ~4B + Mainnet: ~25.2B). El precio unitario es bajo pero la demanda institucional puede ser masiva: las cooperativas comprando planes de recursos representan una absorción significativa a cualquier precio.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- LOAN -->
+    <section>
+      <div class="tag tag-purple">Token 4 de 4</div>
+      <div class="token-card tc-loan">
+        <div class="tc-role" style="color:var(--purple)">El árbitro del crédito · Gobernanza de tasas</div>
+        <div class="tc-title"><span class="chip chip-LOAN">LOAN</span> <span style="color:var(--purple)">—</span> Quien controla LOAN controla el costo del crédito.</div>
+        <div class="tc-origin">Token de gobernanza e incentivos del LOAN Protocol, el protocolo de lending descentralizado que alimenta Metal X Lending.</div>
+        <div class="tc-grid">
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">UTILIDAD</div>
+            <div class="tc-box-text">LOAN rige las tasas de interés del sistema de crédito de Metallicus. Los holders votan sobre los pools disponibles, las curvas de tasas, la asignación de recompensas y el uso del tesoro. Cuando una cooperativa usa Metal X Lending, las condiciones del crédito son gobernadas por los holders de LOAN.</div>
+          </div>
+          <div class="tc-box tc-box-colored-purple">
+            <div class="tc-box-label" style="color:var(--purple)">INSTITUCIONAL</div>
+            <div class="tc-box-text">La propuesta LOAN-001, aprobada por la comunidad, introduce fees de retiro del 5% capped en $25 con descuentos por staking. A 100 millones de LOAN stakeados el fee desaparece completamente. Los ingresos financian ingeniería, auditorías y onboarding institucional.</div>
+          </div>
+          <div class="tc-box">
+            <div class="tc-box-label" style="color:var(--text-muted)">ESCASEZ</div>
+            <div class="tc-box-text">Supply emitido: ~113.6 mil millones. Supply circulante: ~35.5 mil millones. Actualmente hay 76.6 mil millones de LOAN stakeados en Metal X Lending, lo que representa la mayor parte del supply. La escasez real viene del staking masivo: más del 67% del supply emitido está bloqueado. LOAN-001 redirige el 5% del bono de liquidación al tesoro, creando un flujo de ingresos sostenible.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOAN-001 -->
+      <div class="loan001-box">
+        <div class="loan001-eyebrow">LOAN-001 · Activate Protocol Fees · Aprobado</div>
+        <div class="loan001-title">Sistema de descuentos por staking</div>
+        <p class="loan001-desc">Fee de retiro del 5%, capped en $25 (quien retira más de $500 paga $25 planos). Sin fees en depósitos, préstamos ni repagos.</p>
+        <div class="loan001-tiers">
+          <div class="loan001-tier">
+            <div class="loan001-tier-amount">10M LOAN</div>
+            <div class="loan001-tier-discount std">25% off</div>
+            <div class="loan001-tier-note">Punto de entrada. Top ~13% de stakers hoy.</div>
+          </div>
+          <div class="loan001-tier">
+            <div class="loan001-tier-amount">25M LOAN</div>
+            <div class="loan001-tier-discount std">50% off</div>
+            <div class="loan001-tier-note">Compromiso intermedio. Mitad del fee.</div>
+          </div>
+          <div class="loan001-tier">
+            <div class="loan001-tier-amount">50M LOAN</div>
+            <div class="loan001-tier-discount std">75% off</div>
+            <div class="loan001-tier-note">Staker serio. Fee casi eliminado.</div>
+          </div>
+          <div class="loan001-tier highlight">
+            <div class="loan001-tier-amount">100M LOAN</div>
+            <div class="loan001-tier-discount free">Fee $0</div>
+            <div class="loan001-tier-note">Waiver completo. Cero costo de retiro.</div>
+          </div>
+        </div>
+        <div class="loan001-grid">
+          <div class="loan001-info">
+            <div class="loan001-info-label">Liquidación</div>
+            <div class="loan001-info-text">El bono de liquidación del 10% se divide 50/50: 5% liquidadores, 5% al tesoro del protocolo.</div>
+          </div>
+          <div class="loan001-info">
+            <div class="loan001-info-label">Destino de ingresos</div>
+            <div class="loan001-info-text">Ingeniería, auditorías, compliance e incorporación de clientes institucionales.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- XMD -->
+    <section>
+      <div class="tag tag-teal">El núcleo</div>
+      <h2>XMD — El Metal Dollar: siempre $1.00</h2>
+      <p class="prose">El <span class="chip chip-XMD">XMD</span> no es un token de inversión. Siempre vale un dólar. No sube, no baja. Es infraestructura neutral. No se compra: se acuña depositando stablecoins de reserva en el contrato inteligente.</p>
+      <p class="prose">La canasta está compuesta por USDC, PYUSD, USDP y RLUSD, todas con respaldo en bonos del tesoro americano, lo que lo hace compatible con el GENIUS Act desde el primer día. No paga yield a los holders porque eso lo convertiría en un security. Los ingresos van al tesoro del protocolo.</p>
+      <p class="prose">La innovación del XMD frente a cualquier stablecoin individual es la canasta multiemisora: los bancos y cooperativas emiten sus propias stablecoins institucionales, que entran a la canasta del XMD con aprobación de la Metal DAO. El depósito del cliente nunca sale de la institución. Eso elimina el flight de depósitos que los bancos tanto temen del cripto.</p>
+      <div class="xmd-model-box">
+        <div class="xmd-model-label">El modelo sin flight de depósito</div>
+        <div class="xmd-model-grid">
+          <div>
+            <div class="xmd-model-col-label" style="color:var(--red)">USDC (modelo convencional)</div>
+            <div class="xmd-model-col-text">Cliente compra USDC → depósito sale del banco → banco pierde el depósito y la relación</div>
+          </div>
+          <div>
+            <div class="xmd-model-col-label" style="color:var(--green)">XMD (modelo Metallicus)</div>
+            <div class="xmd-model-col-text">Cliente acuña stablecoin de la cooperativa → depósito queda en la cooperativa</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- FLYWHEEL -->
+    <section>
+      <div class="tag">Cómo funciona junto</div>
+      <h2>El flywheel: por qué se acelera solo</h2>
+      <p class="prose">Los cinco componentes del ecosistema no son independientes. Están diseñados para alimentarse mutuamente en un ciclo que se acelera con cada nuevo participante.</p>
+
+      <div style="margin:28px 0">
+        <div class="flywheel-title">EL FLYWHEEL DEL XMD</div>
+        <div class="flywheel-steps">
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-mtl">1</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">Cooperativa se une</span><span class="chip chip-MTL">MTL</span></div>
+              <div class="flywheel-detail">Paga 50.000 MTL/XMT como admission fee al tesoro de XPR Network</div>
+            </div>
+          </div>
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-xmd">2</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">Miembro acuña XMD</span><span class="chip chip-XMD">XMD</span></div>
+              <div class="flywheel-detail">Depósito queda en la cooperativa. Sin flight de depósito. Fee ≤$5. MTL holders con descuento.</div>
+            </div>
+          </div>
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-mtl">3</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">MTL como gas en subnet</span><span class="chip chip-MTL">MTL</span></div>
+              <div class="flywheel-detail">Cada transacción en Metal L2 (MIP-002) requiere MTL. Demanda estructural no opcional.</div>
+            </div>
+          </div>
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-loan">4</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">DeFi sobre XMD</span><span class="chip chip-LOAN">LOAN</span></div>
+              <div class="flywheel-detail">Lending vía LOAN Protocol. Trading en Metal DEX. Pares XMD/XBTC, XMD/XDOGE, etc.</div>
+            </div>
+          </div>
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-mtl">5</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">MTL gobierna el XMD</span><span class="chip chip-MTL">MTL</span></div>
+              <div class="flywheel-detail">Holders votan qué stablecoins entran a la canasta, ratios, fees. gov.xprnetwork.org</div>
+            </div>
+          </div>
+          <div class="flywheel-step">
+            <div class="flywheel-num fw-xpr">6</div>
+            <div class="flywheel-body">
+              <div class="flywheel-label-row"><span class="flywheel-label">Más cooperativas se unen</span><span class="chip chip-XPR">XPR</span></div>
+              <div class="flywheel-detail">Red de efectos compuestos. 1.000+ cooperativas. 130M+ miembros potenciales.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- SUPERCHAIN -->
+    <section>
+      <div class="tag tag-blue">MIP-002 Homecoming</div>
+      <h2>El movimiento que mira a Coinbase, Kraken y Sony</h2>
+      <div class="superchain-box">
+        <div class="superchain-eyebrow">MIP-002 · La jugada estratégica</div>
+        <div class="superchain-title">El ejemplo que necesita la Superchain</div>
+        <p class="prose">La Superchain de OP Stack incluye hoy a Coinbase (Base), Kraken, Sony y otros grandes actores. Todos corren sobre OP Stack con sus limitaciones: 7 días de withdrawal delay, costos de DA variables de $60–300K anuales, sequencer centralizado, y forced hard forks cada 2–4 meses.</p>
+        <p class="prose">Al migrar Metal L2 a una subnet soberana de Metal Blockchain vía MIP-002, Metallicus demuestra empíricamente que existe una alternativa mejor: soberanía total, MTL como gas token nativo, y finality en 0.5 segundos.</p>
+        <div class="superchain-grid">
+          <div class="superchain-item">
+            <div class="sc-label">Finality</div>
+            <div class="sc-before">12 min + 7 días</div>
+            <div class="sc-after">0.5 segundos</div>
+          </div>
+          <div class="superchain-item">
+            <div class="sc-label">Costo DA anual</div>
+            <div class="sc-before">$60–300K</div>
+            <div class="sc-after">$0</div>
+          </div>
+          <div class="superchain-item">
+            <div class="sc-label">Sequencer</div>
+            <div class="sc-before">Centralizado</div>
+            <div class="sc-after">Snowman descentralizado</div>
+          </div>
+          <div class="superchain-item">
+            <div class="sc-label">Gas token</div>
+            <div class="sc-before">ETH (externo)</div>
+            <div class="sc-after">MTL (ecosistema)</div>
+          </div>
+        </div>
+        <div class="superchain-note">
+          El mensaje para la Superchain: si quieres soberanía real, cero costos de infraestructura, y un gas token propio que capture el valor de tu red, Metal Blockchain es la capa cero. Metal L2 lo prueba primero.
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- SUMMARY TABLE -->
+    <section>
+      <div class="tag">Referencia rápida</div>
+      <h2>Los cinco en una tabla</h2>
+      <div class="summary-table">
+        <div class="summary-header">RESUMEN DEL ECOSISTEMA</div>
+        <div class="summary-row">
+          <div class="summary-token-cell st-mtl">MTL</div>
+          <div class="summary-role"><div class="summary-role-name">Gobernanza del Fénix + Gas subnet</div><div class="summary-role-sub">ERC-20 / XMT en XPR</div></div>
+          <div class="summary-supply">~90.6M circulante</div>
+          <div class="summary-key" style="color:var(--gold)">50.000 por cooperativa · Gas MIP-002</div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-token-cell st-metal">METAL</div>
+          <div class="summary-role"><div class="summary-role-name">Infraestructura capa cero</div><div class="summary-role-sub">Metal Blockchain (L0)</div></div>
+          <div class="summary-supply">666.6M total · 333.3M staking</div>
+          <div class="summary-key" style="color:var(--blue)">2.000 por nodo validador</div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-token-cell st-xpr">XPR</div>
+          <div class="summary-role"><div class="summary-role-name">Red sin fees + recursos institucionales</div><div class="summary-role-sub">XPR Network (L1)</div></div>
+          <div class="summary-supply">~32.2B total · ~29.2B circulante</div>
+          <div class="summary-key" style="color:var(--green)">100M = 0 fees Metal DEX · Planes recursos</div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-token-cell st-loan">LOAN</div>
+          <div class="summary-role"><div class="summary-role-name">Gobernanza tasas de crédito</div><div class="summary-role-sub">LOAN Protocol (DeFi)</div></div>
+          <div class="summary-supply">~113.6B emitido · ~35.5B circulante · 76.6B stakeados</div>
+          <div class="summary-key" style="color:var(--purple)">100M stakeados = 0 fees retiro</div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-token-cell st-xmd">XMD</div>
+          <div class="summary-role"><div class="summary-role-name">El Fénix · Activo puente estable</div><div class="summary-role-sub">Multi-chain · Núcleo</div></div>
+          <div class="summary-supply">Elástico · Siempre $1.00</div>
+          <div class="summary-key" style="color:var(--teal)">Canasta USDC+PYUSD+USDP+RLUSD</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="div-l"></div><div class="div-d"></div><div class="div-r"></div></div>
+
+    <!-- CONCLUSION -->
+    <section>
+      <div class="tag">Conclusión</div>
+      <h2>Por qué no son cuatro tokens. Son una sola apuesta.</h2>
+      <p class="prose">Invertir en cualquiera de estos tokens es apostar a que el Metal Dollar se convierte en infraestructura financiera global. No son activos especulativos independientes: son capas de un sistema donde cada pieza necesita a las demás para generar valor.</p>
+      <p class="prose"><span class="chip chip-METAL">METAL</span> es la autopista. <span class="chip chip-XPR">XPR</span> es el carril sin peaje. <span class="chip chip-MTL">MTL</span> es quien decide quién puede operar en esa autopista y captura valor en cada transacción de la subnet. <span class="chip chip-LOAN">LOAN</span> es quien fija el precio del crédito que circula por ella. Y <span class="chip chip-XMD">XMD</span> es el activo que hace que todo tenga sentido: el Fénix que The Economist predijo en 1988. is the highway. <span class="chip chip-XPR">XPR</span> is the toll-free lane. <span class="chip chip-MTL">MTL</span> decides who can operate on that highway and captures value in every subnet transaction. <span class="chip chip-LOAN">LOAN</span> sets the price of credit flowing through it. And <span class="chip chip-XMD">XMD</span> is the asset that makes it all make sense: the Phoenix The Economist predicted in 1988.</span></p>
+      <p class="prose">MTL merece mención especial. Es el token más antiguo de Metallicus, el que tiene más historia y comunidad, y no fue casualidad que le asignaran la gobernanza del Fénix. Es el token con el que empezó todo. Y con MIP-002, se convierte también en el gas de cada transacción de la subnet. Dos fuentes de demanda estructural sobre un supply circulante de aproximadamente 90.6 millones de tokens.</p>
+
+      <div class="final-callout">
+        <div class="final-callout-label">La pregunta correcta</div>
+        <p>No es "¿en cuál de los cuatro tokens invierto?" La pregunta correcta es: "¿creo que el Metal Dollar va a convertirse en infraestructura financiera global?" Si la respuesta es sí, todos los tokens del ecosistema tienen sentido. Si la respuesta es no, ninguno la tiene.</p>
+      </div>
+
+      <p class="disclaimer">
+        <span class="b">Fuentes: metalhomecoming.com · gov.docs.xprnetwork.org · xprnetwork.org/loan · metalblockchain.org · LOAN-001 · MIP-002 Homecoming<br>Este análisis es informativo y no constituye asesoría financiera.</span>
+        <span class="block">Sources: metalhomecoming.com · gov.docs.xprnetwork.org · xprnetwork.org/loan · metalblockchain.org · LOAN-001 · MIP-002 Homecoming<br>This analysis is informational and does not constitute financial advice.</span>
+      </p>
+    </section>
+
+  </div><!-- /content -->
+
+</body>
+</html>
