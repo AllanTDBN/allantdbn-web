@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Fénix — La moneda que el mundo necesita y todavía no tiene</title>
+  <meta name="description" content="Hace 37 años, The Economist predijo que el mundo necesitaría una moneda universal. Tenían razón. El problema es que todavía no ha llegado. Hasta ahora." />
+  <style>
+    
+
+    /* ── VIDEO SECTION ── */
+    .video-section{
+      background:rgba(201,168,76,0.04);
+      border:1px solid rgba(201,168,76,0.15);
+      border-radius:14px;padding:32px;margin:48px 0;
+    }
+    .video-thumb{
+      position:relative;border-radius:10px;overflow:hidden;
+      border:1px solid rgba(201,168,76,0.2);max-width:640px;
+      margin:20px auto 0;cursor:pointer;display:block;
+      text-decoration:none;transition:transform .2s;
+    }
+    .video-thumb:hover{transform:scale(1.01);}
+    .video-thumb img{width:100%;display:block;}
+    .video-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%);
+    }
+    .play-btn{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:64px;height:64px;background:rgba(201,168,76,0.9);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .video-info{position:absolute;bottom:0;left:0;right:0;padding:20px 24px;}
+    .video-label{font-size:11px;letter-spacing:2px;color:#C9A84C;font-weight:700;margin-bottom:6px;font-family:monospace;}
+    .video-title{font-size:18px;font-weight:800;color:#F0EDE5;margin-bottom:4px;}
+    .video-sub{font-size:13px;color:#A8B4C4;}
+    .video-note{font-size:12px;color:#5A6A7E;margin-top:12px;text-align:center;font-family:monospace;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07101C;
+      --bg-card: #0D1B2A;
+      --bg-deep: #040C14;
+      --border: rgba(255,255,255,0.06);
+      --border-gold: rgba(201,168,76,0.2);
+      --border-red: rgba(231,76,60,0.15);
+      --border-green: rgba(39,174,96,0.15);
+      --gold: #C9A84C;
+      --gold-dim: rgba(201,168,76,0.07);
+      --red: #E74C3C;
+      --red-dim: rgba(231,76,60,0.06);
+      --green: #27AE60;
+      --green-dim: rgba(39,174,96,0.06);
+      --blue: #2E86DE;
+      --text-primary: #F0EDE5;
+      --text-secondary: #A8B4C4;
+      --text-muted: #5A6A7E;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.85;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(180deg, #040C18 0%, var(--bg) 100%);
+      padding: 90px 24px 72px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 30%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+      font-family: monospace;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 900;
+      color: var(--text-primary);
+      margin: 0 0 8px;
+      line-height: 1.05;
+      letter-spacing: -2px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2.5vw, 22px);
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 64px 24px 48px;
+    }
+
+    /* ── SECTION ── */
+    section { margin-bottom: 8px; }
+
+    .tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+
+    h2 {
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin: 0 0 24px;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      font-family: 'Georgia', serif;
+    }
+
+    .prose {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+    .prose em { color: var(--text-primary); font-style: italic; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 52px 0;
+    }
+    .divider-line-left {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-gold));
+    }
+    .divider-dot {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+    .divider-line-right {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border-gold), transparent);
+    }
+
+    /* ── PULL QUOTE ── */
+    .pull {
+      border-left: 3px solid var(--gold);
+      padding-left: 24px;
+      margin: 32px 0;
+    }
+    .pull p {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+    .info-box-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .info-box-list { display: flex; flex-direction: column; gap: 12px; }
+    .info-box-item { display: flex; gap: 12px; align-items: flex-start; }
+    .info-box-arrow { color: var(--green); flex-shrink: 0; margin-top: 2px; }
+    .info-box-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-family: 'Inter', sans-serif; }
+
+    /* ── CRISIS TIMELINE ── */
+    .timeline { display: flex; flex-direction: column; gap: 2px; margin: 28px 0; }
+    .timeline-item {
+      display: flex;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .timeline-year {
+      flex-shrink: 0;
+      width: 72px;
+      background: var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 8px;
+      border-right: 1px solid var(--border-gold);
+    }
+    .timeline-year span {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold);
+      font-family: monospace;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 1px;
+    }
+    .timeline-body { padding: 20px 24px; }
+    .timeline-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .timeline-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── CONDITIONS GRID ── */
+    .conditions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+      margin: 32px 0;
+    }
+    .condition-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .condition-check {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: var(--green-dim);
+      border: 1px solid rgba(39,174,96,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 2px;
+    }
+    .condition-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+    .condition-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── TRIFFIN BOX ── */
+    .triffin-box {
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+    .triffin-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .triffin-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── CONDITIONS LIST (PART IV) ── */
+    .conditions-list { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+    .condition-item {
+      display: flex;
+      gap: 20px;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .condition-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .condition-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: 1px solid var(--border-gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: monospace;
+      margin-top: 2px;
+    }
+    .condition-item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .condition-item-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      font-family: 'Inter', sans-serif;
+    }
+    .conditions-container {
+      background: var(--bg);
+      border: 1px solid var(--border-gold);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 32px 0;
+    }
+    .conditions-container-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      font-family: monospace;
+    }
+
+    /* ── FINAL CALLOUT ── */
+    .final-callout {
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 14px;
+      padding: 40px 36px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .final-callout-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-family: monospace;
+    }
+    .final-callout p {
+      font-size: clamp(16px, 2.5vw, 19px);
+      color: var(--text-primary);
+      line-height: 1.85;
+      margin: 0 auto;
+      max-width: 560px;
+      font-style: italic;
+    }
+    .final-callout-footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-gold);
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .closing-border {
+      border-top: 1px solid var(--border-gold);
+      padding-top: 52px;
+      margin-top: 8px;
+    }
+
+    .disclaimer {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 32px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 60px 16px 48px; }
+      .content { padding: 40px 16px 32px; }
+      .timeline-year { width: 52px; }
+      .conditions-container { padding: 20px; }
+      .final-callout { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Lang toggle -->
+  
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">THE ECONOMIST · 9 DE ENERO DE 1988</div>
+      <h1>El Fénix</h1>
+      <div class="hero-subtitle">La moneda que el mundo necesita y todavía no tiene</div>
+      <p class="hero-desc">Hace 37 años, una revista predijo que el mundo necesitaría una moneda universal para sobrevivir. Tenían razón. El problema es que todavía no ha llegado.</p>
+    </div>
+  </div>
+
+  <!-- VIDEO PRIORITARIO -->
+  <div style="max-width:720px;margin:0 auto;padding:40px 24px 0">
+    <div style="font-family:monospace;font-size:10px;letter-spacing:.14em;color:#C9A84C;text-transform:uppercase;margin-bottom:16px;text-align:center">▶ Video completo — Leo y explico el artículo original de The Economist</div>
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;border:1px solid rgba(201,168,76,0.22)">
+      <iframe
+        src="https://www.youtube.com/embed/aGtB_K-aV3Y"
+        title="El Fénix: lo que The Economist predijo en 1988 — AllanTDBN"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none">
+      </iframe>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#546070;margin-top:12px;font-family:monospace">Canal YouTube @AllanTDBN · Subtítulos en inglés disponibles</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PARTE I -->
+    <section>
+      <div class="tag">Parte I · 1988</div>
+      <h2>Una portada que nadie olvidó</h2>
+
+      <p class="prose">El 9 de enero de 1988, The Economist publicó una portada que desconcertó a muchos y fascinó a otros. La imagen mostraba un Fénix dorado emergiendo de las llamas de los billetes del mundo: dólares, marcos alemanes, yenes, todos ardiendo. El pájaro llevaba al cuello una moneda de bronce con una inscripción: <em>"Ten Phoenix — 2018"</em>.</p>
+
+      <p class="prose">El artículo que acompañaba esa portada, titulado <em>"Get Ready for a World Currency"</em>, comenzaba con una predicción audaz para la época: en treinta años, americanos, japoneses, europeos y habitantes de muchos otros países probablemente pagarían sus compras con la misma moneda. Los precios no se cotizarían en dólares, yenes o marcos, sino en, digamos, el Fénix.</p>
+
+      <div class="pull">
+        <p>"El Fénix será favorecido por empresas y consumidores porque será más conveniente que las monedas nacionales de hoy, que para entonces parecerán una pintoresca causa de mucha perturbación para la vida económica."</p>
+      </div>
+
+      <p class="prose">En 1988 eso sonaba a ciencia ficción. Hoy, treinta y siete años después, suena a diagnóstico preciso de un problema que sigue sin resolver.</p>
+
+      <p class="prose">Porque The Economist no estaba prediciendo el futuro por capricho. Estaba describiendo un problema estructural que los economistas conocían desde hacía décadas y que ningún gobierno había logrado resolver: el dilema de Triffin.</p>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- PARTE II -->
+    <section>
+      <div class="tag">Parte II · The problem</div>
+      <h2>El dilema que nadie quiere explicar</h2>
+
+      <p class="prose">Robert Triffin era un economista belga-americano que en 1960 se presentó ante el Congreso de Estados Unidos con una advertencia que nadie quería escuchar. El sistema monetario internacional tenía un defecto de diseño fundamental, y ese defecto tarde o temprano iba a causar una crisis.</p>
+
+      <p class="prose">El argumento era elegante en su simplicidad. Para que el comercio internacional funcione, los países necesitan una moneda de reserva común que puedan usar para intercambiar bienes y servicios entre ellos. Desde 1944, esa moneda es el dólar americano. Hasta ahí, todo bien.</p>
+
+      <p class="prose">El problema viene después. Para que el mundo tenga suficientes dólares para comerciar, Estados Unidos tiene que gastar más de lo que produce, es decir, tiene que tener déficit comercial de forma permanente. Si Estados Unidos equilibrara sus cuentas y dejara de gastar más de lo que gana, el mundo se quedaría sin la liquidez que necesita para funcionar. La economía global se secaría.</p>
+
+      <div class="triffin-box">
+        <div class="triffin-title">El dilema de Triffin en palabras simples</div>
+        <p class="triffin-text">El país emisor de la moneda de reserva mundial tiene que elegir permanentemente entre dos males: o cuida su propia economía reduciendo el déficit, y le quita liquidez al mundo, o alimenta la economía global con dólares, y acumula una deuda que eventualmente no puede sostener. No hay forma de hacer ambas cosas bien al mismo tiempo. Ese es el dilema.</p>
+      </div>
+
+      <p class="prose">Pero el dilema de Triffin no solo afecta a Estados Unidos. Afecta a todos los demás, especialmente a los más débiles.</p>
+
+      <p class="prose">Cuando la Reserva Federal sube las tasas de interés por razones domésticas, los capitales del mundo entero fluyen hacia Estados Unidos buscando mejor rendimiento. El dólar se fortalece. Y cuando el dólar se fortalece, los países que tienen deuda en dólares de repente ven cómo esa deuda se vuelve más cara en sus propias monedas. Sus exportaciones se encarecen. Sus economías se contraen. Sus poblaciones sufren.</p>
+
+      <p class="prose">No porque hayan tomado malas decisiones. Sino porque alguien en Washington tomó una decisión completamente razonable para la economía americana que resultó devastadora para ellos.</p>
+
+      <div class="pull">
+        <p>Eso es el dilema de Triffin en la práctica: el mundo entero dependiendo de las decisiones monetarias de un solo país, que toma esas decisiones pensando en sus propios ciudadanos, no en el sistema global.</p>
+      </div>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- PARTE III -->
+    <section>
+      <div class="tag">Parte III · La historia</div>
+      <h2>Cada crisis tiene el mismo origen</h2>
+
+      <p class="prose">No es una teoría abstracta. Es la historia de los últimos cincuenta años.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year"><span>1971</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">El colapso de Bretton Woods</div>
+            <div class="timeline-text">Nixon cierra la ventanilla del oro. El sistema de tipos de cambio fijos colapsa porque Estados Unidos imprimió dólares para financiar Vietnam y el mundo dejó de creer que tenía suficiente oro para respaldarlos.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year"><span>1982</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">La crisis de deuda latinoamericana</div>
+            <div class="timeline-text">La Fed sube las tasas al 20% para matar la inflación americana. México, Brasil y Argentina tienen deuda en dólares a tasa variable. De un día para otro sus pagos se vuelven impagables. México declara default en agosto.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year"><span>1992</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">Soros quiebra el Banco de Inglaterra</div>
+            <div class="timeline-text">Alemania sube tasas para financiar la reunificación. El Reino Unido no puede mantener la libra dentro de la banda europea. George Soros apuesta 10 mil millones contra la libra y gana mil millones en un día.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year"><span>1994</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">El Efecto Tequila</div>
+            <div class="timeline-text">La Fed sube tasas. Los capitales salen de México hacia Estados Unidos. Las reservas mexicanas se agotan. El peso colapsa un 50% en días. El contagio se extiende a toda América Latina.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year"><span>1997</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">La crisis asiática</div>
+            <div class="timeline-text">El dólar se fortalece. Los países asiáticos con monedas ancladas al dólar pierden competitividad. Tailandia, Indonesia y Corea del Sur colapsan. Indonesia pierde el 80% del valor de su moneda.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year"><span>2008</span></div>
+          <div class="timeline-body">
+            <div class="timeline-title">La crisis financiera global</div>
+            <div class="timeline-text">El dólar débil de la era Greenspan genera crédito barato que infla la burbuja hipotecaria. Cuando colapsa, el dólar se fortalece en el pánico y todos los que tienen deuda en dólares sufren simultáneamente.</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="prose">El patrón es siempre el mismo. Estados Unidos toma una decisión monetaria razonable para su economía, y el mundo paga las consecuencias. No por mala intención, sino porque el sistema está mal diseñado desde su origen. Una sola moneda nacional no puede servir simultáneamente a los intereses domésticos del país emisor y a las necesidades del sistema global.</p>
+
+      <p class="prose">Eso es exactamente lo que Triffin describió en 1960. Y eso es exactamente lo que The Economist describía en 1988 cuando hablaba del Fénix. El problema no ha cambiado. Solo se ha vuelto más grande y más rápido.</p>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- PARTE IV -->
+    <section>
+      <div class="tag">Parte IV · La solución</div>
+      <h2>Lo que tiene que ser el Fénix</h2>
+
+      <p class="prose">Si el problema es tan claro y lleva tanto tiempo siendo identificado, ¿por qué no se ha resuelto? La respuesta es sencilla: porque la solución requiere que ningún país tenga el control, y ningún país con poder quiere renunciarlo.</p>
+
+      <p class="prose">El Fénix que describía The Economist no era una moneda emitida por un gobierno. Era algo nuevo: una unidad de valor conveniente, estable y neutral que todo el mundo pudiera usar sin depender de las decisiones de ningún estado en particular.</p>
+
+      <p class="prose">Treinta y siete años después, la tecnología para construir ese sistema existe. Y las características que tiene que tener son claras:</p>
+
+      <div class="conditions-container">
+        <div class="conditions-container-title">LAS CONDICIONES DEL FÉNIX</div>
+        <div class="conditions-list">
+          <div class="condition-item">
+            <div class="condition-num">I</div>
+            <div>
+              <div class="condition-item-title">Tiene que ser estable</div>
+              <div class="condition-item-text">El Fénix no puede ser volátil. Su único trabajo es ser el puente por donde fluye el valor entre todas las economías del mundo, y un puente que tiembla no es un puente. Tiene que valer siempre lo mismo, hoy, mañana y en diez años.</div>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="condition-num">II</div>
+            <div>
+              <div class="condition-item-title">Tiene que ser accesible para todos</div>
+              <div class="condition-item-text">Sin excepción. Sin que ninguna empresa, ningún gobierno y ningún banco central pueda cerrarte la puerta. Una moneda universal con un portero no es universal.</div>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="condition-num">III</div>
+            <div>
+              <div class="condition-item-title">No se compra, se acuña</div>
+              <div class="condition-item-text">Si el Fénix se compra, hay alguien vendiéndolo, y ese alguien cobra. Y ese cobro es exactamente el problema que el Fénix vino a eliminar. La emisión tiene que ser directa, sin intermediario que lucre con el proceso.</div>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="condition-num">IV</div>
+            <div>
+              <div class="condition-item-title">No puede ser centralizado</div>
+              <div class="condition-item-text">No puede vivir dentro de la red privada de una empresa. No puede depender de que una junta directiva decida quién tiene acceso. El día que eso ocurre el Fénix deja de ser el Fénix y se convierte en otro intermediario con mejor marketing.</div>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="condition-num">V</div>
+            <div>
+              <div class="condition-item-title">Elimina el mercado de divisas</div>
+              <div class="condition-item-text">No lo acentúa. No agrega conversiones. No multiplica los spreads. No enriquece a los market makers. Hace que convertir dólares en euros sea tan simple y tan barato como enviar un mensaje de texto.</div>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="condition-num">VI</div>
+            <div>
+              <div class="condition-item-title">Es infraestructura neutra</div>
+              <div class="condition-item-text">Como la electricidad. Como internet. Como el agua. No pertenece a ningún país, no fortalece a ninguna moneda nacional a expensas de las demás, no reproduce la hegemonía del dólar ni crea una nueva hegemonía igual de injusta con distinto nombre.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- PARTE V -->
+    <section>
+      <div class="tag">Parte V · Hoy</div>
+      <h2>¿Por qué 2018 no fue el año?</h2>
+
+      <p class="prose">La portada de The Economist decía "2018". Ese año pasó y el Fénix no llegó. Pero sí llegó algo que antes no existía: la tecnología para construirlo.</p>
+
+      <p class="prose">En 2018 la blockchain ya existía. Bitcoin había cumplido diez años. Ethereum ya tenía contratos inteligentes. Pero ninguno de esos proyectos cumplía las condiciones del Fénix. Bitcoin es demasiado volátil y lento para ser un activo puente universal. Ethereum tiene el mismo problema de volatilidad. Y las primeras stablecoins eran experimentos frágiles sin respaldo institucional.</p>
+
+      <p class="prose">La tecnología llegó antes que la infraestructura regulatoria y la adopción bancaria. The Economist se equivocó en la fecha, no en el diagnóstico.</p>
+
+      <div class="info-box">
+        <div class="info-box-title">Lo que ha cambiado desde 2018</div>
+        <div class="info-box-list">
+          <div class="info-box-item"><span class="info-box-arrow">→</span><span class="info-box-text">Las stablecoins han madurado. USDC, PYUSD y otras tienen respaldo real en bonos del tesoro americano.</span></div>
+          <div class="info-box-item"><span class="info-box-arrow">→</span><span class="info-box-text">El GENIUS Act en Estados Unidos está creando por primera vez un marco regulatorio serio para stablecoins.</span></div>
+          <div class="info-box-item"><span class="info-box-arrow">→</span><span class="info-box-text">Los bancos y cooperativas de crédito están comenzando a emitir sus propias stablecoins sobre blockchain.</span></div>
+          <div class="info-box-item"><span class="info-box-arrow">→</span><span class="info-box-text">Existen protocolos que permiten una canasta multiemisora de stablecoins convertibles entre sí sin intermediarios.</span></div>
+          <div class="info-box-item"><span class="info-box-arrow">→</span><span class="info-box-text">La velocidad del dinero está a punto de aumentar dramáticamente con la adopción masiva de dinero digital.</span></div>
+        </div>
+      </div>
+
+      <p class="prose">El problema que The Economist identificó en 1988 no solo sigue vigente. Se está acelerando. La velocidad con que los capitales se mueven hoy, amplificada por el dinero digital, hace que las crisis provocadas por el dilema de Triffin lleguen más rápido y sean más violentas que antes.</p>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- PARTE VI -->
+    <section>
+      <div class="tag">Parte VI · La respuesta</div>
+      <h2>El Metal Dollar y las condiciones del Fénix</h2>
+
+      <p class="prose">Existe hoy un protocolo que cumple con las condiciones que The Economist describía en 1988 mejor que cualquier otra propuesta existente. Se llama Metal Dollar, XMD, y es un contrato inteligente público desplegado sobre XPR Network.</p>
+
+      <p class="prose">No se compra. Se acuña. Los bancos y cooperativas depositan sus stablecoins en el contrato y el protocolo emite XMD directamente. No hay empresa que controle el acceso. No hay intermediario que lucre con la emisión. La gobernanza es ejercida por la Metal DAO, una organización descentralizada cuyos miembros votan las decisiones del protocolo.</p>
+
+      <p class="prose">Siempre vale uno. La canasta de stablecoins que lo respalda — USDC, PYUSD, USDP y RLUSD, todas con respaldo en bonos del tesoro americano — garantiza que el XMD no fluctúa. No necesita subir de precio para que la infraestructura escale. No depende de que los especuladores lo compren para tener liquidez.</p>
+
+      <div class="conditions-grid">
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">Estable</div><div class="condition-note">Siempre vale $1.00</div></div></div>
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">Sin permiso</div><div class="condition-note">Cualquiera puede acuñarlo</div></div></div>
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">No se compra</div><div class="condition-note">Se acuña directamente</div></div></div>
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">Descentralizado</div><div class="condition-note">Gobernado por Metal DAO</div></div></div>
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">Elimina Forex</div><div class="condition-note">Conversión dentro del contrato</div></div></div>
+        <div class="condition-card"><div class="condition-check">✓</div><div><div class="condition-label">Infraestructura neutra</div><div class="condition-note">Sin empresa central</div></div></div>
+      </div>
+
+      <p class="prose">Y cuando el euro estable se integre al XMD — algo que Marshall Hayner, CEO de Metallicus, ha anunciado como objetivo — la conversión entre dólares y euros ocurrirá dentro del contrato inteligente. Una operación, sin casas de cambio, sin spreads, sin nadie que cobre por la diferencia.</p>
+
+      <p class="prose">Eso es lo que The Economist describía en 1988. No un cripto especulativo. No una red privada de una empresa americana. Una infraestructura neutral donde el valor fluye libremente entre economías sin que ningún país o empresa capture el poder de decidir quién tiene acceso.</p>
+    </section>
+
+    <div class="divider"><div class="divider-line-left"></div><div class="divider-dot"></div><div class="divider-line-right"></div></div>
+
+    <!-- CONCLUSIÓN -->
+    <section class="closing-border">
+      <div class="tag">Conclusión</div>
+      <h2>El Fénix llegará. La pregunta es cuál.</h2>
+
+      <p class="prose">El mundo necesita el Fénix más que nunca. Las crisis que el dilema de Triffin genera se están acelerando. La velocidad del dinero digital va a amplificar cada desequilibrio monetario. La próxima crisis de divisas va a desarrollarse en días, no en meses. Y cuando llegue, los bancos centrales no van a tener tiempo de reaccionar con las herramientas tradicionales.</p>
+
+      <p class="prose">En ese momento, el mundo va a buscar una alternativa. Y la alternativa que exista y esté funcionando en ese momento va a ser adoptada masivamente, no por convicción ideológica, sino por necesidad práctica.</p>
+
+      <p class="prose">The Economist se equivocó en el año. No se equivocó en el diagnóstico. El problema que describían en 1988 sigue ahí, más urgente que nunca. Y la tecnología para resolverlo, por primera vez en la historia, ya existe.</p>
+
+      <!-- VIDEO YOUTUBE -->
+      <div class="video-section">
+        <div class="tag">VIDEO EXPLICATIVO</div>
+        <h2>Mira el análisis completo en video</h2>
+        <p class="prose">En este video leo el artículo completo y explico en detalle qué predijo The Economist en 1988, qué es el dilema de Triffin, y por qué el Metal Dollar es el verdadero Fénix.</p>
+        <a href="https://youtu.be/aGtB_K-aV3Y" target="_blank" rel="noopener noreferrer" class="video-thumb">
+          <img src="maxresdefault.jpg" alt="El Fénix - Get ready for Metal Dollar" onerror="this.src='https://img.youtube.com/vi/aGtB_K-aV3Y/maxresdefault.jpg'">
+          <div class="video-overlay"></div>
+          <div class="play-btn"><svg viewBox="0 0 24 24" fill="#000" width="28" height="28"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="video-info">
+            <div class="video-label">YOUTUBE — PÚBLICO</div>
+            <div class="video-title">Get Ready for Metal Dollar — El Fénix</div>
+            <div class="video-sub">Ver en YouTube → Gratuito</div>
+          </div>
+        </a>
+        <p class="video-note">Video público disponible en mi canal de YouTube @AllanTDBN</p>
+      </div>
+
+      <div class="final-callout">
+        <div class="final-callout-label">EL FÉNIX</div>
+        <p>No puede ser volátil. Tiene que valer siempre lo mismo, porque su único trabajo es ser el puente por donde fluye el valor entre todas las economías del mundo, y un puente que tiembla no es un puente. No se compra: se acuña. No puede ser centralizado: el día que tiene un portero deja de ser el Fénix. Elimina el mercado de divisas en lugar de acentuarlo. Es infraestructura neutra, como la electricidad, como internet, como el agua. Está ahí, funciona, y nadie lucra con el simple hecho de que la uses.</p>
+        <div class="final-callout-footer">The Economist lo predijo en 1988. La tecnología para construirlo existe hoy.</div>
+      </div>
+
+      <p class="disclaimer">Este análisis es informativo y no constituye asesoría financiera.</p>
+    </section>
+
+  </div><!-- /content -->
+
+</body>
+</html>

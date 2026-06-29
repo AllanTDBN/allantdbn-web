@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El mecanismo de consenso — AllanTDBN</title>
+  <meta name="description" content="El mecanismo de consenso es la decisión arquitectónica más importante de cualquier blockchain. Sin entenderlo, es imposible evaluar qué red puede soportar el sistema financiero global." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0A1628; --card:#0F1E33; --deep:#070F1C;
+      --line:rgba(255,255,255,0.07); --line-gold:rgba(201,168,76,0.22);
+      --gold:#C9A84C; --gold-dim:rgba(201,168,76,0.09);
+      --blue:#2E86DE; --blue-dim:rgba(46,134,222,0.09);
+      --green:#27AE60; --green-dim:rgba(39,174,96,0.09);
+      --red:#E74C3C; --red-dim:rgba(231,76,60,0.09);
+      --yellow:#F1C40F; --yellow-dim:rgba(241,196,15,0.09);
+      --teal:#1ABC9C; --teal-dim:rgba(26,188,156,0.09);
+      --purple:#9B59B6; --purple-dim:rgba(155,89,182,0.09);
+      --text:#F0EDE5; --text2:#A8B4C4; --dim:#546070;
+      --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+      --rainbow:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#27ae60,#2e86de,#9b59b6);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text2); font-family:var(--sans); font-size:16px; line-height:1.75; }
+
+    #prog { position:fixed; top:0; left:0; height:3px; background:var(--rainbow); width:0%; z-index:200; transition:width .1s linear; }
+
+    .hero { position:relative; overflow:hidden; background:var(--deep); padding:88px 32px 72px; text-align:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--rainbow); }
+    .hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+    .hero-inner { position:relative; z-index:1; max-width:820px; margin:0 auto; }
+    .hero-tag { font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; display:inline-block; }
+    .hero h1 { font-size:clamp(24px,4.5vw,50px); font-weight:900; line-height:1.1; color:var(--text); letter-spacing:-.03em; margin-bottom:14px; }
+    .hero h1 em { font-style:normal; color:var(--gold); }
+    .hero-sub { font-size:clamp(15px,2vw,18px); color:var(--text2); line-height:1.75; max-width:640px; margin:0 auto 36px; }
+    .hero-chips { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+    .hero-chip { font-family:var(--mono); font-size:10px; font-weight:700; padding:5px 14px; border-radius:20px; letter-spacing:.08em; }
+    .chip-pow { background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.3); color:var(--red); }
+    .chip-pos { background:rgba(46,134,222,0.1); border:1px solid rgba(46,134,222,0.3); color:var(--blue); }
+    .chip-dpos { background:rgba(241,196,15,0.1); border:1px solid rgba(241,196,15,0.3); color:var(--yellow); }
+    .chip-bft { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); color:var(--gold); }
+    .chip-fba { background:rgba(155,89,182,0.1); border:1px solid rgba(155,89,182,0.3); color:var(--purple); }
+    .chip-snow { background:rgba(26,188,156,0.1); border:1px solid rgba(26,188,156,0.3); color:var(--teal); }
+
+    .wrap { max-width:820px; margin:0 auto; padding:64px 32px 80px; }
+    .sec { margin-bottom:72px; }
+    .sec-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+    .sec h2 { font-size:clamp(20px,3vw,30px); font-weight:800; color:var(--text); line-height:1.2; margin-bottom:24px; letter-spacing:-.02em; }
+    h3 { font-size:17px; font-weight:700; color:var(--text); margin:28px 0 12px; }
+    p { margin-bottom:18px; color:var(--text2); }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text); font-weight:600; }
+    .fn-ref { font-family:var(--mono); font-size:10px; color:var(--gold); font-weight:700; vertical-align:super; text-decoration:none; margin-left:1px; }
+
+    .div { height:1px; background:linear-gradient(90deg,transparent,var(--line-gold),transparent); margin:64px 0; }
+
+    .pull { border-left:3px solid var(--gold); padding:4px 0 4px 24px; margin:28px 0; }
+    .pull p { font-size:18px; font-weight:600; color:var(--text); line-height:1.55; font-style:italic; margin:0; }
+
+    /* INFO BOXES */
+    .info-box { border-radius:8px; padding:24px 28px; margin:28px 0; }
+    .info-gold { background:var(--gold-dim); border:1px solid var(--line-gold); border-left:3px solid var(--gold); }
+    .info-blue { background:var(--blue-dim); border:1px solid rgba(46,134,222,0.2); border-left:3px solid var(--blue); }
+    .info-red { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-left:3px solid var(--red); }
+    .info-teal { background:var(--teal-dim); border:1px solid rgba(26,188,156,0.2); border-left:3px solid var(--teal); }
+    .info-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+    .info-box p { font-size:15px; margin:0; line-height:1.75; }
+
+    /* COMPARISON TABLE */
+    .cmp-table { width:100%; border-collapse:collapse; margin:28px 0; font-size:13px; overflow:hidden; border-radius:8px; border:1px solid var(--line); }
+    .cmp-table th { background:var(--card); color:var(--dim); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); font-weight:600; }
+    .cmp-table td { padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    .cmp-table tr:last-child td { border-bottom:none; }
+    .cmp-table tr:hover td { background:rgba(255,255,255,0.015); }
+    .mech-name { font-weight:700; color:var(--text); font-size:13px; }
+    .mech-exp { font-size:11px; color:var(--dim); margin-top:2px; font-family:var(--mono); }
+    .badge { display:inline-block; padding:3px 8px; border-radius:4px; font-family:var(--mono); font-size:10px; font-weight:700; }
+    .b-red { background:rgba(231,76,60,0.15); color:#E8A09A; }
+    .b-yellow { background:rgba(241,196,15,0.15); color:#F1C40F; }
+    .b-green { background:rgba(39,174,96,0.15); color:#7ECDA0; }
+    .b-teal { background:rgba(26,188,156,0.2); color:var(--teal); border:1px solid rgba(26,188,156,0.3); }
+    .snow-row td { background:rgba(26,188,156,0.04); }
+
+    /* MECHANISM CARDS */
+    .mech-card { border-radius:8px; overflow:hidden; margin:28px 0; border:1px solid var(--line); }
+    .mech-header { padding:20px 24px; display:flex; align-items:center; gap:16px; border-bottom:1px solid var(--line); }
+    .mech-num { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--dim); }
+    .mech-title { font-size:18px; font-weight:800; color:var(--text); }
+    .mech-subtitle { font-size:12px; color:var(--dim); margin-top:2px; font-family:var(--mono); }
+    .mech-body { padding:20px 24px; }
+    .mech-body p { font-size:15px; margin-bottom:14px; }
+    .pros-cons { display:flex; gap:2px; flex-wrap:wrap; margin-top:16px; }
+    .pros, .cons { flex:1 1 240px; padding:16px 18px; border-radius:6px; }
+    .pros { background:var(--green-dim); border:1px solid rgba(39,174,96,0.15); }
+    .cons { background:var(--red-dim); border:1px solid rgba(231,76,60,0.15); }
+    .pc-title { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; }
+    .pros .pc-title { color:var(--green); }
+    .cons .pc-title { color:var(--red); }
+    .pc-item { display:flex; gap:8px; font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:6px; }
+    .pc-item:last-child { margin-bottom:0; }
+    .pc-icon { flex-shrink:0; font-weight:700; }
+    .pros .pc-icon { color:var(--green); }
+    .cons .pc-icon { color:var(--red); }
+
+    /* SNOW CARD SPECIAL */
+    .snow-card { border:2px solid var(--teal); box-shadow:0 0 32px rgba(26,188,156,0.1); }
+    .snow-header { background:linear-gradient(135deg,rgba(26,188,156,0.12),rgba(26,188,156,0.04)); border-bottom:1px solid rgba(26,188,156,0.2); }
+    .snow-badge { font-family:var(--mono); font-size:9px; font-weight:700; padding:3px 10px; border-radius:10px; background:rgba(26,188,156,0.15); border:1px solid rgba(26,188,156,0.3); color:var(--teal); letter-spacing:.08em; }
+    .snow-extras { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2px; margin-top:16px; }
+    .snow-extra { background:rgba(26,188,156,0.05); border:1px solid rgba(26,188,156,0.15); border-radius:6px; padding:14px 16px; }
+    .snow-extra-label { font-family:var(--mono); font-size:10px; color:var(--teal); font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em; }
+    .snow-extra-text { font-size:13px; color:var(--text2); line-height:1.6; }
+
+    /* TRILEMA SVG */
+    .trilema-wrap { display:flex; justify-content:center; margin:32px 0; }
+
+    /* BYZANTINE TABLE */
+    .byz-table { width:100%; border-collapse:collapse; margin:28px 0; font-size:13px; border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+    .byz-table th { background:var(--card); color:var(--dim); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); }
+    .byz-table td { padding:12px 14px; border-bottom:1px solid var(--line); font-size:13px; color:var(--text2); vertical-align:top; line-height:1.6; }
+    .byz-table tr:last-child td { border-bottom:none; }
+    .byz-mech { font-weight:700; color:var(--text); }
+
+    /* FOUR REASONS */
+    .reasons { display:flex; flex-direction:column; gap:2px; margin:28px 0; }
+    .reason { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--teal); border-radius:6px; padding:20px 24px; display:flex; gap:20px; align-items:flex-start; }
+    .reason-n { font-family:var(--mono); font-size:24px; font-weight:900; color:var(--teal); flex-shrink:0; line-height:1; }
+    .reason-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:6px; }
+    .reason-text { font-size:14px; color:var(--text2); line-height:1.7; }
+
+    /* FINAL */
+    .final { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line-gold); border-radius:8px; padding:48px 40px; margin-top:64px; text-align:center; }
+    .final::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--rainbow); }
+    .final-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; }
+    .final p { font-size:clamp(15px,2.5vw,19px); color:var(--text); line-height:1.75; max-width:640px; margin:0 auto 16px; font-weight:500; }
+    .final p:last-child { margin-bottom:0; }
+    .final strong { color:var(--gold); }
+
+    /* FOOTNOTES */
+    .footnotes { border-top:1px solid var(--line); padding-top:48px; margin-top:64px; }
+    .fn-title { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:28px; }
+    .fn { display:flex; gap:16px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+    .fn:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .fn-n { flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); padding-top:2px; }
+    .fn-text { font-size:13px; color:var(--dim); line-height:1.65; }
+    .fn-text a { color:var(--gold); text-decoration:underline; text-underline-offset:3px; }
+    .disclaimer { text-align:center; padding:32px; font-size:12px; color:var(--dim); border-top:1px solid var(--line); margin-top:48px; }
+
+    @media(max-width:600px){ .hero,.wrap{padding-left:20px;padding-right:20px} .final{padding:32px 20px} .cmp-table{font-size:11px} .cmp-table th,.cmp-table td{padding:8px 10px} }
+
+    /* mech color borders */
+    .pow-card { border-top:2px solid var(--red); }
+    .pos-card { border-top:2px solid var(--blue); }
+    .dpos-card { border-top:2px solid var(--yellow); }
+    .bft-card { border-top:2px solid var(--gold); }
+    .fba-card { border-top:2px solid var(--purple); }
+  </style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Infraestructura blockchain · Análisis técnico</div>
+    <h1>El mecanismo de consenso:<br><em>la decisión que lo determina todo</em></h1>
+    <p class="hero-sub">No es un detalle técnico menor. Es la decisión arquitectónica más importante de cualquier blockchain. Determina su velocidad, su descentralización, su escalabilidad y su finality. Y sin entenderla, es imposible evaluar qué red puede soportar el sistema financiero global.</p>
+    <div class="hero-chips">
+      <span class="hero-chip chip-pow">Proof of Work</span>
+      <span class="hero-chip chip-pos">Proof of Stake</span>
+      <span class="hero-chip chip-dpos">DPoS</span>
+      <span class="hero-chip chip-bft">BFT Clásico</span>
+      <span class="hero-chip chip-fba">FBA</span>
+      <span class="hero-chip chip-snow">Snow / Snowman</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- I: POR QUÉ IMPORTA -->
+  <section class="sec" id="importa">
+    <div class="sec-tag">I — El fundamento</div>
+    <h2>Por qué el mecanismo de consenso lo determina todo</h2>
+
+    <p>Antes de analizar qué blockchain puede soportar el sistema financiero global, hay que entender el problema que todos los mecanismos de consenso intentan resolver. No es un problema técnico arbitrario. Es uno de los problemas más antiguos de la coordinación humana, ahora formalizado matemáticamente.</p>
+
+    <h3>El problema del doble gasto</h3>
+    <p>En cualquier sistema de dinero digital, el problema fundamental es este: si el dinero es información, ¿qué impide que alguien copie esa información y la gaste dos veces? Con papel físico el problema no existe porque al entregar el billete ya no lo tienes. Con información digital, copiar es trivial. El mecanismo de consenso es la solución técnica a ese problema: es el mecanismo por el cual todos los participantes de una red se ponen de acuerdo sobre qué transacciones son válidas y en qué orden ocurrieron, sin necesidad de confiar en ninguna autoridad central.<a href="#fn1" class="fn-ref">[1]</a></p>
+
+    <h3>El problema de los Generales Bizantinos</h3>
+    <p>En 1982, Leslie Lamport, Robert Shostak y Marshall Pease formalizaron matemáticamente el problema de coordinación en sistemas distribuidos con el paper "The Byzantine Generals Problem". El problema es el siguiente: varios generales rodean una ciudad enemiga y deben coordinar el ataque. Solo si todos atacan simultáneamente ganarán. Algunos generales pueden ser traidores que enviarán mensajes contradictorios. ¿Cómo pueden los generales leales ponerse de acuerdo ignorando a los traidores?<a href="#fn2" class="fn-ref">[2]</a></p>
+
+    <div class="info-box info-gold">
+      <div class="info-tag" style="color:var(--gold)">La conexión con blockchain</div>
+      <p>En una blockchain, los generales son los nodos validadores. Los traidores son los nodos maliciosos o defectuosos. La ciudad es el estado correcto del ledger. El mecanismo de consenso es el protocolo que permite a los nodos honestos ponerse de acuerdo aunque existan nodos maliciosos. Todo mecanismo de consenso moderno es una solución al problema de los Generales Bizantinos.</p>
+    </div>
+
+    <h3>El trilema de blockchain</h3>
+    <p>Vitalik Buterin, fundador de Ethereum, identificó que ningún sistema blockchain puede optimizar simultáneamente tres propiedades: descentralización, seguridad y escalabilidad. Cualquier diseño que mejore dos de ellas necesariamente sacrifica la tercera. Eso se conoce como el trilema de blockchain.</p>
+
+    <div class="trilema-wrap">
+      <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px;height:auto">
+        <defs>
+          <linearGradient id="tg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E74C3C" stop-opacity=".3"/><stop offset="100%" stop-color="#E74C3C" stop-opacity=".05"/></linearGradient>
+          <linearGradient id="tg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#27AE60" stop-opacity=".3"/><stop offset="100%" stop-color="#27AE60" stop-opacity=".05"/></linearGradient>
+          <linearGradient id="tg3" x1=".5" y1="0" x2=".5" y2="1"><stop offset="0%" stop-color="#2E86DE" stop-opacity=".3"/><stop offset="100%" stop-color="#2E86DE" stop-opacity=".05"/></linearGradient>
+        </defs>
+        <rect width="480" height="380" fill="#070F1C" rx="12"/>
+        <!-- Triangle -->
+        <polygon points="240,40 60,320 420,320" fill="rgba(201,168,76,0.04)" stroke="rgba(201,168,76,0.3)" stroke-width="1.5"/>
+        <!-- Inner lines -->
+        <line x1="240" y1="40" x2="240" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="60" y1="320" x2="330" y2="180" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="420" y1="320" x2="150" y2="180" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <!-- Vertices -->
+        <circle cx="240" cy="40" r="28" fill="rgba(46,134,222,0.15)" stroke="rgba(46,134,222,0.4)" stroke-width="1.5"/>
+        <text x="240" y="35" text-anchor="middle" fill="#2E86DE" font-family="Inter,sans-serif" font-size="10" font-weight="700">SEGURIDAD</text>
+        <text x="240" y="48" text-anchor="middle" fill="rgba(46,134,222,0.7)" font-family="monospace" font-size="9">Security</text>
+        <circle cx="60" cy="320" r="28" fill="rgba(231,76,60,0.15)" stroke="rgba(231,76,60,0.4)" stroke-width="1.5"/>
+        <text x="60" y="315" text-anchor="middle" fill="#E74C3C" font-family="Inter,sans-serif" font-size="9" font-weight="700">DESCEN-</text>
+        <text x="60" y="327" text-anchor="middle" fill="#E74C3C" font-family="Inter,sans-serif" font-size="9" font-weight="700">TRALIZ.</text>
+        <circle cx="420" cy="320" r="28" fill="rgba(39,174,96,0.15)" stroke="rgba(39,174,96,0.4)" stroke-width="1.5"/>
+        <text x="420" y="315" text-anchor="middle" fill="#27AE60" font-family="Inter,sans-serif" font-size="9" font-weight="700">ESCALA-</text>
+        <text x="420" y="327" text-anchor="middle" fill="#27AE60" font-family="Inter,sans-serif" font-size="9" font-weight="700">BILIDAD</text>
+        <!-- Labels for who sacrifices what -->
+        <text x="130" y="170" text-anchor="middle" fill="rgba(231,76,60,0.6)" font-family="monospace" font-size="9">Bitcoin</text>
+        <text x="130" y="182" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">sacrifica escala</text>
+        <text x="350" y="170" text-anchor="middle" fill="rgba(241,196,15,0.6)" font-family="monospace" font-size="9">DPoS</text>
+        <text x="350" y="182" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">sacrifica descent.</text>
+        <text x="240" y="295" text-anchor="middle" fill="rgba(155,89,182,0.6)" font-family="monospace" font-size="9">BFT clásico</text>
+        <text x="240" y="307" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">sacrifica escala</text>
+        <!-- Snowman badge -->
+        <rect x="170" y="175" width="140" height="36" rx="18" fill="rgba(26,188,156,0.15)" stroke="rgba(26,188,156,0.4)" stroke-width="1.5"/>
+        <text x="240" y="189" text-anchor="middle" fill="#1ABC9C" font-family="Inter,sans-serif" font-size="11" font-weight="800">❄ Snowman</text>
+        <text x="240" y="203" text-anchor="middle" fill="rgba(26,188,156,0.8)" font-family="monospace" font-size="9">aproxima la solución</text>
+        <text x="240" y="350" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-family="monospace" font-size="9" letter-spacing="2">EL TRILEMA DE BLOCKCHAIN</text>
+      </svg>
+    </div>
+
+    <h3>Qué es finality y por qué es crítica para el sistema financiero</h3>
+    <p>La finality es el momento a partir del cual una transacción es irreversible. En Bitcoin, no existe finality absoluta: siempre existe la posibilidad teórica de que una cadena más larga reemplace la actual. La convención es esperar 6 confirmaciones, lo que tarda aproximadamente una hora. En el sistema financiero, esto es inaceptable. Cuando un banco liquida un pago interbancario, esa liquidación es definitiva e irreversible en el momento en que ocurre. <strong>Un mecanismo de consenso sin finality definitiva no puede ser la base del sistema financiero global.</strong><a href="#fn3" class="fn-ref">[3]</a></p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- II: TABLA COMPARATIVA -->
+  <section class="sec" id="tabla">
+    <div class="sec-tag">II — Visión general</div>
+    <h2>Los seis mecanismos: tabla comparativa</h2>
+    <p>La siguiente tabla compara los principales mecanismos de consenso en las dimensiones más relevantes para el sistema financiero. Los colores indican adecuación: verde es adecuado, amarillo es parcial o limitado, rojo es inadecuado.</p>
+
+    <div style="overflow-x:auto">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Mecanismo</th>
+            <th>TPS</th>
+            <th>Finality</th>
+            <th>Descent.</th>
+            <th>Escala</th>
+            <th>Energía</th>
+            <th>Banca</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="mech-name">Proof of Work</div><div class="mech-exp">Bitcoin · Litecoin</div></td>
+            <td><span class="badge b-red">~7</span></td>
+            <td><span class="badge b-red">~60 min</span></td>
+            <td><span class="badge b-green">Alta</span></td>
+            <td><span class="badge b-red">Muy baja</span></td>
+            <td><span class="badge b-red">Muy alto</span></td>
+            <td><span class="badge b-red">No</span></td>
+          </tr>
+          <tr>
+            <td><div class="mech-name">Proof of Stake</div><div class="mech-exp">Ethereum · Cardano</div></td>
+            <td><span class="badge b-yellow">15–30</span></td>
+            <td><span class="badge b-yellow">12–15 min</span></td>
+            <td><span class="badge b-yellow">Media</span></td>
+            <td><span class="badge b-yellow">Media</span></td>
+            <td><span class="badge b-green">Bajo</span></td>
+            <td><span class="badge b-yellow">Parcial</span></td>
+          </tr>
+          <tr>
+            <td><div class="mech-name">Delegated PoS</div><div class="mech-exp">EOS · TRON</div></td>
+            <td><span class="badge b-green">1.000+</span></td>
+            <td><span class="badge b-green">~3 seg</span></td>
+            <td><span class="badge b-red">Muy baja</span></td>
+            <td><span class="badge b-green">Alta</span></td>
+            <td><span class="badge b-green">Bajo</span></td>
+            <td><span class="badge b-red">No</span></td>
+          </tr>
+          <tr>
+            <td><div class="mech-name">BFT Clásico</div><div class="mech-exp">Hyperledger · Cosmos</div></td>
+            <td><span class="badge b-yellow">1.000+</span></td>
+            <td><span class="badge b-green">Inmediata</span></td>
+            <td><span class="badge b-red">Baja</span></td>
+            <td><span class="badge b-red">Muy baja</span></td>
+            <td><span class="badge b-green">Bajo</span></td>
+            <td><span class="badge b-yellow">Parcial</span></td>
+          </tr>
+          <tr>
+            <td><div class="mech-name">FBA</div><div class="mech-exp">XRPL · Stellar</div></td>
+            <td><span class="badge b-green">1.500</span></td>
+            <td><span class="badge b-green">3–5 seg</span></td>
+            <td><span class="badge b-yellow">Media/baja</span></td>
+            <td><span class="badge b-yellow">Media</span></td>
+            <td><span class="badge b-green">Bajo</span></td>
+            <td><span class="badge b-yellow">Parcial</span></td>
+          </tr>
+          <tr class="snow-row">
+            <td><div class="mech-name" style="color:var(--teal)">❄ Snow / Snowman</div><div class="mech-exp">Avalanche · Metal Blockchain</div></td>
+            <td><span class="badge b-teal">4.500+</span></td>
+            <td><span class="badge b-teal">&lt;2 seg</span></td>
+            <td><span class="badge b-teal">Muy alta</span></td>
+            <td><span class="badge b-teal">Muy alta</span></td>
+            <td><span class="badge b-teal">Muy bajo</span></td>
+            <td><span class="badge b-teal">Sí</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- III: ANÁLISIS INDIVIDUAL -->
+  <section class="sec" id="analisis">
+    <div class="sec-tag">III — Análisis individual</div>
+    <h2>Cada mecanismo, sus fortalezas y sus límites</h2>
+
+    <!-- PoW -->
+    <div class="mech-card pow-card">
+      <div class="mech-header">
+        <div>
+          <div class="mech-num">01 · <span style="color:var(--red)">Proof of Work</span></div>
+          <div class="mech-title">El consenso Nakamoto</div>
+          <div class="mech-subtitle">Bitcoin · Litecoin · Dogecoin</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>Satoshi Nakamoto publicó el paper de Bitcoin en 2008 resolviendo el problema del doble gasto en una red pública sin autoridad central. El mecanismo es elegante: los nodos compiten resolviendo un problema matemático costoso computacionalmente. El ganador añade el bloque y recibe la recompensa. La cadena válida es siempre la que tiene más trabajo acumulado.<a href="#fn1" class="fn-ref">[1]</a></p>
+        <p>En la literatura académica, el consenso Nakamoto se distingue de la familia BFT por ser probabilístico y tolerante a participantes anónimos. Cualquiera puede unirse sin identificarse. La seguridad viene del costo energético real: atacar la red requiere gastar más electricidad que todos los mineros honestos juntos.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>El más probado: 15+ años sin caídas significativas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Resistencia Sybil por costo energético real</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Participación abierta y anónima</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Seguridad matemáticamente demostrable</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones para banca</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>7 TPS — SWIFT procesa 45 millones de mensajes diarios</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Finality probabilística ~60 min, inaceptable para liquidación</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Consumo energético masivo, incompatible con ESG institucional</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Sin smart contracts robustos en implementaciones principales</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PoS -->
+    <div class="mech-card pos-card">
+      <div class="mech-header">
+        <div>
+          <div class="mech-num">02 · <span style="color:var(--blue)">Proof of Stake</span></div>
+          <div class="mech-title">El stake como garantía</div>
+          <div class="mech-subtitle">Ethereum (post-Merge) · Cardano · Solana</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>En lugar de competir con poder computacional, los validadores depositan tokens como garantía. Son seleccionados proporcionalmente a su stake. Si actúan maliciosamente, pierden su depósito, mecanismo llamado slashing. Ethereum migró a PoS en septiembre de 2022 en lo que se conoce como The Merge, reduciendo el consumo energético de la red en más del 99%.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Eficiencia energética radicalmente superior a PoW</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Mayor throughput: 15–30 TPS en L1, miles con L2</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Ecosistema de smart contracts más desarrollado</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Seguridad económica real por slashing</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones para banca</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Finality de 12–15 minutos, no inmediata</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Gas volátil: costos impredecibles por transacción</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Reorganizaciones posibles en primeros slots</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Tres pools controlan más del 50% del stake total</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Sin compliance nativo KYC/AML/BSA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DPoS -->
+    <div class="mech-card dpos-card">
+      <div class="mech-header">
+        <div>
+          <div class="mech-num">03 · <span style="color:var(--yellow)">Delegated Proof of Stake</span></div>
+          <div class="mech-title">La democracia representativa blockchain</div>
+          <div class="mech-subtitle">EOS · TRON · BitShares</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>Los holders de tokens votan para elegir un número pequeño de delegados, típicamente 21 en EOS, que son los únicos que validan transacciones. La coordinación entre pocos nodos es trivial, lo que permite velocidades muy altas. Pero esa eficiencia tiene un costo estructural que lo hace inaceptable para infraestructura financiera crítica.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Muy rápido: miles de TPS posibles</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Finality en segundos por pocos validadores</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Bajo consumo energético</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones para banca</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>21 validadores es un oligopolio, no una red descentralizada</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Reversión de transacciones documentada en EOS en 2018</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Los grandes holders controlan quién valida</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Punto único de fallo regulatorio: basta presionar a 11 de 21 nodos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BFT -->
+    <div class="mech-card bft-card">
+      <div class="mech-header">
+        <div>
+          <div class="mech-num">04 · <span style="color:var(--gold)">BFT Clásico / PBFT</span></div>
+          <div class="mech-title">Tolerancia bizantina tradicional</div>
+          <div class="mech-subtitle">Hyperledger Fabric · Tendermint · Cosmos</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>Basado en el paper de Lamport, Shostak y Pease de 1982.<a href="#fn2" class="fn-ref">[2]</a> El sistema puede tolerar hasta un tercio de nodos maliciosos y aún así alcanzar consenso. Cada nodo se comunica con todos los demás en múltiples rondas. La finality es inmediata y matemáticamente garantizada. Es el mecanismo preferido para blockchains empresariales permisionadas porque una transacción confirmada es absolutamente irreversible.</p>
+        <div class="info-box info-red" style="margin:16px 0">
+          <div class="info-tag" style="color:var(--red)">El problema fundamental</div>
+          <p>La comunicación crece con el <strong>cuadrado del número de nodos</strong>. Con 100 validadores: 10.000 mensajes por ronda. Con 1.000 validadores: 1.000.000 de mensajes. El sistema colapsa bajo su propio peso. En la práctica, el BFT clásico funciona bien hasta 100 nodos y se vuelve inoperable más allá.</p>
+        </div>
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Finality inmediata y definitiva, matemáticamente garantizada</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Tolerancia a 1/3 de nodos maliciosos demostrada formalmente</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Adecuado para redes permisionadas pequeñas</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones para banca</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Comunicación O(n²): colapsa con más de 100 validadores</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>No escala a redes globales descentralizadas</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Requiere participantes conocidos: incompatible con redes abiertas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FBA -->
+    <div class="mech-card fba-card">
+      <div class="mech-header">
+        <div>
+          <div class="mech-num">05 · <span style="color:var(--purple)">Federated Byzantine Agreement</span></div>
+          <div class="mech-title">Confianza federada</div>
+          <div class="mech-subtitle">XRP Ledger · Stellar</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>Cada nodo define su propia lista de nodos de confianza. En XRPL se llama UNL (Unique Node List). No necesitas confiar en todos los validadores de la red, solo en los de tu lista. El consenso emerge cuando los conjuntos de confianza se solapan suficientemente. Es más rápido que PoW y más escalable que el BFT clásico, pero tiene una vulnerabilidad estructural documentada.</p>
+        <div class="info-box info-blue" style="margin:16px 0">
+          <div class="info-tag" style="color:var(--blue)">La centralización encubierta</div>
+          <p>Ripple publica y recomienda la UNL por defecto. La mayoría de los validadores del XRPL usan esa lista sin modificar. Técnicamente cualquiera puede elegir su propia UNL, pero en la práctica la red depende de la lista de Ripple. Eso crea una dependencia centralizada que ninguna institución financiera regulada puede aceptar como infraestructura crítica.</p>
+        </div>
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Rápido: 3–5 segundos de confirmación</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Eficiente energéticamente</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>No requiere conocimiento global de todos los validadores</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones para banca</div>
+            <div style="font-size:12px;color:var(--dim);margin-bottom:10px;font-style:italic;padding:6px 0;border-bottom:1px solid var(--line)">Nota: las siguientes limitaciones se refieren específicamente a la implementación del XRPL. Stellar usa el mismo mecanismo FBA con diferente configuración y sin algunas de estas restricciones.</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>UNL controlada de facto por Ripple Inc.</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>Fork posible si los conjuntos de confianza divergen</div>
+            <div class="pc-item"><span class="pc-icon">✕</span>La seguridad matemática del FBA depende de que los conjuntos de confianza de los validadores se solapan suficientemente. Si esos conjuntos divergen, el sistema puede llegar a conclusiones contradictorias sin que haya ningún actor malicioso. No existe una prueba formal que garantice la seguridad bajo todos los modelos de adversario posibles, a diferencia del BFT clásico donde esa prueba sí existe.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Las dos familias -->
+    <div class="info-box info-gold" style="margin:36px 0">
+      <div class="info-tag" style="color:var(--gold)">Las dos grandes familias y la tercera vía</div>
+      <p>En la literatura académica de blockchain existen dos familias de consenso. La <strong>familia Nakamoto</strong>: probabilística, tolerante a participantes anónimos, finality eventual. La <strong>familia BFT</strong>: determinista, requiere participantes conocidos o identificables, finality inmediata. Ambas tienen limitaciones insuperables para el sistema financiero global: la primera carece de finality definitiva; la segunda no escala porque su algoritmo requiere que cada nodo se comunique con todos los demás en cada ronda de consenso. El número de mensajes crece con el cuadrado del número de nodos: 10 validadores generan 100 mensajes por ronda, 100 validadores generan 10.000, 1.000 validadores generan 1.000.000. El sistema colapsa matemáticamente cuando la red supera los 100 validadores aproximadamente, lo que la hace inviable como infraestructura financiera global descentralizada. <strong>Snowman es la tercera familia</strong>: combina la apertura de Nakamoto con la finality rápida del BFT, resolviendo el trilema por primera vez en producción real.</p>
+    </div>
+
+    <!-- SNOWMAN -->
+    <div class="mech-card snow-card">
+      <div class="snow-header mech-header">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+            <div class="mech-num" style="color:var(--teal)">06 · Snow / Snowman</div>
+            <span class="snow-badge">LA TERCERA FAMILIA</span>
+          </div>
+          <div class="mech-title" style="color:var(--teal)">Muestreo aleatorio probabilístico</div>
+          <div class="mech-subtitle">Avalanche · Metal Blockchain</div>
+        </div>
+      </div>
+      <div class="mech-body">
+        <p>El paper "Snow: A Simple Yet Powerful Consensus Protocol" fue publicado en 2020 por el equipo de Ava Labs bajo el pseudónimo Team Rocket.<a href="#fn4" class="fn-ref">[4]</a> El mecanismo es conceptualmente diferente a todo lo anterior: en lugar de comunicación global o listas fijas de confianza, cada validador muestrea aleatoriamente un subconjunto pequeño de sus pares, típicamente 20 nodos, y pregunta su preferencia sobre el estado actual. Si una supermayoría del subconjunto está de acuerdo, el validador actualiza su preferencia. Este proceso se repite múltiples veces hasta que toda la red converge probabilísticamente.</p>
+        <p><strong>Snowman</strong> es la variante lineal de Snow, optimizada para blockchains con bloques en cadena secuencial. Es el mecanismo que usa Metal Blockchain.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pc-title">Fortalezas</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Comunicación sublineal: miles de validadores sin degradación</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Finality en menos de 2 segundos, irreversible</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Seguridad probabilística con garantías matemáticas fuertes</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Sin líder fijo: sin punto único de fallo</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>Participación abierta como Nakamoto + finality rápida como BFT</div>
+            <div class="pc-item"><span class="pc-icon">✓</span>4.500+ TPS en cadena principal</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Limitaciones honestas</div>
+            <div class="pc-item"><span class="pc-icon">→</span>Mecanismo más reciente: 4 años en producción vs 15 de Bitcoin</div>
+            <div class="pc-item"><span class="pc-icon">→</span>A diferencia del Proof of Work donde un minero puede entrar y salir de la red sin afectar el consenso, Snowman requiere que los validadores estén disponibles de forma continua. Un validador que se desconecta frecuentemente no puede ser muestreado por sus pares y queda excluido efectivamente del proceso de consenso mientras esté offline. Esto es un requisito operativo más exigente que el de los mecanismos de minería.</div>
+            <div class="pc-item"><span class="pc-icon">→</span>El protocolo Snowman requiere calibrar correctamente dos parámetros clave: el tamaño del subconjunto de nodos que cada validador muestrea en cada ronda, y el número de rondas consecutivas de acuerdo necesarias antes de considerar una decisión final. Si esos parámetros se configuran mal, las garantías matemáticas de seguridad se debilitan. Metal Blockchain usa la parametrización al 80% en lugar del 67% estándar de Avalanche, precisamente para dar mayor margen de seguridad en contextos institucionales.</div>
+          </div>
+        </div>
+
+        <div class="snow-extras">
+          <div class="snow-extra">
+            <div class="snow-extra-label">Subredes soberanas</div>
+            <div class="snow-extra-text">Metal Blockchain permite escala horizontal indefinida. Cada institución tiene su propia subred con sus propias reglas, validadores y compliance local, conectada a la red principal.</div>
+          </div>
+          <div class="snow-extra">
+            <div class="snow-extra-label">Compliance nativo</div>
+            <div class="snow-extra-text">BSA, KYC/AML e ISO 20022 integrados desde el diseño del protocolo base. No como parche posterior. No como capa externa. En el código desde el primer día.</div>
+          </div>
+          <div class="snow-extra">
+            <div class="snow-extra-label">Identidad digital WebAuth</div>
+            <div class="snow-extra-text">Identidad on-chain nativa sin wallet Web3 compleja. Nombre de usuario y autenticación estándar W3C. Las instituciones saben con quién están transaccionando.</div>
+          </div>
+          <div class="snow-extra">
+            <div class="snow-extra-label">FedNow certificado</div>
+            <div class="snow-extra-text">Metallicus es proveedor certificado del sistema de pagos en tiempo real de la Reserva Federal americana. No es marketing. Es una certificación operativa verificable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- IV: GENERALES BIZANTINOS APLICADO -->
+  <section class="sec" id="generales">
+    <div class="sec-tag">IV — Aplicación práctica</div>
+    <h2>Los Generales Bizantinos en el sistema financiero: cómo resuelve cada mecanismo el problema real</h2>
+
+    <p>Imaginemos el escenario concreto que el sistema financiero global necesita resolver: diez bancos centrales de distintos países, con distintas regulaciones y sin confianza mutua, deben coordinarse para liquidar pagos transfronterizos en tiempo real. ¿Cómo resuelve ese problema cada mecanismo?</p>
+
+    <div style="overflow-x:auto">
+      <table class="byz-table">
+        <thead>
+          <tr>
+            <th style="width:160px">Mecanismo</th>
+            <th>¿Puede coordinar 10 bancos centrales en tiempo real?</th>
+            <th>El problema específico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="byz-mech" style="color:var(--red)">PoW</span></td>
+            <td><span class="badge b-red">No</span></td>
+            <td>Una hora de espera por transacción. Imposible para liquidación interbancaria en tiempo real.</td>
+          </tr>
+          <tr>
+            <td><span class="byz-mech" style="color:var(--blue)">PoS</span></td>
+            <td><span class="badge b-yellow">Parcialmente</span></td>
+            <td>15 minutos de finality y gas volátil. Los bancos no pueden operar con costos impredecibles ni esperar un cuarto de hora por confirmación.</td>
+          </tr>
+          <tr>
+            <td><span class="byz-mech" style="color:var(--yellow)">DPoS</span></td>
+            <td><span class="badge b-red">No</span></td>
+            <td>21 validadores que pueden ser presionados o comprometidos. Un banco central no puede depender de una infraestructura con 21 puntos de fallo.</td>
+          </tr>
+          <tr>
+            <td><span class="byz-mech" style="color:var(--gold)">BFT Clásico</span></td>
+            <td><span class="badge b-yellow">Solo en redes pequeñas</span></td>
+            <td>Funciona perfectamente con 10 bancos centrales. El problema es que no puede escalar a los miles de instituciones que eventualmente participarían del sistema global.</td>
+          </tr>
+          <tr>
+            <td><span class="byz-mech" style="color:var(--purple)">FBA</span></td>
+            <td><span class="badge b-yellow">Con dependencias</span></td>
+            <td>Rápido, pero los bancos centrales tendrían que depender de la UNL de Ripple. Geopolíticamente inaceptable para bancos centrales de Asia, Europa o América Latina.</td>
+          </tr>
+          <tr style="background:rgba(26,188,156,0.04)">
+            <td><span class="byz-mech" style="color:var(--teal)">❄ Snowman</span></td>
+            <td><span class="badge b-teal">Sí, y a escala global</span></td>
+            <td>Finality en 2 segundos. Miles de validadores sin degradación. Cada banco central puede operar su propia subred soberana con sus propias reglas regulatorias, conectada a la red principal. Sin dependencia de ninguna empresa privada.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- V: POR QUÉ SNOWMAN -->
+  <section class="sec" id="snowman">
+    <div class="sec-tag">V — La conclusión técnica</div>
+    <h2>Por qué el sistema financiero global necesita Snowman específicamente</h2>
+    <p>No es suficiente con ser rápido. No es suficiente con ser seguro. El sistema financiero global tiene cuatro requisitos simultáneos que ningún mecanismo anterior podía cumplir todos al mismo tiempo.</p>
+
+    <div class="reasons">
+      <div class="reason">
+        <div class="reason-n">01</div>
+        <div>
+          <div class="reason-title">Finality irreversible en segundos para liquidación bancaria</div>
+          <div class="reason-text">Una transacción bancaria confirmada es legalmente irreversible. El BIS establece que los sistemas de liquidación de alto valor deben tener finality definitiva.<a href="#fn3" class="fn-ref">[3]</a> Snowman alcanza finality en menos de 2 segundos con garantías probabilísticas matemáticamente demostradas. Ningún mecanismo anterior combinaba velocidad y finality definitiva a escala.</div>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="reason-n">02</div>
+        <div>
+          <div class="reason-title">Escala horizontal indefinida con subredes soberanas</div>
+          <div class="reason-text">Metal Blockchain implementa el modelo de subredes de Snowman para permitir que cada institución tenga su propio espacio regulatorio soberano, conectado a la red principal. Un banco en Japón con regulación japonesa, una cooperativa en Texas con cumplimiento BSA, un banco central en Europa con sus propias reglas: todos en la misma infraestructura, cada uno en su propia subred. Eso no es posible con ningún otro mecanismo en producción hoy.<a href="#fn5" class="fn-ref">[5]</a></div>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="reason-n">03</div>
+        <div>
+          <div class="reason-title">Miles de validadores sin degradación para descentralización real</div>
+          <div class="reason-text">El BFT clásico colapsa con más de 100 validadores. El DPoS tiene 21. XRPL depende de la UNL de Ripple. Snowman mantiene su rendimiento con miles de validadores porque la comunicación es sublineal. Eso es lo que permite descentralización real a escala global: cualquier institución puede validar sin que su participación degrade el sistema. Avalanche opera hoy con más de 1.500 validadores con alta eficiencia.</div>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="reason-n">04</div>
+        <div>
+          <div class="reason-title">Compliance nativo que ningún otro mecanismo tiene desde el diseño</div>
+          <div class="reason-text">Metal Blockchain fue construido con BSA compliance, KYC/AML, ISO 20022 e identidad digital WebAuth integrados en el protocolo base desde el primer día. No son parches posteriores. No son capas externas. Son parte del diseño original. XRP añadió KYC/AML al protocolo en septiembre de 2025, trece años después de su creación. La diferencia entre diseño y parche no es cosmética: es la diferencia entre una infraestructura construida para instituciones reguladas y una adaptada después del hecho.<a href="#fn6" class="fn-ref">[6]</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CONCLUSIÓN -->
+  <section class="sec">
+    <div class="sec-tag">VI — Conclusión</div>
+    <h2>La pregunta correcta no es si Metal Blockchain puede. Es si algún otro puede.</h2>
+
+    <p>Después de analizar los seis mecanismos de consenso principales, la conclusión técnica no requiere fe en ningún proyecto ni en ningún equipo. Se deduce de las propiedades de cada mecanismo.</p>
+
+    <p>PoW no puede por velocidad y finality. PoS no puede por finality lenta y gas volátil. DPoS no puede por centralización extrema. BFT clásico no puede por incapacidad de escalar. FBA no puede por dependencia centralizada encubierta en la práctica.</p>
+
+    <p>Snowman, implementado en Metal Blockchain, es el único mecanismo en producción hoy que combina finality en segundos, escala sublineal con miles de validadores, apertura sin permiso, y compliance institucional nativo. No es el mecanismo más antiguo ni el más conocido. Es el más adecuado para el caso de uso específico más importante de nuestra generación: la infraestructura del sistema financiero global.</p>
+
+    <div class="final">
+      <div class="final-tag">La conclusión del análisis técnico</div>
+      <p>Los mecanismos de consenso no son un detalle de implementación. Son la decisión que determina qué blockchain puede o no puede ser la base del sistema financiero global. <strong>Cuando se analizan con honestidad técnica, solo uno cumple todos los requisitos simultáneamente.</strong></p>
+      <p>La pregunta no es si Metal Blockchain puede soportar el sistema financiero global. Es si algún otro puede hacerlo con la misma arquitectura, el mismo compliance nativo, la misma finality, y la misma capacidad de escala horizontal indefinida. <strong>La respuesta, al día de hoy, es no.</strong></p>
+    </div>
+  </section>
+
+  <!-- FOOTNOTES -->
+  <aside class="footnotes">
+    <div class="fn-title">Notas y referencias</div>
+    <div class="fn" id="fn1">
+      <div class="fn-n">[1]</div>
+      <div class="fn-text">Nakamoto, S. (2008). <em>Bitcoin: A Peer-to-Peer Electronic Cash System</em>. El paper original que introdujo el consenso Nakamoto y resolvió el problema del doble gasto sin autoridad central. <a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">bitcoin.org/bitcoin.pdf</a></div>
+    </div>
+    <div class="fn" id="fn2">
+      <div class="fn-n">[2]</div>
+      <div class="fn-text">Lamport, L., Shostak, R., Pease, M. (1982). "The Byzantine Generals Problem." <em>ACM Transactions on Programming Languages and Systems</em>, 4(3), 382–401. La formalización matemática fundacional de todos los mecanismos de consenso modernos.</div>
+    </div>
+    <div class="fn" id="fn3">
+      <div class="fn-n">[3]</div>
+      <div class="fn-text">Bank for International Settlements (2023). <em>Principles for Financial Market Infrastructures</em>. BIS/IOSCO. El estándar internacional que establece los requisitos de finality definitiva para sistemas de liquidación de alto valor. <a href="https://www.bis.org/cpmi/publ/d101a.pdf" target="_blank" rel="noopener">bis.org/cpmi/publ/d101a.pdf</a></div>
+    </div>
+    <div class="fn" id="fn4">
+      <div class="fn-n">[4]</div>
+      <div class="fn-text">Team Rocket (2020). <em>Scalable and Probabilistic Leaderless BFT Consensus through Metastability</em>. El paper original del protocolo Snow. Publicado bajo pseudónimo por el equipo de Ava Labs. <a href="https://assets.website-files.com/5d80307810123f5ffbb34d6e/6009805681b416f34dcae012_Avalanche%20Consensus%20Whitepaper.pdf" target="_blank" rel="noopener">Avalanche Consensus Whitepaper</a></div>
+    </div>
+    <div class="fn" id="fn5">
+      <div class="fn-n">[5]</div>
+      <div class="fn-text">Metallicus / Metal Blockchain (2024). <em>Metal Blockchain: A Layer 0 Solution for Financial Institutions</em>. Documentación técnica oficial de la arquitectura de subredes soberanas y su aplicación a instituciones financieras reguladas. <a href="https://metalblockchain.org" target="_blank" rel="noopener">metalblockchain.org</a></div>
+    </div>
+    <div class="fn" id="fn6">
+      <div class="fn-n">[6]</div>
+      <div class="fn-text">MEXC News (2025, septiembre). "XRP Ledger Activates Native KYC/AML Verification System." La enmienda Credentials se activó el 4 de septiembre de 2025, trece años después de la creación del XRPL, introduciendo por primera vez KYC/AML nativo en el protocolo. <a href="https://www.mexc.fm/en-TR/news/xrp-ledger-activates-native-kyc-aml-verification-system/90159" target="_blank" rel="noopener">mexc.fm</a></div>
+    </div>
+    <div class="fn" id="fn7">
+      <div class="fn-n">[7]</div>
+      <div class="fn-text">FinCEN / U.S. Department of Justice (2015). <em>Civil Money Penalty: Ripple Labs Inc.</em>. Primera acción de enforcement civil contra una empresa de moneda virtual en la historia de Estados Unidos, por operar sin registro AML. Referenciado en American Banker, mayo 2015.</div>
+    </div>
+    <div class="fn" id="fn8">
+      <div class="fn-n">[8]</div>
+      <div class="fn-text">Buterin, V. (2021). "Why sharding is great: demystifying the technical properties." Ethereum Foundation Blog. Referencia al trilema de blockchain y las compensaciones inevitables entre descentralización, seguridad y escalabilidad. <a href="https://vitalik.eth.limo/general/2021/04/07/sharding.html" target="_blank" rel="noopener">vitalik.eth.limo</a></div>
+    </div>
+  </aside>
+
+  <div class="disclaimer">
+    Este artículo es informativo y no constituye asesoría financiera.<br>
+    Las referencias técnicas son verificables en las fuentes citadas.
+  </div>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('prog').style.width = (s/h*100)+'%';
+  });
+</script>
+</body>
+</html>
