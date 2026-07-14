@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puentes, oráculos y el problema del precio. El estado actual de XPR y Metal Blockchain y su visión a futuro. — AllanTDBN</title>
+  <meta name="description" content="En Metal Blockchain L0 no existen ni oráculos ni puentes porque no son necesarios. En XPR Network el bridge es custodia institucional verificable de Metallicus. Y la visión final es que cada activo tenga su propia subred nativa." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0A1628; --card:#0F1E33; --deep:#070F1C;
+      --line:rgba(255,255,255,0.07); --line-gold:rgba(201,168,76,0.22);
+      --gold:#C9A84C; --gold-dim:rgba(201,168,76,0.09);
+      --blue:#2E86DE; --blue-dim:rgba(46,134,222,0.09);
+      --green:#27AE60; --green-dim:rgba(39,174,96,0.09);
+      --red:#E74C3C; --red-dim:rgba(231,76,60,0.09);
+      --teal:#1ABC9C; --teal-dim:rgba(26,188,156,0.09);
+      --orange:#E67E22; --orange-dim:rgba(230,126,34,0.09);
+      --purple:#9B59B6; --purple-dim:rgba(155,89,182,0.09);
+      --text:#F0EDE5; --text2:#A8B4C4; --dim:#546070;
+      --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+      --rainbow:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#27ae60,#2e86de,#9b59b6);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text2); font-family:var(--sans); font-size:16px; line-height:1.75; }
+    #prog { position:fixed; top:0; left:0; height:3px; background:var(--rainbow); width:0%; z-index:200; transition:width .1s linear; }
+    .hero { position:relative; overflow:hidden; background:var(--deep); padding:88px 32px 72px; text-align:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--rainbow); }
+    .hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+    .hero-inner { position:relative; z-index:1; max-width:880px; margin:0 auto; }
+    .hero-tag { font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; display:inline-block; }
+    .hero h1 { font-size:clamp(20px,3.5vw,40px); font-weight:900; line-height:1.12; color:var(--text); letter-spacing:-.03em; margin-bottom:14px; }
+    .hero h1 em { font-style:normal; color:var(--teal); }
+    .hero-sub { font-size:clamp(14px,2vw,17px); color:var(--text2); line-height:1.75; max-width:700px; margin:0 auto 40px; text-align:center; }
+    .hero-stats { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+    .hstat-box { border-radius:8px; padding:14px 18px; text-align:center; flex:1 1 160px; max-width:200px; }
+    .hstat-v { font-family:var(--mono); font-size:18px; font-weight:800; margin-bottom:4px; }
+    .hstat-l { font-size:10px; color:var(--dim); line-height:1.4; }
+    .wrap { max-width:820px; margin:0 auto; padding:64px 32px 80px; }
+    .sec { margin-bottom:72px; }
+    .sec-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+    .sec h2 { font-size:clamp(18px,3vw,28px); font-weight:800; color:var(--text); line-height:1.2; margin-bottom:24px; letter-spacing:-.02em; }
+    h3 { font-size:16px; font-weight:700; color:var(--text); margin:28px 0 10px; }
+    p { margin-bottom:18px; color:var(--text2); text-align:justify; }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text); font-weight:600; }
+    .fn-ref { font-family:var(--mono); font-size:10px; color:var(--gold); font-weight:700; vertical-align:super; text-decoration:none; margin-left:1px; }
+    .div { height:1px; background:linear-gradient(90deg,transparent,var(--line-gold),transparent); margin:64px 0; }
+    .pull { border-left:3px solid var(--gold); padding:4px 0 4px 24px; margin:28px 0; }
+    .pull p { font-size:17px; font-weight:600; color:var(--text); line-height:1.55; font-style:italic; margin:0; text-align:left; }
+    .ibox { border-radius:8px; padding:20px 24px; margin:24px 0; }
+    .ibox-gold { background:var(--gold-dim); border:1px solid var(--line-gold); border-left:3px solid var(--gold); }
+    .ibox-teal { background:var(--teal-dim); border:1px solid rgba(26,188,156,0.25); border-left:3px solid var(--teal); }
+    .ibox-red { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-left:3px solid var(--red); }
+    .ibox-blue { background:var(--blue-dim); border:1px solid rgba(46,134,222,0.2); border-left:3px solid var(--blue); }
+    .ibox-orange { background:var(--orange-dim); border:1px solid rgba(230,126,34,0.2); border-left:3px solid var(--orange); }
+    .ibox-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+    .ibox p { font-size:14px; margin:0; line-height:1.75; text-align:left; }
+    .svg-wrap { display:flex; justify-content:center; margin:32px 0; }
+
+    /* LAYER CARDS */
+    .layer-stack { display:flex; flex-direction:column; gap:3px; margin:28px 0; }
+    .layer-card { border-radius:8px; padding:20px 24px; border:1px solid var(--line); }
+    .layer-n { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+    .layer-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:12px; }
+    .layer-items { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .layer-badge { font-family:var(--mono); font-size:10px; font-weight:700; padding:3px 10px; border-radius:4px; }
+    .layer-desc { font-size:13px; color:var(--text2); line-height:1.7; text-align:left; }
+
+    /* HACK LIST */
+    .hack-list { display:flex; flex-direction:column; gap:2px; margin:28px 0; }
+    .hack-item { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); border-radius:6px; padding:14px 20px; display:flex; gap:16px; }
+    .hack-amount { flex-shrink:0; font-family:var(--mono); font-size:15px; font-weight:800; color:var(--red); min-width:75px; }
+    .hack-body { flex:1; }
+    .hack-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:3px; }
+    .hack-text { font-size:12px; color:var(--text2); line-height:1.6; text-align:left; }
+    .hack-date { font-family:var(--mono); font-size:9px; color:var(--dim); margin-top:3px; }
+
+    /* CUSTODY TABLE */
+    .cust-table { width:100%; border-collapse:collapse; margin:24px 0; font-size:12px; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .cust-table th { background:var(--card); color:var(--dim); font-family:var(--mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase; padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; }
+    .cust-table td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:12px; }
+    .cust-table tr:last-child td { border-bottom:none; }
+    .cust-table tr.hl td { background:rgba(26,188,156,0.04); }
+    .pn { font-weight:700; color:var(--text); }
+    .badge { display:inline-block; padding:2px 7px; border-radius:3px; font-family:var(--mono); font-size:9px; font-weight:700; white-space:nowrap; }
+    .bn { background:rgba(26,188,156,0.15); color:var(--teal); }
+    .bp { background:rgba(241,196,15,0.12); color:#F1C40F; }
+    .br { background:rgba(231,76,60,0.15); color:#E8A09A; }
+    .bg { background:rgba(39,174,96,0.15); color:#7ECDA0; }
+
+    /* TOKEN GRID */
+    .tok-grid { display:grid; grid-template-columns:1fr 1fr; gap:3px; margin:28px 0; }
+    .tok-col { border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+    .tok-header { padding:14px 18px; font-size:14px; font-weight:800; }
+    .tok-list { padding:14px 18px; }
+    .tok-item { display:flex; gap:8px; font-size:13px; color:var(--text2); margin-bottom:8px; line-height:1.5; }
+    .tok-item:last-child { margin-bottom:0; }
+    .tok-icon { font-weight:700; flex-shrink:0; }
+
+    /* FINAL */
+    .final { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line-gold); border-radius:8px; padding:48px 40px; margin-top:64px; text-align:center; }
+    .final::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--rainbow); }
+    .final-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; }
+    .final p { font-size:clamp(14px,2.5vw,18px); color:var(--text); line-height:1.75; max-width:640px; margin:0 auto 14px; font-weight:500; text-align:center; }
+    .final p:last-child { margin-bottom:0; }
+    .final strong { color:var(--gold); }
+    .footnotes { border-top:1px solid var(--line); padding-top:48px; margin-top:64px; }
+    .fn-title { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:28px; }
+    .fn { display:flex; gap:14px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+    .fn:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .fn-n { flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); padding-top:2px; }
+    .fn-text { font-size:12px; color:var(--dim); line-height:1.65; text-align:left; }
+    .fn-text a { color:var(--gold); text-decoration:underline; text-underline-offset:3px; }
+    .disclaimer { text-align:center; padding:32px; font-size:12px; color:var(--dim); border-top:1px solid var(--line); margin-top:48px; }
+    @media(max-width:600px){ .hero,.wrap{padding-left:18px;padding-right:18px} .final{padding:28px 18px} .tok-grid{grid-template-columns:1fr} .hack-item{flex-direction:column;gap:6px} }
+  </style>
+</head>
+<body>
+<div id="prog"></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Infraestructura · Oráculos · Puentes · Custodia · Ecosistema Metallicus</div>
+    <h1>Puentes, oráculos<br>y el problema del precio.<br><em>El estado actual de XPR y Metal Blockchain<br>y su visión a futuro.</em></h1>
+    <p class="hero-sub">En Metal Blockchain L0 no existen ni oráculos ni puentes porque no son necesarios. En XPR Network el bridge es custodia institucional verificable. Y la visión final es que cada activo tenga su propia subred nativa y cada institución custodie directamente.</p>
+    <div class="hero-stats">
+      <div class="hstat-box" style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.25)">
+        <div class="hstat-v" style="color:var(--red)">$2.8B+</div>
+        <div class="hstat-l">perdidos en hacks de puentes según DefiLlama</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.25)">
+        <div class="hstat-v" style="color:var(--red)">$625M</div>
+        <div class="hstat-l">hack Ronin Bridge, el mayor de la historia</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(26,188,156,0.08);border:1px solid rgba(26,188,156,0.25)">
+        <div class="hstat-v" style="color:var(--teal)">0</div>
+        <div class="hstat-l">puentes ni oráculos externos en Metal Blockchain L0</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25)">
+        <div class="hstat-v" style="color:var(--gold)">NMLS<br>2057807</div>
+        <div class="hstat-l">Metallicus licenciado en 13 estados de EEUU</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- SECCIÓN 0 -->
+  <section class="sec" id="distincion">
+    <div class="sec-tag">0 — La distinción fundamental</div>
+    <h2>Oráculo vs puente: dos problemas distintos que la industria confunde permanentemente</h2>
+    <p>Son dos problemas distintos con dos causas distintas y dos soluciones distintas. Confundirlos lleva a análisis incorrectos sobre cómo el ecosistema Metallicus los resuelve.</p>
+
+    <h3>El problema del oráculo: el determinismo que aísla a los contratos</h3>
+    <p>Los smart contracts son deterministas por diseño. Para que todos los nodos de una red lleguen exactamente al mismo estado dado el mismo conjunto de transacciones, el contrato no puede hacer llamadas externas en tiempo de ejecución. Si lo hiciera, cada nodo obtendría un dato diferente en un momento diferente, rompiendo el consenso. Un contrato no puede preguntar directamente cuánto vale BTC en dólares ni qué tasa publicó la Fed. Para acceder a esa información, alguien tiene que traerla desde afuera y publicarla como una transacción verificada en la blockchain. Ese mensajero es el oráculo.<a href="#fn1" class="fn-ref">[1]</a></p>
+
+    <h3>El problema del puente: un token nativo nunca abandona su blockchain</h3>
+    <p>Cada blockchain es un sistema cerrado con su propio estado y sus propios activos nativos. Un token nativo nunca abandona su propia red. Cuando mandas ETH desde Binance a XPR Network, ese ETH nunca sale de Ethereum. Queda bloqueado en una dirección en la red de Ethereum y en XPR Network recibes XETH, que es un recibo 1:1 de ese ETH. Cuando quieres retirar, quemas el XETH en XPR Network y recuperas el ETH original desde Ethereum. El mecanismo que coordina ese proceso, bloqueando el activo en la cadena origen y emitiendo una representación en la cadena destino, es el puente.<a href="#fn2" class="fn-ref">[2]</a></p>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="240" fill="#070F1C" rx="10"/>
+        <text x="350" y="20" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">ORÁCULO VS PUENTE — DOS PROBLEMAS DISTINTOS</text>
+        <!-- ORACLE -->
+        <text x="160" y="42" text-anchor="middle" fill="#E67E22" font-family="Inter,sans-serif" font-size="12" font-weight="700">ORÁCULO — problema de datos</text>
+        <rect x="20" y="54" width="105" height="36" rx="5" fill="rgba(230,126,4,0.08)" stroke="rgba(230,126,34,0.3)" stroke-width="1"/>
+        <text x="72" y="69" text-anchor="middle" fill="rgba(230,126,34,0.7)" font-family="monospace" font-size="9">Mundo real</text>
+        <text x="72" y="82" text-anchor="middle" fill="rgba(230,126,34,0.4)" font-family="monospace" font-size="7">precio, tasas, eventos</text>
+        <line x1="125" y1="72" x2="158" y2="72" stroke="rgba(230,126,34,0.5)" stroke-width="1.5"/>
+        <polygon points="154,68 162,72 154,76" fill="rgba(230,126,34,0.5)"/>
+        <rect x="163" y="54" width="78" height="36" rx="5" fill="rgba(230,126,34,0.12)" stroke="rgba(230,126,34,0.5)" stroke-width="1.5"/>
+        <text x="202" y="69" text-anchor="middle" fill="#E67E22" font-family="monospace" font-size="10" font-weight="700">ORÁCULO</text>
+        <text x="202" y="82" text-anchor="middle" fill="rgba(230,126,34,0.5)" font-family="monospace" font-size="7">tx verificada</text>
+        <line x1="241" y1="72" x2="274" y2="72" stroke="rgba(230,126,34,0.5)" stroke-width="1.5"/>
+        <polygon points="270,68 278,72 270,76" fill="rgba(230,126,34,0.5)"/>
+        <rect x="279" y="54" width="95" height="36" rx="5" fill="rgba(46,134,222,0.08)" stroke="rgba(46,134,222,0.3)" stroke-width="1"/>
+        <text x="326" y="69" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="9">Smart contract</text>
+        <text x="326" y="82" text-anchor="middle" fill="rgba(46,134,222,0.4)" font-family="monospace" font-size="7">lee dato on-chain</text>
+        <text x="200" y="108" text-anchor="middle" fill="rgba(230,126,34,0.4)" font-family="monospace" font-size="8">→ resuelve: traer datos del mundo exterior a la blockchain</text>
+        <!-- BRIDGE -->
+        <text x="160" y="132" text-anchor="middle" fill="#9B59B6" font-family="Inter,sans-serif" font-size="12" font-weight="700">PUENTE — problema de activos</text>
+        <rect x="20" y="144" width="100" height="36" rx="5" fill="rgba(46,134,222,0.08)" stroke="rgba(46,134,222,0.3)" stroke-width="1"/>
+        <text x="70" y="159" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="9">Blockchain A</text>
+        <text x="70" y="172" text-anchor="middle" fill="rgba(46,134,222,0.4)" font-family="monospace" font-size="7">activo bloqueado</text>
+        <line x1="120" y1="162" x2="148" y2="162" stroke="rgba(155,89,182,0.5)" stroke-width="1.5"/>
+        <rect x="151" y="152" width="72" height="22" rx="4" fill="rgba(155,89,182,0.12)" stroke="rgba(155,89,182,0.4)" stroke-width="1"/>
+        <text x="187" y="166" text-anchor="middle" fill="#9B59B6" font-family="monospace" font-size="9" font-weight="700">PUENTE</text>
+        <line x1="223" y1="162" x2="251" y2="162" stroke="rgba(155,89,182,0.5)" stroke-width="1.5"/>
+        <polygon points="247,158 255,162 247,166" fill="rgba(155,89,182,0.5)"/>
+        <rect x="256" y="144" width="110" height="36" rx="5" fill="rgba(39,174,96,0.08)" stroke="rgba(39,174,96,0.3)" stroke-width="1"/>
+        <text x="311" y="159" text-anchor="middle" fill="#27AE60" font-family="monospace" font-size="9">Blockchain B</text>
+        <text x="311" y="172" text-anchor="middle" fill="rgba(39,174,96,0.4)" font-family="monospace" font-size="7">wrapped token emitido</text>
+        <text x="200" y="200" text-anchor="middle" fill="rgba(155,89,182,0.4)" font-family="monospace" font-size="8">→ resuelve: mover representaciones de activos entre blockchains</text>
+        <text x="200" y="213" text-anchor="middle" fill="rgba(155,89,182,0.3)" font-family="monospace" font-size="7">el activo original NUNCA abandona su blockchain nativa</text>
+        <!-- Chainlink note -->
+        <rect x="440" y="42" width="245" height="165" rx="6" fill="rgba(26,188,156,0.03)" stroke="rgba(26,188,156,0.12)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="562" y="62" text-anchor="middle" fill="rgba(26,188,156,0.6)" font-family="Inter,sans-serif" font-size="11" font-weight="700">Chainlink hace ambos:</text>
+        <text x="562" y="82" text-anchor="middle" fill="#E67E22" font-family="monospace" font-size="9">Price Feeds → oráculo puro</text>
+        <text x="562" y="100" text-anchor="middle" fill="#9B59B6" font-family="monospace" font-size="9">CCIP → puente avanzado</text>
+        <text x="562" y="128" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">Por eso genera confusión:</text>
+        <text x="562" y="142" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">en distintos contextos se le</text>
+        <text x="562" y="156" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">llama oráculo, puente o</text>
+        <text x="562" y="170" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">middleware indistintamente</text>
+      </svg>
+    </div>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">El principio que lo explica todo</div>
+      <p>Un token nativo nunca abandona su blockchain. El ETH que tienes en XPR Network como XETH no es ETH que cruzó a XPR. Es un recibo de ETH que sigue en Ethereum. El ETH real está custodiado en Ethereum por quien opera el bridge. Cuando quemas el XETH, recuperas el ETH original. Esto aplica para todos los wrapped tokens en toda la industria blockchain.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN I -->
+  <section class="sec" id="hacks">
+    <div class="sec-tag">I — El registro histórico</div>
+    <h2>Por qué los puentes y oráculos externos son el componente más atacado de Web3</h2>
+    <p>Los puentes custodian grandes concentraciones de activos bloqueados. Los oráculos determinan los precios que los protocolos usan para calcular colaterales y liquidaciones. Ambos son objetivos de alto valor. El registro histórico de ataques exitosos documenta exactamente cuáles son sus vectores de vulnerabilidad más comunes.<a href="#fn3" class="fn-ref">[3]</a></p>
+
+    <div class="hack-list">
+      <div class="hack-item">
+        <div class="hack-amount">$625M</div>
+        <div class="hack-body">
+          <div class="hack-title">Ronin Bridge — compromiso de claves privadas de validadores</div>
+          <div class="hack-text">El atacante comprometió 5 de 9 claves privadas de validadores del puente de Axie Infinity. Con ese control aprobó transferencias fraudulentas de ETH y USDC. El ataque tardó seis días en detectarse. Vector: concentración del poder de firma en validadores conocidos e identificables.<a href="#fn4" class="fn-ref">[4]</a></div>
+          <div class="hack-date">Marzo 2022 · Ronin Bridge</div>
+        </div>
+      </div>
+      <div class="hack-item">
+        <div class="hack-amount">$320M</div>
+        <div class="hack-body">
+          <div class="hack-title">Wormhole — bug en la verificación de firmas de guardianes</div>
+          <div class="hack-text">Un bug permitía crear mensajes que parecían firmados por guardianes sin que realmente lo estuvieran. El atacante acuñó 120.000 wETH sin depositar el colateral en Ethereum. Jump Crypto cubrió la pérdida completa para evitar el colapso del ecosistema. Vector: vulnerabilidad en el código de verificación criptográfica.<a href="#fn5" class="fn-ref">[5]</a></div>
+          <div class="hack-date">Febrero 2022 · Wormhole Bridge</div>
+        </div>
+      </div>
+      <div class="hack-item">
+        <div class="hack-amount">$190M</div>
+        <div class="hack-body">
+          <div class="hack-title">Nomad — el primer hack descentralizado: cualquiera podía copiarlo</div>
+          <div class="hack-text">Un cambio en el contrato dejó el mensaje raíz inicializado en cero, haciendo cualquier mensaje automáticamente válido. Una vez publicado el exploit en Twitter, docenas de usuarios copiaron la transacción cambiando solo su dirección de destino. Vector: bug en la inicialización del contrato, sin barreras para la copia masiva.<a href="#fn6" class="fn-ref">[6]</a></div>
+          <div class="hack-date">Agosto 2022 · Nomad Bridge</div>
+        </div>
+      </div>
+      <div class="hack-item" style="border-left-color:var(--orange)">
+        <div class="hack-amount" style="color:var(--orange)">$117M</div>
+        <div class="hack-body">
+          <div class="hack-title">Mango Markets — el oráculo funcionó perfectamente y aun así fue el vector</div>
+          <div class="hack-text">El atacante infló el precio de MNGO manipulando el mercado en exchanges de baja liquidez. Los oráculos reportaron el precio manipulado como válido porque era el precio real de mercado, solo que artificialmente elevado. Con el colateral sobrevaluado tomó prestados $117 millones de los fondos del protocolo. Vector: dependencia de precios formados en mercados externos susceptibles de manipulación.<a href="#fn7" class="fn-ref">[7]</a></div>
+          <div class="hack-date">Octubre 2022 · Mango Markets (Solana)</div>
+        </div>
+      </div>
+      <div class="hack-item" style="border-left-color:var(--orange)">
+        <div class="hack-amount" style="color:var(--orange)">$1M</div>
+        <div class="hack-body">
+          <div class="hack-title">Moonwell — malfuncionamiento del price feed de Chainlink</div>
+          <div class="hack-text">Un malfuncionamiento del price feed de Chainlink valoró 0.02 wrstETH en $5.8 millones. El atacante depositó ese colateral sobrevaluado, tomó prestado wstETH contra él, y repitió la operación 7 veces en 3 horas. El protocolo Chainlink no fue hackeado directamente, pero su malfuncionamiento fue el vector. Vector: dependencia de feeds de precios externos que pueden fallar.<a href="#fn8" class="fn-ref">[8]</a></div>
+          <div class="hack-date">Noviembre 2025 · Moonwell (Base)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ibox ibox-red">
+      <div class="ibox-tag" style="color:var(--red)">El dato que resume el problema</div>
+      <p>Más de $2.8 mil millones perdidos en hacks de puentes, representando el 40% de todo el valor hackeado en Web3 según DefiLlama. Los puentes son el objetivo más atacado de la infraestructura blockchain porque custodian grandes concentraciones de activos en contratos que son objetivos de alto valor. Y ese incentivo crece proporcionalmente con el valor que mueven.<a href="#fn9" class="fn-ref">[9]</a></p>
+    </div>
+
+    <h3>El problema estructural que los hacks no son accidentes: la explicación de David Schwartz</h3>
+    <p>David Schwartz, CTO de Ripple y uno de los tres co-creadores del XRP Ledger, articuló con precisión por qué los puentes son estructuralmente inseguros más allá de sus vulnerabilidades de implementación específicas:</p>
+
+    <div class="ibox ibox-orange">
+      <div class="ibox-tag" style="color:var(--orange)">David Schwartz, CTO de Ripple — sobre el dilema estructural de los puentes</div>
+      <p style="font-style:italic;color:var(--text)">"Bridges have to be trusted not to steal money [...] if the bridge is making a lot of money, they're very incentivized to operate reliably [...] But if a bridge is making a lot of money, that means they're expensive. And so people will tend to evade the bridge [...] If the bridge is cheap, it's starting to look really attractive to do an exit scam and steal all the funds that the bridge is protecting. So it's very challenging to make secure and reliable bridges."</p>
+      <p style="margin-top:12px">El argumento de Schwartz expone un dilema matemático sin solución dentro del modelo de puente tradicional: un puente caro incentiva la evasión, un puente barato incentiva el robo. No hay punto de equilibrio seguro.</p>
+    </div>
+
+    <p>Y sobre el enfoque de arquitectura de subredes soberanas interoperables como solución a ese problema:</p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">David Schwartz, CTO de Ripple — sobre la solución arquitectónica</div>
+      <p style="font-style:italic;color:var(--text)">"The idea of being able to help them spin up their own blockchain that they can own, that they can control, but that connects to other networks and doesn't have the risk of the Oracle-based bridge attacks, which we've lost $5 billion in hacks to so far, that's a huge problem. We don't need to be so decentralized that we keep getting hacked every other week."</p>
+      <p style="margin-top:12px">Schwartz describe con exactitud la arquitectura de Metal Blockchain: subredes soberanas que cada institución controla, con interoperabilidad nativa sin depender de puentes basados en oráculos externos. La ironía es que el CTO de Ripple está describiendo lo que Metal Blockchain construyó, no lo que el XRP Ledger ofrece hoy.<a href="#fn17" class="fn-ref">[17]</a></p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN II -->
+  <section class="sec" id="tres-capas">
+    <div class="sec-tag">II — La arquitectura real</div>
+    <h2>La solución en tres capas del ecosistema Metallicus</h2>
+    <p>El ecosistema Metallicus no resolvió el problema de los oráculos y los puentes con mejores oráculos y mejores puentes. Lo resolvió con una arquitectura en tres capas donde cada nivel tiene una solución distinta, apropiada para su propósito específico.</p>
+
+    <div class="layer-stack">
+      <div class="layer-card" style="background:rgba(26,188,156,0.05);border-color:rgba(26,188,156,0.3);border-left:3px solid var(--teal)">
+        <div class="layer-n" style="color:var(--teal)">Capa 1 — Metal Blockchain L0</div>
+        <div class="layer-title">Sin oráculos. Sin puentes. Solo METAL y AWM.</div>
+        <div class="layer-items">
+          <span class="layer-badge" style="background:rgba(26,188,156,0.15);color:var(--teal)">Único activo: METAL</span>
+          <span class="layer-badge" style="background:rgba(26,188,156,0.15);color:var(--teal)">AWM nativo entre subredes</span>
+          <span class="layer-badge" style="background:rgba(26,188,156,0.15);color:var(--teal)">Compliance BSA/KYC/ISO 20022</span>
+          <span class="layer-badge" style="background:rgba(26,188,156,0.15);color:var(--teal)">Snowman 80% · WebAuth</span>
+        </div>
+        <div class="layer-desc">En el L0, el único activo que se mueve entre subredes es METAL. AWM usa los mismos validadores del L0 sin ningún contrato externo, sin guardianes, sin hub central. No hay oráculos de precios porque el L0 no necesita saber cuánto vale BTC: en el L0 no existe BTC. Esta es la única capa donde el problema del oráculo y el problema del puente no existen por diseño.<a href="#fn10" class="fn-ref">[10]</a></div>
+      </div>
+      <div class="layer-card" style="background:rgba(46,134,222,0.05);border-color:rgba(46,134,222,0.3);border-left:3px solid var(--blue)">
+        <div class="layer-n" style="color:var(--blue)">Capa 2 — XPR Network como blockchain de aplicaciones</div>
+        <div class="layer-title">Oracle feeds nativos sin Chainlink. Bridge con custodia institucional verificable.</div>
+        <div class="layer-items">
+          <span class="layer-badge" style="background:rgba(46,134,222,0.15);color:var(--blue)">XBTC, XETH, XUSDT, XXRP y más</span>
+          <span class="layer-badge" style="background:rgba(46,134,222,0.15);color:var(--blue)">8 oracle providers nativos</span>
+          <span class="layer-badge" style="background:rgba(46,134,222,0.15);color:var(--blue)">proton.wrap — Metallicus custodio</span>
+          <span class="layer-badge" style="background:rgba(46,134,222,0.15);color:var(--blue)">NMLS 2057807 — 13 estados</span>
+        </div>
+        <div class="layer-desc">Aquí existen activos externos wrapped y aquí los contratos necesitan datos de precios. XPR Network resuelve ambos con sistemas propios: oracle feeds nativos sin Chainlink y el bridge proton.wrap con custodia institucional de Metallicus. Explicado en detalle en las secciones III y IV.</div>
+      </div>
+      <div class="layer-card" style="background:rgba(201,168,76,0.05);border-color:rgba(201,168,76,0.3);border-left:3px solid var(--gold)">
+        <div class="layer-n" style="color:var(--gold)">Capa 3 — El estado final</div>
+        <div class="layer-title">Cada activo en su subred nativa. Cada institución custodia directamente. El precio se forma adentro.</div>
+        <div class="layer-items">
+          <span class="layer-badge" style="background:rgba(201,168,76,0.15);color:var(--gold)">BTC VM — BTC nativo sin XBTC</span>
+          <span class="layer-badge" style="background:rgba(201,168,76,0.15);color:var(--gold)">Subredes institucionales soberanas</span>
+          <span class="layer-badge" style="background:rgba(201,168,76,0.15);color:var(--gold)">Precio formado en MetalDEX</span>
+        </div>
+        <div class="layer-desc">La visión a largo plazo elimina progresivamente la dependencia de custodia centralizada y de oráculos externos. Cuando el BTC tenga su propia VM como subred de Metal Blockchain, el BTC será nativo, no envuelto, sin custodio institucional. Cuando una institución tenga su propia subred soberana, ella custodiará los activos de sus clientes directamente. Y cuando MetalDEX tenga el volumen dominante para activos regulados, el precio se formará dentro del ecosistema. Explicado en detalle en la sección VI.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN III -->
+  <section class="sec" id="bridge">
+    <div class="sec-tag">III — El bridge de XPR Network</div>
+    <h2>proton.wrap: custodia institucional verificable on-chain — lo que encontramos en el explorador</h2>
+    <p>Esta sección documenta lo que verificamos directamente en el explorador de XPR Network y en Etherscan el 12 de julio de 2026. Es información que no existe documentada en ningún otro lugar en español.</p>
+
+    <h3>Cómo funciona el wrapping: el flujo exacto</h3>
+    <p>El contrato <strong>proton.wrap</strong>, llamado "Bridge" en el explorador de XPR Network, es un smart contract verificable on-chain con cuatro tablas: <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">addresses</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">addresses2</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">wraps</code>, y <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">wraps2</code>. La tabla <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">addresses</code> registra una dirección de depósito personal en cada red nativa para cada usuario de XPR Network.<a href="#fn11" class="fn-ref">[11]</a></p>
+    <p>Cuando un usuario quiere depositar ETH en XPR Network, el sistema le asigna una dirección de Ethereum única vinculada a su cuenta. Esa dirección es una dirección de custodia asignada a tu cuenta, similar a como un banco te asigna un número de cuenta para recibir transferencias. Cuando el ETH llega ahí, el contrato ejecuta automáticamente <code style="font-family:var(--mono);font-size:12px;color:var(--gold)">wrapstart2</code>, luego <code style="font-family:var(--mono);font-size:12px;color:var(--gold)">wrapprocess2</code>, luego <code style="font-family:var(--mono);font-size:12px;color:var(--gold)">wrapfinish2</code>, y finalmente emite el XETH equivalente en la billetera WebAuth del usuario. El ETH queda en custodia de Metallicus en Ethereum, respaldando 1:1 el XETH que tienes en XPR Network. Es el mismo modelo que usa cualquier exchange regulado o custodio institucional.</p>
+
+    <div class="ibox ibox-blue">
+      <div class="ibox-tag" style="color:var(--blue)">La excepción: XRP usa sistema de memo</div>
+      <p>El XRP Ledger tiene un sistema de destination tag que permite que una sola dirección reciba fondos de múltiples usuarios distinguiéndolos por un número de memo único. Por eso al solicitar depósito de XRP, dos usuarios distintos reciben la misma dirección de depósito pero con memos diferentes. Es una característica del protocolo XRPL, no una peculiaridad del bridge de Metallicus. Es el mismo sistema que usan todos los exchanges para depósitos de XRP.</p>
+    </div>
+
+    <h3>Quién controla el bridge: verificado on-chain</h3>
+    <p>La cuenta <strong>swapscold</strong> controla <strong>proton.wrap</strong>. Sus permisos verificados en el explorador al 12 de julio de 2026:<a href="#fn12" class="fn-ref">[12]</a></p>
+    <p>El permiso <strong>owner</strong> requiere threshold 2 de 4 cuentas: <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">metalcfo</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">swapsledger2</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">swapsledger3</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">swapsledger4</code>. El permiso <strong>security</strong> tiene threshold 1 de 8 cuentas incluyendo <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">glenn</code> (Glenn Mariën, cofundador y CSO de Metallicus) y <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">metalcfo</code>. El nombre <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">swapsledger</code> sugiere billeteras Ledger hardware específicamente designadas para el bridge, práctica estándar en custodia institucional. Eso está escrito en la blockchain y es verificable por cualquier persona en el explorador de XPR Network.</p>
+
+    <div class="ibox ibox-orange">
+      <div class="ibox-tag" style="color:var(--orange)">Lo que esto significa en términos de riesgo</div>
+      <p>Si todas las cuentas con permiso owner se coordinaran maliciosamente, podrían tomar control del bridge. Eso es exactamente el mismo riesgo que existe en cualquier custodio institucional, desde Coinbase hasta BitGo. La diferencia con un ataque anónimo es que <code style="font-family:var(--mono);font-size:11px">metalcfo</code> y <code style="font-family:var(--mono);font-size:11px">glenn</code> tienen identidades verificables, Metallicus tiene licencias regulatorias activas en 13 estados que perderían instantáneamente, y hay obligaciones legales documentadas que generan consecuencias reales. Eso no es garantía absoluta, pero es exactamente el nivel de confianza que depositas en cualquier banco o exchange regulado.</p>
+    </div>
+
+    <h3>Activos custodiados al 12 de julio de 2026</h3>
+    <p>Según el explorador de XPR Network, la cuenta <strong>proton.wrap</strong> custodiaba en esa fecha $25.17 millones en 48 tokens distintos. Los cinco mayores: METAL con $9 millones, XUSDC con $5.68 millones, XXRP con $2.36 millones, XETH con $1.74 millones, y XUSDT con $1.37 millones.<a href="#fn13" class="fn-ref">[13]</a></p>
+
+    <h3>Metallicus como custodio institucional: las licencias verificadas</h3>
+    <p>Metallicus Inc. tiene NMLS ID 2057807, verificable públicamente en nmlsconsumeraccess.org. Al 12 de julio de 2026 tenía 13 licencias activas de money transmitter en: Alabama, Arkansas, Connecticut, Georgia, Idaho, Louisiana, Ohio, Oregon, Rhode Island, South Dakota, Vermont (dos licencias) y Washington. Tiene tres acciones regulatorias documentadas públicamente con Ohio (septiembre 2025 y abril 2023) y Texas (noviembre 2022), lo que confirma que rinde cuentas ante reguladores y que los reguladores tienen jurisdicción sobre sus operaciones.<a href="#fn14" class="fn-ref">[14]</a></p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">Honestidad sobre el tipo de licencia</div>
+      <p>Las licencias de Metallicus son de money transmitter, que autorizan la transmisión de dinero. No son licencias de custodia de activos digitales como una trust company license de la NYDFS o una BitLicense, que son las que tienen custodios específicos de cripto como BitGo o Coinbase Custody. Metallicus opera el bridge como money transmitter regulado. Eso tiene obligaciones legales reales pero es un framework regulatorio distinto al de un custodio de activos digitales especializado.</p>
+    </div>
+
+    <h3>Comparativa de modelos de custodia</h3>
+    <div style="overflow-x:auto">
+      <table class="cust-table">
+        <thead>
+          <tr>
+            <th>Modelo</th>
+            <th>Custodio del activo original</th>
+            <th>Tipo de control</th>
+            <th>Hackeado</th>
+            <th>Responsabilidad legal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pn">wBTC (BitGo)</td>
+            <td>BitGo — trust company NYDFS</td>
+            <td><span class="badge bp">Empresa regulada</span></td>
+            <td><span class="badge bg">No</span></td>
+            <td><span class="badge bg">Trust company</span></td>
+          </tr>
+          <tr>
+            <td class="pn">Wormhole</td>
+            <td>Guardianes con multisig</td>
+            <td><span class="badge bp">Pseudoanónimo</span></td>
+            <td><span class="badge br">$320M (2022)</span></td>
+            <td><span class="badge br">Ninguna empresa</span></td>
+          </tr>
+          <tr>
+            <td class="pn">Uniswap pools</td>
+            <td>Smart contract</td>
+            <td><span class="badge bp">Código</span></td>
+            <td><span class="badge bp">Exploits indirectos</span></td>
+            <td><span class="badge br">Ninguna empresa</span></td>
+          </tr>
+          <tr class="hl">
+            <td class="pn" style="color:var(--teal)">Metallicus proton.wrap</td>
+            <td>Metallicus Inc. — NMLS 2057807</td>
+            <td><span class="badge bn">Identidades verificadas</span></td>
+            <td><span class="badge bn">No</span></td>
+            <td><span class="badge bp">Money transmitter</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN IV -->
+  <section class="sec" id="oracles">
+    <div class="sec-tag">IV — Los oracle feeds de XPR Network</div>
+    <h2>El sistema de precios nativos: lo que verificamos en el explorador</h2>
+    <p>XPR Network tiene un sistema de oracle feeds implementado como smart contract nativo con código fuente abierto en el repositorio XPRNetwork/proton-oracle en GitHub. Providers autorizados publican precios como transacciones on-chain y el contrato agrega usando la función mean_median. No depende de Chainlink ni de ningún servicio externo de terceros.<a href="#fn15" class="fn-ref">[15]</a></p>
+
+    <div class="ibox ibox-blue">
+      <div class="ibox-tag" style="color:var(--blue)">Los datos reales del explorador — 12 de julio de 2026</div>
+      <p>El feed XPR/BTC (índice 2) tiene 4 providers: bot1, bot2, bot3, bot4, con ventana de 14 días y actualización mínima de 24 horas por provider. El sistema principal de feeds activos, que incluye XPR/USD, BTC/USD, USDC/USD, MTL/USD, ETH/USD, DOGE/USD, USDT/USD, XMD/USD y más, tiene 8 providers: a.oracles, b.oracles, c.oracles, d.oracles, e.oracles, f.oracles, g.oracles, h.oracles, con actualización mínima de 60 segundos por provider, función mean_median y ventana de 210 puntos de datos. El precio de BTC/USD mostraba consenso de $63,556 con dispersión menor a $100 entre los 8 providers, actualizándose cada 10 a 15 segundos. La cuenta swapscold, que también controla el bridge proton.wrap, es uno de los providers del oracle, lo que confirma que ambos sistemas están bajo el mismo control de Metallicus.<a href="#fn16" class="fn-ref">[16]</a></p>
+    </div>
+
+    <h3>Lo que sabemos y lo que no sabemos</h3>
+    <p>El contrato oracle solo puede ser configurado por Metallicus usando autoridad <code style="font-family:var(--mono);font-size:12px;color:var(--teal)">get_self()</code>. La documentación oficial no identifica públicamente quiénes operan las cuentas a.oracles hasta h.oracles ni de qué fuentes exactas obtienen los precios. Esa es una centralización de confianza comparable a la UNL del XRPL, con una diferencia importante: en XPR Network afecta solo los feeds de precios y no el consenso de la red. Si los providers del oracle reportan precios incorrectos, los feeds de precios se ven afectados pero la red sigue funcionando. Si la UNL del XRPL se compromete, el consenso de toda la red se ve afectado.</p>
+    <p>El problema estructural que persiste en cualquier sistema de oracle, incluyendo el de XPR Network, es la dependencia de fuentes externas de precios. Si el precio de BTC en las fuentes que consultan los providers es manipulado artificialmente, los 8 providers reportarán ese precio manipulado como válido. La función mean_median mitiga discrepancias entre providers pero no manipulación coordinada de la fuente. Ese fue exactamente el vector del ataque a Mango Markets en 2022.</p>
+
+    <div class="pull">
+      <p>El problema del oráculo no se resuelve con mejores oráculos. Se resuelve cuando el mercado de referencia del activo está dentro del ecosistema. Cuando el precio de un activo se forme en MetalDEX, los contratos de XPR Network podrán leer ese precio directamente del orderbook sin consultar ninguna fuente externa.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN V -->
+  <section class="sec" id="autocustodia">
+    <div class="sec-tag">V — Autocustodia real vs custodia institucional</div>
+    <h2>La distinción que los usuarios del ecosistema Metallicus necesitan entender</h2>
+    <p>Autocustodia real solo existe cuando tienes el token nativo en su propia red con tus propias claves. Todo lo demás es un espectro de cuánto confías en el custodio. Esto no es exclusivo de Metallicus: ocurre en todo el ecosistema DeFi y en todos los exchanges.</p>
+
+    <div class="tok-grid">
+      <div class="tok-col" style="border-top:2px solid var(--teal)">
+        <div class="tok-header" style="background:rgba(26,188,156,0.08);color:var(--teal)">✓ Autocustodia real</div>
+        <div class="tok-list">
+          <div class="tok-item"><span class="tok-icon" style="color:var(--teal)">✓</span>XPR en XPR Network con tus claves en WebAuth</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--teal)">✓</span>LOAN en XPR Network con tus claves en WebAuth</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--teal)">✓</span>METAL en Metal Blockchain con tus claves en wallet compatible</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--teal)">✓</span>MTL como ERC-20 en Ethereum con tus claves en wallet EVM</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--teal)">✓</span>Dirección ETH nativa en WebAuth multicadena (no la dirección del bridge)</div>
+        </div>
+      </div>
+      <div class="tok-col" style="border-top:2px solid var(--orange)">
+        <div class="tok-header" style="background:rgba(230,126,34,0.08);color:var(--orange)">⚠ Custodia institucional de Metallicus</div>
+        <div class="tok-list">
+          <div class="tok-item"><span class="tok-icon" style="color:var(--orange)">→</span>XETH — recibo de ETH custodiado por Metallicus en Ethereum</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--orange)">→</span>XBTC — recibo de BTC custodiado por Metallicus en Bitcoin</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--orange)">→</span>XXRP — recibo de XRP custodiado por Metallicus en XRPL</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--orange)">→</span>XUSDC, XUSDT — recibos de stablecoins custodiadas por Metallicus</div>
+          <div class="tok-item"><span class="tok-icon" style="color:var(--orange)">→</span>XMT — MTL envuelto, no MTL nativo en Ethereum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">La distinción práctica en WebAuth</div>
+      <p>WebAuth ofrece dos modos distintos que el usuario debe entender. Cuando WebAuth te da una dirección para "recibir ETH" en el contexto de XPR Network, el ETH original queda en custodia de Metallicus en Ethereum, respaldando 1:1 tu XETH. Metallicus actúa como custodio institucional, exactamente como lo haría un exchange regulado con tus activos. Cuando WebAuth te da una dirección en la sección de Ethereum nativo de la billetera multicadena, ahí tú custodias el activo directamente. Son dos modos diferentes con niveles de custodia completamente distintos.</p>
+    </div>
+
+    <p>Esto no hace al sistema menos valioso. Un xToken de XPR Network es mejor que mantener el mismo activo en un exchange centralizado porque existe en una blockchain pública, es auditable on-chain en tiempo real, y el custodio tiene obligaciones legales verificables. Pero es distinto a autocustodiar directamente el activo subyacente. Con el token envuelto custodias el recibo, pero el activo original queda en manos del custodio Metallicus.</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN VI -->
+  <section class="sec" id="vision">
+    <div class="sec-tag">VI — La visión futura</div>
+    <h2>Hacia la eliminación progresiva de la custodia centralizada y los oráculos externos</h2>
+    <p>El estado actual de XPR Network con <strong>proton.wrap</strong> como bridge de custodia institucional y oracle feeds que consultan fuentes externas es una solución transitoria necesaria mientras el ecosistema madura. La visión a largo plazo del ecosistema Metallicus apunta hacia la eliminación progresiva de ambas dependencias.</p>
+
+    <h3>La BTC Virtual Machine: BTC nativo sin custodio institucional</h3>
+    <p>Cuando Metallicus lance la Bitcoin Virtual Machine como subred de Metal Blockchain, el BTC que corra ahí no será XBTC con custodia de Metallicus. Será BTC nativo operando bajo el mecanismo de consenso Snowman con compliance nativo del L0. El usuario tendrá autocustodia real del BTC en su propia subred sin depender de ningún custodio institucional. No habrá un contrato <strong>proton.wrap</strong> bloqueando BTC en Bitcoin y emitiendo un recibo en XPR Network. El BTC estará directamente en la subred con las claves del usuario. Lo mismo aplicará para otras Virtual Machines que Metallicus u otros desarrolladores desplieguen.</p>
+
+    <h3>Las subredes institucionales: cada institución custodia directamente</h3>
+    <p>Cuando una cooperativa de crédito tenga su propia subred soberana en Metal Blockchain, ella será la custodio de los activos de sus miembros en esa subred. La diferencia fundamental con el modelo actual de <strong>proton.wrap</strong> es que la cooperativa no depende de Metallicus como intermediario. La cooperativa ya tiene licencias de institución financiera regulada por la NCUA, que es un framework regulatorio superior al de una licencia de custodia de cripto. El compliance del L0, BSA, KYC, AML e ISO 20022, es nativo en el protocolo base y no requiere capas de software externas. La cooperativa custodia dentro de su framework regulatorio existente, no fuera de él.</p>
+    <p>Eso cambia fundamentalmente la ecuación de confianza. El usuario de esa cooperativa no confía en Metallicus: confía en su cooperativa, que es una institución que lleva décadas cumpliendo con la NCUA y tiene 144.7 millones de miembros en Estados Unidos.</p>
+
+    <h3>El precio formado adentro: la solución definitiva al problema del oráculo</h3>
+    <p>Cuando MetalDEX tenga el volumen dominante para activos regulados tokenizados, el precio de esos activos se determinará dentro del ecosistema. Los contratos de XPR Network podrán leer ese precio directamente del orderbook de MetalDEX sin consultar ninguna fuente externa. Los oracle feeds externos, en lugar de alimentar precios hacia adentro, pasarán a reportar los precios de MetalDEX hacia afuera. Bloomberg reporta los precios de NYSE porque NYSE es donde se forman los precios. Ese es el estado final.</p>
+
+    <div class="ibox ibox-orange">
+      <div class="ibox-tag" style="color:var(--orange)">Honestidad sobre lo que no sabemos</div>
+      <p>No está documentado públicamente cómo evolucionará el sistema de oracle feeds de XPR Network cuando migre al L0 como A-Chain. Es posible que los validadores de la subred asuman el rol de providers del oracle, integrando ambas funciones en un solo sistema. Eso eliminaría la separación actual entre block producers y oracle providers. Pero es una hipótesis razonable, no información confirmada. Lo que sí sabemos es que la arquitectura de Metal Blockchain permite esa integración. Lo que Metallicus decida hacer con ella cuando ocurra la migración es información que no está disponible públicamente hoy.</p>
+    </div>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="290" fill="#070F1C" rx="10"/>
+        <text x="350" y="20" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">ESTADO ACTUAL VS ESTADO FINAL DEL ECOSISTEMA</text>
+
+        <!-- CURRENT STATE -->
+        <text x="160" y="42" text-anchor="middle" fill="rgba(230,126,34,0.7)" font-family="Inter,sans-serif" font-size="11" font-weight="700">Estado actual</text>
+        <rect x="20" y="52" width="280" height="44" rx="6" fill="rgba(26,188,156,0.06)" stroke="rgba(26,188,156,0.3)" stroke-width="1.5"/>
+        <text x="160" y="70" text-anchor="middle" fill="#1ABC9C" font-family="monospace" font-size="10" font-weight="700">Metal Blockchain L0</text>
+        <text x="160" y="86" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="8">Solo METAL · AWM · Sin oráculos · Sin puentes</text>
+
+        <rect x="20" y="106" width="130" height="44" rx="5" fill="rgba(46,134,222,0.07)" stroke="rgba(46,134,222,0.25)" stroke-width="1"/>
+        <text x="85" y="124" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="9">XPR Network</text>
+        <text x="85" y="138" text-anchor="middle" fill="rgba(46,134,222,0.5)" font-family="monospace" font-size="7">oracle feeds nativos</text>
+
+        <rect x="170" y="106" width="130" height="44" rx="5" fill="rgba(230,126,34,0.07)" stroke="rgba(230,126,34,0.25)" stroke-width="1"/>
+        <text x="235" y="124" text-anchor="middle" fill="#E67E22" font-family="monospace" font-size="9">proton.wrap</text>
+        <text x="235" y="138" text-anchor="middle" fill="rgba(230,126,34,0.5)" font-family="monospace" font-size="7">custodia Metallicus</text>
+
+        <text x="160" y="168" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="7">XBTC, XETH, XXRP → recibos de custodia institucional</text>
+        <text x="160" y="180" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="7">precios desde fuentes externas (Binance, CoinGecko)</text>
+
+        <!-- DIVIDER -->
+        <line x1="335" y1="35" x2="335" y2="260" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- FUTURE STATE -->
+        <text x="525" y="42" text-anchor="middle" fill="rgba(26,188,156,0.7)" font-family="Inter,sans-serif" font-size="11" font-weight="700">Estado final</text>
+        <rect x="360" y="52" width="315" height="44" rx="6" fill="rgba(26,188,156,0.06)" stroke="rgba(26,188,156,0.3)" stroke-width="1.5"/>
+        <text x="517" y="70" text-anchor="middle" fill="#1ABC9C" font-family="monospace" font-size="10" font-weight="700">Metal Blockchain L0</text>
+        <text x="517" y="86" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="8">Solo METAL · AWM · Sin oráculos · Sin puentes</text>
+
+        <rect x="360" y="106" width="90" height="44" rx="5" fill="rgba(46,134,222,0.07)" stroke="rgba(46,134,222,0.25)" stroke-width="1"/>
+        <text x="405" y="122" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="8">XPR A-Chain</text>
+        <text x="405" y="134" text-anchor="middle" fill="rgba(46,134,222,0.4)" font-family="monospace" font-size="7">MetalDEX</text>
+        <text x="405" y="144" text-anchor="middle" fill="rgba(46,134,222,0.3)" font-family="monospace" font-size="6">precio formado adentro</text>
+
+        <rect x="460" y="106" width="90" height="44" rx="5" fill="rgba(39,174,96,0.07)" stroke="rgba(39,174,96,0.25)" stroke-width="1"/>
+        <text x="505" y="122" text-anchor="middle" fill="#27AE60" font-family="monospace" font-size="8">BTC VM</text>
+        <text x="505" y="134" text-anchor="middle" fill="rgba(39,174,96,0.4)" font-family="monospace" font-size="7">BTC nativo</text>
+        <text x="505" y="144" text-anchor="middle" fill="rgba(39,174,96,0.3)" font-family="monospace" font-size="6">sin custodio</text>
+
+        <rect x="560" y="106" width="110" height="44" rx="5" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+        <text x="615" y="120" text-anchor="middle" fill="#C9A84C" font-family="monospace" font-size="8">Cooperativa XYZ</text>
+        <text x="615" y="132" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-family="monospace" font-size="7">subred soberana</text>
+        <text x="615" y="144" text-anchor="middle" fill="rgba(201,168,76,0.3)" font-family="monospace" font-size="6">custodia propia</text>
+
+        <text x="517" y="168" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="7">cada activo en su subred nativa · cada institución custodia directamente</text>
+        <text x="517" y="180" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="7">precio formado en MetalDEX · oráculos externos reportan desde MetalDEX</text>
+      </svg>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CONCLUSIÓN -->
+  <section class="sec" id="conclusion">
+    <div class="sec-tag">VII — La conclusión</div>
+    <h2>El camino de tres capas: honesto sobre el presente, claro sobre la visión</h2>
+    <p>El ecosistema Metallicus resolvió el problema en capas porque el problema no es uno solo. En el L0, donde solo existe METAL y AWM, el problema del oráculo y el problema del puente no existen por diseño. En XPR Network, donde existen activos externos, los resolvió con sistemas propios sin dependencia de terceros como Chainlink, aunque con centralización de confianza en Metallicus como custodio y como configurador del oracle. Y la visión de largo plazo apunta hacia un ecosistema donde esa centralización se reduce progresivamente a medida que cada activo tiene su propia subred nativa y cada institución custodia directamente.</p>
+    <p>Lo que sabemos con certeza: Metallicus es una empresa regulada con identidades verificables on-chain, NMLS ID 2057807, 13 licencias de money transmitter activas, y acciones regulatorias documentadas que confirman que rinde cuentas. Lo que sabemos con honestidad: sus licencias son de money transmitter, no de custodio especializado de activos digitales. Y lo que sabemos como visión: la arquitectura de Metal Blockchain permite eliminar esa dependencia de custodia centralizada a medida que las Virtual Machines y las subredes institucionales se materialicen.</p>
+
+    <div class="final">
+      <div class="final-tag">La conclusión del análisis</div>
+      <p>En Metal Blockchain L0 no existen ni oráculos ni puentes porque no son necesarios. En XPR Network existen, y son propios del ecosistema sin dependencia de terceros. <strong>El estado actual es honesto: custodia institucional verificable de Metallicus.</strong></p>
+      <p>La visión final es más ambiciosa: cada activo en su subred nativa, cada institución custodiando directamente, el precio formado dentro del ecosistema. <strong>Esa arquitectura ya existe. El resto es tiempo.</strong></p>
+    </div>
+  </section>
+
+  <aside class="footnotes">
+    <div class="fn-title">Notas y referencias</div>
+    <div class="fn" id="fn1"><div class="fn-n">[1]</div><div class="fn-text">Chainlink (2022). "What Is a Chainlink Node Operator?" El problema del oráculo: los smart contracts no pueden acceder a datos externos por su naturaleza determinista. Los nodos oracle transfieren datos entre entornos on-chain y off-chain. <a href="https://chain.link/blog/what-is-a-chainlink-node-operator" target="_blank" rel="noopener">chain.link</a></div></div>
+    <div class="fn" id="fn2"><div class="fn-n">[2]</div><div class="fn-text">Metal X (2024). "Multi-Blockchain Support with the Metal X Bridge and XTokens." Los xTokens se crean depositando el token original desde su blockchain nativa para recibir una cantidad equivalente de XTokens en XPR Network. El activo original permanece en su blockchain nativa. <a href="https://metalx.com/learn/bridge" target="_blank" rel="noopener">metalx.com/learn/bridge</a></div></div>
+    <div class="fn" id="fn3"><div class="fn-n">[3]</div><div class="fn-text">Chainlink (2024). "Understanding Cross-Chain Bridge Hacks." Los puentes custodian grandes concentraciones de activos digitales que los convierten en objetivos de alto valor. <a href="https://chain.link/article/cross-chain-bridge-hacks" target="_blank" rel="noopener">chain.link</a></div></div>
+    <div class="fn" id="fn4"><div class="fn-n">[4]</div><div class="fn-text">Chainalysis (2022). "Ronin Network Hack." El atacante comprometió 5 de 9 claves privadas de validadores. El ataque tardó 6 días en detectarse. Total: $625 millones en ETH y USDC. <a href="https://www.chainalysis.com/blog/ronin-network-hack/" target="_blank" rel="noopener">chainalysis.com</a></div></div>
+    <div class="fn" id="fn5"><div class="fn-n">[5]</div><div class="fn-text">Chainalysis (2022). "Wormhole Bridge Hack." Bug en verificación de firmas de guardianes permitió acuñar 120.000 wETH sin colateral. Jump Crypto cubrió $320 millones. <a href="https://www.chainalysis.com/blog/wormhole-hack-february-2022/" target="_blank" rel="noopener">chainalysis.com</a></div></div>
+    <div class="fn" id="fn6"><div class="fn-n">[6]</div><div class="fn-text">CoinDesk (2022). "Nomad Bridge Drained of $190M in Chaotic Exploit." Mensaje raíz inicializado en cero hacía cualquier mensaje automáticamente válido. Múltiples actores copiaron el exploit simultáneamente tras publicarse en Twitter. <a href="https://www.coindesk.com/tech/2022/08/02/nomad-bridge-drained-of-190m-in-chaotic-exploit/" target="_blank" rel="noopener">coindesk.com</a></div></div>
+    <div class="fn" id="fn7"><div class="fn-n">[7]</div><div class="fn-text">The Block (2022). "Mango Markets exploiter manipulated token price to steal $117 million." El atacante infló el precio de MNGO en exchanges de baja liquidez. Los oráculos reportaron el precio manipulado como válido porque era el precio real de mercado. <a href="https://www.theblock.co/post/177269/mango-markets-exploiter-manipulated-token-price-to-steal-117-million" target="_blank" rel="noopener">theblock.co</a></div></div>
+    <div class="fn" id="fn8"><div class="fn-n">[8]</div><div class="fn-text">AMBCrypto (2025, noviembre 4). "Chainlink oracle glitch costs Moonwell $1M." Malfuncionamiento del price feed de Chainlink valoró 0.02 wrstETH en $5.8 millones. El atacante repitió el exploit 7 veces en 3 horas. <a href="https://ambcrypto.com/chainlink-oracle-glitch-costs-moonwell-1m-as-defi-suffers-another-exploit/" target="_blank" rel="noopener">ambcrypto.com</a></div></div>
+    <div class="fn" id="fn9"><div class="fn-n">[9]</div><div class="fn-text">DefiLlama (2024). "Hacks Dashboard." Más de $2.8 mil millones perdidos en hacks de puentes cross-chain, representando el 40% de todo el valor hackeado en Web3. <a href="https://defillama.com/hacks" target="_blank" rel="noopener">defillama.com/hacks</a></div></div>
+    <div class="fn" id="fn10"><div class="fn-n">[10]</div><div class="fn-text">Ava Labs (2024). "Avalanche Warp Messaging Overview." AWM usa los validadores del L0 para verificar mensajes entre subredes sin puentes ni oráculos externos. La seguridad de la comunicación es equivalente a la seguridad de la red principal. <a href="https://docs.avax.network/cross-chain/avalanche-warp-messaging/overview" target="_blank" rel="noopener">docs.avax.network</a></div></div>
+    <div class="fn" id="fn11"><div class="fn-n">[11]</div><div class="fn-text">XPR Network Explorer (2026, julio 12). Contrato proton.wrap — pestaña Contract, tabla addresses. Muestra direcciones de depósito personales por usuario en cada red nativa (ETH, BTC, USDC, etc.) vinculadas a cuentas de XPR Network. <a href="https://explorer.xprnetwork.org/account/proton.wrap" target="_blank" rel="noopener">explorer.xprnetwork.org</a></div></div>
+    <div class="fn" id="fn12"><div class="fn-n">[12]</div><div class="fn-text">XPR Network Explorer (2026, julio 12). Cuenta swapscold — pestaña Keys. Permiso owner: threshold 2/4 entre metalcfo, swapsledger2, swapsledger3, swapsledger4. Permiso security: threshold 1/8 incluyendo glenn y metalcfo. Glenn Mariën es cofundador y CSO de Metallicus Inc. <a href="https://explorer.xprnetwork.org/account/swapscold" target="_blank" rel="noopener">explorer.xprnetwork.org</a></div></div>
+    <div class="fn" id="fn13"><div class="fn-n">[13]</div><div class="fn-text">XPR Network Explorer (2026, julio 12). Cuenta proton.wrap — pestaña Tokens. Total de activos custodiados: $25.17 millones en 48 tokens. METAL: $9M, XUSDC: $5.68M, XXRP: $2.36M, XETH: $1.74M, XUSDT: $1.37M. <a href="https://explorer.xprnetwork.org/account/proton.wrap" target="_blank" rel="noopener">explorer.xprnetwork.org</a></div></div>
+    <div class="fn" id="fn14"><div class="fn-n">[14]</div><div class="fn-text">NMLS Consumer Access (2026, julio 12). Metallicus Inc. NMLS ID 2057807. 13 licencias activas de money transmitter en Alabama, Arkansas, Connecticut, Georgia, Idaho, Louisiana, Ohio, Oregon, Rhode Island, South Dakota, Vermont y Washington. Acciones regulatorias con Ohio (2023, 2025) y Texas (2022). <a href="https://www.nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/2057807" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></div></div>
+    <div class="fn" id="fn15"><div class="fn-n">[15]</div><div class="fn-text">XPRNetwork (2024). "proton-oracle — Smart contracts for XPR Network Oracle system." Repositorio oficial en GitHub con código fuente del sistema de oracle feeds de XPR Network. Contrato oracle.px con acciones setfeed, feed, y tabla feeds con providers autorizados. <a href="https://github.com/XPRNetwork/proton-oracle" target="_blank" rel="noopener">github.com/XPRNetwork/proton-oracle</a></div></div>
+    <div class="fn" id="fn16"><div class="fn-n">[16]</div><div class="fn-text">XPR Network Explorer (2026, julio 12). Sección Oracles. Feed BTC/USD (índice 4): 8 providers a.oracles hasta h.oracles, mean_median, ventana 210 puntos, actualización 60 segundos. Consenso $63,556. Feed XPR/BTC (índice 2): 4 providers bot1-bot4, ventana 14 días. Cuenta swapscold activa como oracle provider. <a href="https://explorer.xprnetwork.org/oracles" target="_blank" rel="noopener">explorer.xprnetwork.org/oracles</a></div></div>
+    <div class="fn" id="fn17"><div class="fn-n">[17]</div><div class="fn-text">David Schwartz, CTO de Ripple y co-creador del XRP Ledger. Declaraciones públicas sobre el dilema estructural de los puentes y la solución de subredes soberanas interoperables. Schwartz es una de las autoridades técnicas más reconocidas en infraestructura blockchain para pagos institucionales. Su análisis del problema de los puentes aplica directamente a la arquitectura de Metal Blockchain con AWM nativo.</div></div>
+  </aside>
+
+  <div class="disclaimer">
+    Este artículo es informativo y no constituye asesoría financiera.<br>
+    Todas las referencias son verificables en las fuentes citadas. Publicado julio 2026.
+  </div>
+</main>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('prog').style.width = (s/h*100)+'%';
+  });
+</script>
+</body>
+</html>
