@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Las cooperativas de crédito — AllanTDBN</title>
+  <meta name="description" content="Las cooperativas de crédito son el sistema financiero alternativo más grande de Estados Unidos. 144.7 millones de miembros, 2.43 billones en activos. Y Metal Blockchain es su mejor aliado tecnológico." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0A1628; --card:#0F1E33; --deep:#070F1C;
+      --line:rgba(255,255,255,0.07); --line-gold:rgba(201,168,76,0.22);
+      --gold:#C9A84C; --gold-dim:rgba(201,168,76,0.09);
+      --blue:#2E86DE; --blue-dim:rgba(46,134,222,0.09);
+      --green:#27AE60; --green-dim:rgba(39,174,96,0.09);
+      --red:#E74C3C; --red-dim:rgba(231,76,60,0.09);
+      --teal:#1ABC9C; --teal-dim:rgba(26,188,156,0.09);
+      --orange:#E67E22; --orange-dim:rgba(230,126,34,0.09);
+      --text:#F0EDE5; --text2:#A8B4C4; --dim:#546070;
+      --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+      --rainbow:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#27ae60,#2e86de,#9b59b6);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text2); font-family:var(--sans); font-size:16px; line-height:1.75; }
+    #prog { position:fixed; top:0; left:0; height:3px; background:var(--rainbow); width:0%; z-index:200; transition:width .1s linear; }
+    .hero { position:relative; overflow:hidden; background:var(--deep); padding:88px 32px 72px; text-align:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--rainbow); }
+    .hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+    .hero-inner { position:relative; z-index:1; max-width:860px; margin:0 auto; }
+    .hero-tag { font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; display:inline-block; }
+    .hero h1 { font-size:clamp(22px,4vw,44px); font-weight:900; line-height:1.1; color:var(--text); letter-spacing:-.03em; margin-bottom:14px; }
+    .hero h1 em { font-style:normal; color:var(--gold); }
+    .hero-sub { font-size:clamp(15px,2vw,18px); color:var(--text2); line-height:1.75; max-width:640px; margin:0 auto 40px; text-align:center; }
+    .hero-stats { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:8px; }
+    .hstat-box { background:rgba(26,188,156,0.08); border:1px solid rgba(26,188,156,0.3); border-radius:8px; padding:14px 20px; text-align:center; min-width:150px; flex:1 1 150px; max-width:180px; }
+    .hstat-v { font-family:var(--mono); font-size:18px; font-weight:800; color:var(--teal); }
+    .hstat-l { font-size:11px; color:var(--dim); margin-top:4px; line-height:1.4; }
+    .wrap { max-width:820px; margin:0 auto; padding:64px 32px 80px; }
+    .sec { margin-bottom:72px; }
+    .sec-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+    .sec h2 { font-size:clamp(20px,3vw,30px); font-weight:800; color:var(--text); line-height:1.2; margin-bottom:24px; letter-spacing:-.02em; }
+    h3 { font-size:17px; font-weight:700; color:var(--text); margin:28px 0 12px; }
+    p { margin-bottom:18px; color:var(--text2); text-align:justify; }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text); font-weight:600; }
+    .fn-ref { font-family:var(--mono); font-size:10px; color:var(--gold); font-weight:700; vertical-align:super; text-decoration:none; margin-left:1px; }
+    .div { height:1px; background:linear-gradient(90deg,transparent,var(--line-gold),transparent); margin:64px 0; }
+    .pull { border-left:3px solid var(--gold); padding:4px 0 4px 24px; margin:28px 0; }
+    .pull p { font-size:18px; font-weight:600; color:var(--text); line-height:1.55; font-style:italic; margin:0; text-align:left; }
+    .ibox { border-radius:8px; padding:22px 26px; margin:24px 0; }
+    .ibox-gold { background:var(--gold-dim); border:1px solid var(--line-gold); border-left:3px solid var(--gold); }
+    .ibox-teal { background:var(--teal-dim); border:1px solid rgba(26,188,156,0.25); border-left:3px solid var(--teal); }
+    .ibox-red { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-left:3px solid var(--red); }
+    .ibox-blue { background:var(--blue-dim); border:1px solid rgba(46,134,222,0.2); border-left:3px solid var(--blue); }
+    .ibox-orange { background:var(--orange-dim); border:1px solid rgba(230,126,34,0.2); border-left:3px solid var(--orange); }
+    .ibox-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+    .ibox p { font-size:15px; margin:0; line-height:1.75; text-align:left; }
+
+    /* TIMELINE */
+    .timeline { display:flex; flex-direction:column; gap:0; margin:28px 0; }
+    .tl-item { display:flex; gap:20px; padding:16px 0; position:relative; }
+    .tl-item::before { content:''; position:absolute; left:52px; top:0; bottom:0; width:1px; background:rgba(201,168,76,0.2); }
+    .tl-item:last-child::before { display:none; }
+    .tl-year { flex-shrink:0; font-family:var(--mono); font-size:12px; font-weight:700; color:var(--gold); width:44px; padding-top:4px; position:relative; z-index:1; }
+    .tl-dot { flex-shrink:0; width:12px; height:12px; border-radius:50%; background:var(--gold); border:2px solid var(--bg); margin-top:6px; position:relative; z-index:1; }
+    .tl-body { flex:1; }
+    .tl-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; }
+    .tl-text { font-size:13px; color:var(--text2); line-height:1.65; text-align:left; }
+
+    /* COMPARISON CARDS */
+    .compare-grid { display:flex; gap:2px; flex-wrap:wrap; margin:28px 0; }
+    .cmp-col { flex:1 1 240px; border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+    .cmp-bank .cmp-header { background:var(--red-dim); border-top:2px solid var(--red); border-bottom:1px solid var(--line); }
+    .cmp-cu .cmp-header { background:var(--teal-dim); border-top:2px solid var(--teal); border-bottom:1px solid var(--line); }
+    .cmp-header { padding:16px 20px; }
+    .cmp-title { font-size:15px; font-weight:800; margin-bottom:4px; }
+    .cmp-bank .cmp-title { color:var(--red); }
+    .cmp-cu .cmp-title { color:var(--teal); }
+    .cmp-sub { font-family:var(--mono); font-size:10px; color:var(--dim); }
+    .cmp-body { padding:16px 20px; }
+    .cmp-item { display:flex; gap:10px; font-size:13px; color:var(--text2); line-height:1.6; margin-bottom:8px; }
+    .cmp-item:last-child { margin-bottom:0; }
+    .cmp-icon { flex-shrink:0; font-weight:700; }
+    .cmp-bank .cmp-icon { color:var(--red); }
+    .cmp-cu .cmp-icon { color:var(--teal); }
+
+    /* DATA TABLE */
+    .data-table { width:100%; border-collapse:collapse; margin:28px 0; font-size:13px; border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+    .data-table th { background:var(--card); color:var(--dim); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:10px 14px; border-bottom:1px solid var(--line); text-align:left; }
+    .data-table td { padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:first-child td { background:rgba(26,188,156,0.04); }
+    .cu-name { font-weight:700; color:var(--text); }
+    .badge { display:inline-block; padding:3px 9px; border-radius:4px; font-family:var(--mono); font-size:10px; font-weight:700; }
+    .b-teal { background:rgba(26,188,156,0.15); color:var(--teal); }
+    .b-gold { background:rgba(201,168,76,0.15); color:var(--gold); }
+    .b-blue { background:rgba(46,134,222,0.15); color:var(--blue); }
+
+    /* WAR STATS */
+    .war-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2px; margin:28px 0; }
+    .war-stat { background:var(--card); border:1px solid var(--line); border-top:2px solid var(--red); border-radius:6px; padding:18px 20px; text-align:center; }
+    .war-stat-v { font-family:var(--mono); font-size:22px; font-weight:800; color:var(--red); margin-bottom:6px; }
+    .war-stat-l { font-size:12px; color:var(--dim); line-height:1.4; }
+
+    /* SVG */
+    .svg-wrap { display:flex; justify-content:center; margin:32px 0; }
+
+    /* FINAL */
+    .final { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line-gold); border-radius:8px; padding:48px 40px; margin-top:64px; text-align:center; }
+    .final::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--rainbow); }
+    .final-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; }
+    .final p { font-size:clamp(15px,2.5vw,19px); color:var(--text); line-height:1.75; max-width:640px; margin:0 auto 16px; font-weight:500; text-align:center; }
+    .final p:last-child { margin-bottom:0; }
+    .final strong { color:var(--gold); }
+
+    .footnotes { border-top:1px solid var(--line); padding-top:48px; margin-top:64px; }
+    .fn-title { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:28px; }
+    .fn { display:flex; gap:16px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+    .fn:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .fn-n { flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); padding-top:2px; }
+    .fn-text { font-size:13px; color:var(--dim); line-height:1.65; text-align:left; }
+    .fn-text a { color:var(--gold); text-decoration:underline; text-underline-offset:3px; }
+    .disclaimer { text-align:center; padding:32px; font-size:12px; color:var(--dim); border-top:1px solid var(--line); margin-top:48px; }
+    @media(max-width:600px){ .hero,.wrap{padding-left:20px;padding-right:20px} .final{padding:32px 20px} }
+  </style>
+</head>
+<body>
+<div id="prog"></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Sistema financiero · Cooperativas · Metallicus</div>
+    <h1>Las cooperativas de crédito:<br>el sistema financiero paralelo<br>que Wall Street quiere eliminar.<br><em>Y por qué Metallicus es su mejor aliado.</em></h1>
+    <p class="hero-sub">Nacieron hace más de un siglo porque los bancos negaban crédito a las personas de recursos modestos. Hoy son el sistema financiero alternativo más grande de Estados Unidos. Y siguen bajo ataque.</p>
+    <div class="hero-stats">
+      <div class="hstat-box"><div class="hstat-v">144.7M</div><div class="hstat-l">miembros en EEUU</div></div>
+      <div class="hstat-box" style="border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.08)"><div class="hstat-v" style="color:var(--gold)">$2.43T</div><div class="hstat-l">activos totales</div></div>
+      <div class="hstat-box" style="border-color:rgba(46,134,222,0.3);background:rgba(46,134,222,0.08)"><div class="hstat-v" style="color:var(--blue)">4.287</div><div class="hstat-l">cooperativas activas</div></div>
+      <div class="hstat-box" style="border-color:rgba(39,174,96,0.3);background:rgba(39,174,96,0.08)"><div class="hstat-v" style="color:var(--green)">115</div><div class="hstat-l">años de historia</div></div>
+      <div class="hstat-box" style="border-color:rgba(230,126,34,0.3);background:rgba(230,126,34,0.08)"><div class="hstat-v" style="color:var(--orange)">95%</div><div class="hstat-l">participantes FedNow son cooperativas y bancos comunitarios</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- I: ORIGEN -->
+  <section class="sec" id="origen">
+    <div class="sec-tag">I — El origen</div>
+    <h2>Cuando los bancos negaban el crédito: por qué nacieron las cooperativas</h2>
+    <p>Las raíces del movimiento cooperativo de crédito moderno están en la Europa del siglo XIX. En Alemania, Hermann Schulze-Delitzsch y Friedrich Raiffeisen establecieron los principios fundamentales que aún rigen a la mayoría de cooperativas del mundo: los miembros son los dueños, los préstamos se destinan a propósitos productivos, y el carácter del prestatario importa más que su capacidad de pago porque en una cooperativa se presta el dinero de los propios miembros.<a href="#fn1" class="fn-ref">[1]</a></p>
+    <p>En 1901, el periodista y taquígrafo del Parlamento canadiense Alphonse Desjardins organizó La Caisse Populaire de Lévis en Quebec, la primera cooperativa de crédito en Norteamérica. La motivación fue directa: los prestamistas cobraban tasas abusivas a las familias trabajadoras porque los bancos las ignoraban. El primer depósito de esa cooperativa fue de apenas 10 centavos. La primera colección total de todos los miembros sumó 26 dólares. Desjardins la operó durante años a su propio costo para demostrar su propósito y valor al mundo.<a href="#fn2" class="fn-ref">[2]</a></p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">El principio que lo cambió todo</div>
+      <p>La idea original era simple: solo los miembros de la cooperativa podían pedir préstamos ahí. Los préstamos se harían para propósitos "prudentes y productivos". Y el deseo de pagar, el carácter del prestatario, se consideraría más importante que la capacidad de ingresos, porque después de todo estaban prestando su propio dinero y el de sus amigos. Estos principios aún gobiernan la mayoría de las cooperativas de crédito en el mundo.<a href="#fn3" class="fn-ref">[3]</a></p>
+    </div>
+
+    <p>Desjardins ayudó a establecer la primera cooperativa en Estados Unidos en 1909 en Manchester, New Hampshire: la St. Mary's Cooperative Credit Association. Ese mismo año, el comerciante de Boston Edward Filene y el comisionado bancario de Massachusetts Pierre Jay promulgaron la Massachusetts Credit Union Act, la primera legislación general de cooperativas en Estados Unidos. Filene eligió deliberadamente la palabra "credit" para disociarse de los préstamos predatorios al consumidor, y "union" para mostrar solidaridad con los trabajadores.<a href="#fn4" class="fn-ref">[4]</a></p>
+    <p>Filene contrató al abogado de pobreza Roy Bergengren para expandir el movimiento. Su trabajo estableció las bases del sistema de cooperativas americano tal como existe hoy. Franklin Roosevelt, quien conocía a Filene desde años antes, firmó el Federal Credit Union Act en 1934, garantizando que los ciudadanos pudieran acceder a cooperativas sin fines de lucro en cualquier estado del país.<a href="#fn5" class="fn-ref">[5]</a></p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">1901</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Primera cooperativa de Norteamérica</div>
+          <div class="tl-text">Alphonse Desjardins organiza La Caisse Populaire de Lévis en Quebec. Primera colección total: 26 dólares.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1909</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Primera cooperativa en EEUU y primera ley estatal</div>
+          <div class="tl-text">St. Mary's Cooperative Credit Association en Manchester, New Hampshire. Massachusetts Credit Union Act: primera legislación general en EEUU, promovida por Edward Filene y Pierre Jay.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1934</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Federal Credit Union Act</div>
+          <div class="tl-text">Roosevelt firma la ley que permite crear cooperativas en cualquier estado. Base del sistema actual. En 1937, el Congreso exime a las cooperativas federales de impuestos federales y estatales.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1969</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Pico histórico: 23.866 cooperativas</div>
+          <div class="tl-text">El número máximo de cooperativas en la historia de EEUU. Activos totales: 16.000 millones de dólares. Desde entonces comienza la consolidación.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1971</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Seguro federal de depósitos</div>
+          <div class="tl-text">La NCUA lanza el National Credit Union Share Insurance Fund, casi 40 años después de que los bancos obtuvieran el seguro federal de depósitos. Esto confirma una brecha histórica en el acceso a infraestructura regulatoria.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">Lanzamiento de FedNow</div>
+          <div class="tl-text">La Reserva Federal lanza su primer nuevo sistema de pagos en más de 50 años. Las cooperativas y bancos comunitarios representan el 95% de sus participantes. Por primera vez tienen acceso a la misma infraestructura de pagos instantáneos que los grandes bancos.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2025</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-title">La guerra tributaria se intensifica</div>
+          <div class="tl-text">La ABA, la ICBA y 52 asociaciones bancarias estatales presionan al Congreso para eliminar o limitar la exención tributaria de las cooperativas. Record de 22 adquisiciones de bancos por cooperativas en 2024.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- II: CÓMO FUNCIONA -->
+  <section class="sec" id="modelo">
+    <div class="sec-tag">II — El modelo</div>
+    <h2>Cómo funciona una cooperativa: la estructura que los bancos no pueden replicar</h2>
+    <p>Una cooperativa de crédito no es un banco pequeño. Es una institución financiera con una arquitectura de incentivos radicalmente diferente. Cada cliente es simultáneamente un miembro y un propietario. Los depositantes no son clientes de una empresa: son los dueños de la institución y tienen derecho a voto en la elección de la junta directiva, una persona un voto, independientemente de cuánto dinero tengan depositado.<a href="#fn6" class="fn-ref">[6]</a></p>
+    <p>Las cooperativas son organizaciones sin fines de lucro. Eso no significa que no generen ingresos: significa que esos ingresos no se distribuyen entre accionistas externos sino que vuelven a los miembros en la forma de dividendos sobre depósitos más altos, tasas de préstamo más bajas, y menores comisiones. La NCUA, Administración Nacional de Cooperativas de Crédito, es el regulador federal equivalente a la FDIC para los bancos.<a href="#fn7" class="fn-ref">[7]</a></p>
+
+    <div class="compare-grid">
+      <div class="cmp-col cmp-bank">
+        <div class="cmp-header">
+          <div class="cmp-title">Banco comercial</div>
+          <div class="cmp-sub">Modelo de accionistas externos</div>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-item"><span class="cmp-icon">→</span>Propiedad de accionistas externos a la institución</div>
+          <div class="cmp-item"><span class="cmp-icon">→</span>Objetivo: maximizar retornos para accionistas</div>
+          <div class="cmp-item"><span class="cmp-icon">→</span>Ganancias distribuidas como dividendos a inversores</div>
+          <div class="cmp-item"><span class="cmp-icon">→</span>Gobernanza por junta directiva nombrada por accionistas</div>
+          <div class="cmp-item"><span class="cmp-icon">→</span>El cliente es fuente de ingreso, no propietario</div>
+          <div class="cmp-item"><span class="cmp-icon">→</span>Paga impuestos federales y estatales sobre ingresos</div>
+        </div>
+      </div>
+      <div class="cmp-col cmp-cu">
+        <div class="cmp-header">
+          <div class="cmp-title">Cooperativa de crédito</div>
+          <div class="cmp-sub">Modelo de miembros-propietarios</div>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-item"><span class="cmp-icon">✓</span>Propiedad de sus propios miembros-depositantes</div>
+          <div class="cmp-item"><span class="cmp-icon">✓</span>Objetivo: maximizar beneficios para sus miembros</div>
+          <div class="cmp-item"><span class="cmp-icon">✓</span>Excedentes vuelven a miembros: mejores tasas y menores comisiones</div>
+          <div class="cmp-item"><span class="cmp-icon">✓</span>Gobernanza democrática: un miembro, un voto</div>
+          <div class="cmp-item"><span class="cmp-icon">✓</span>El cliente es el propietario y el beneficiario simultáneamente</div>
+          <div class="cmp-item"><span class="cmp-icon">✓</span>Exenta de impuestos federales y estatales sobre ingresos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull">
+      <p>La diferencia entre un banco y una cooperativa no es de tamaño ni de servicios. Es de para quién trabaja la institución. Un banco maximiza retornos para accionistas externos. Una cooperativa maximiza beneficios para sus propios miembros. Esas dos estructuras generan incentivos radicalmente distintos en cada decisión de negocio.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- III: LOS NÚMEROS -->
+  <section class="sec" id="numeros">
+    <div class="sec-tag">III — Los números</div>
+    <h2>El tamaño real del sistema: 2.43 billones de dólares que Wall Street no controla</h2>
+    <p>Al cierre del cuarto trimestre de 2025, según los datos oficiales de la NCUA, el sistema de cooperativas de crédito federalmente aseguradas de Estados Unidos tenía 4.287 instituciones con 144.7 millones de miembros, activos totales de 2.43 billones de dólares, y préstamos vigentes de 1.72 billones.<a href="#fn8" class="fn-ref">[8]</a></p>
+    <p>El ingreso neto del sistema en 2025 fue de 18.800 millones de dólares, un 31.5% más que en 2024. El ratio de patrimonio neto del sistema fue de 11.24%, reflejando la solidez financiera del sector. El 88% de las cooperativas federalmente aseguradas reportó ingresos netos positivos en el tercer trimestre de 2025.<a href="#fn9" class="fn-ref">[9]</a></p>
+
+    <h3>Las cooperativas más grandes de Estados Unidos</h3>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Cooperativa</th>
+            <th>Activos</th>
+            <th>Miembros</th>
+            <th>Sede</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cu-name">Navy Federal Credit Union</td>
+            <td><span class="badge b-teal">$180B+</span></td>
+            <td>14.2 millones</td>
+            <td>Virginia</td>
+          </tr>
+          <tr>
+            <td class="cu-name">State Employees' Credit Union</td>
+            <td><span class="badge b-teal">$52B+</span></td>
+            <td>2.7 millones</td>
+            <td>Carolina del Norte</td>
+          </tr>
+          <tr>
+            <td class="cu-name">Pentagon Federal Credit Union</td>
+            <td><span class="badge b-gold">$35B+</span></td>
+            <td>2.9 millones</td>
+            <td>Virginia</td>
+          </tr>
+          <tr>
+            <td class="cu-name">Boeing Employees Credit Union</td>
+            <td><span class="badge b-gold">$29B+</span></td>
+            <td>1.4 millones</td>
+            <td>Washington</td>
+          </tr>
+          <tr>
+            <td class="cu-name">SchoolsFirst Federal Credit Union</td>
+            <td><span class="badge b-gold">$28B+</span></td>
+            <td>1.3 millones</td>
+            <td>California</td>
+          </tr>
+          <tr>
+            <td class="cu-name">Golden 1 Credit Union</td>
+            <td><span class="badge b-blue">$20B+</span></td>
+            <td>1.1 millones</td>
+            <td>California</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--dim);margin-top:-16px">Fuente: NCUA Q4 2024. Las 20 cooperativas más grandes tienen activos superiores a 10.000 millones cada una. Más de 400 cooperativas superan los 1.000 millones en activos.<a href="#fn10" class="fn-ref">[10]</a></p>
+
+    <div class="ibox ibox-teal">
+      <div class="ibox-tag" style="color:var(--teal)">El dato que contextualiza la escala</div>
+      <p>Con 2.43 billones de dólares en activos, el sistema de cooperativas de crédito americano es comparable en tamaño al PIB del Reino Unido. No son instituciones pequeñas de nicho: son el sistema financiero alternativo más grande de Estados Unidos. El activo promedio por cooperativa fue de 519 millones de dólares en 2024, versus 179 millones en 2014, un incremento del 116% ajustado por inflación en una sola década.<a href="#fn11" class="fn-ref">[11]</a></p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- IV: CONSOLIDACIÓN -->
+  <section class="sec" id="consolidacion">
+    <div class="sec-tag">IV — La consolidación</div>
+    <h2>Menos cooperativas, más fuertes: la paradoja de 55 años de consolidación</h2>
+    <p>El número de cooperativas federalmente aseguradas cayó de un pico histórico de 23.866 en 1969 a 4.287 en Q4 2025, una reducción del 82% en 55 años. En términos absolutos, más de 19.000 cooperativas desaparecieron. Sin embargo, los activos totales y el número de miembros han crecido de forma constante durante ese mismo período.<a href="#fn12" class="fn-ref">[12]</a></p>
+    <p>Las causas de la consolidación son estructurales y no han cambiado: competencia de grandes bancos con recursos tecnológicos superiores, costos regulatorios desproporcionados para instituciones pequeñas, y fusiones voluntarias para ganar escala suficiente y sobrevivir. La consolidación está seleccionando a las más resilientes, no destruyendo el movimiento. Desde 2014, mientras el número de cooperativas caía, el número de miembros creció un 43.4%, de 99.2 millones a 144.7 millones.<a href="#fn13" class="fn-ref">[13]</a></p>
+
+    <div class="ibox ibox-orange">
+      <div class="ibox-tag" style="color:var(--orange)">La paradoja de la consolidación</div>
+      <p>Las cooperativas que desaparecen son principalmente las más pequeñas, con menos de 50 millones en activos. Las que sobreviven son más grandes, más capitalizadas, y sirven a más miembros. El sistema se está concentrando, pero en el proceso se está volviendo más capaz de adoptar infraestructura tecnológica avanzada. Las cooperativas que hoy tienen activos superiores a 1.000 millones son más de 400.<a href="#fn14" class="fn-ref">[14]</a></p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- V: LA GUERRA -->
+  <section class="sec" id="guerra">
+    <div class="sec-tag">V — La guerra con los bancos</div>
+    <h2>La guerra con los bancos: por qué nunca va a terminar</h2>
+    <p>La tensión entre bancos comerciales y cooperativas de crédito no es un conflicto reciente ni circunstancial. Es un conflicto estructural que existe desde que las cooperativas obtuvieron su exención tributaria federal en 1937. Los bancos compiten con las cooperativas por los mismos clientes, ofrecen los mismos servicios, pero las cooperativas operan sin la carga tributaria de los bancos. Eso no es un detalle menor: es una ventaja competitiva permanente que los bancos nunca han aceptado como legítima.<a href="#fn15" class="fn-ref">[15]</a></p>
+
+    <div class="war-stats">
+      <div class="war-stat">
+        <div class="war-stat-v">$32B</div>
+        <div class="war-stat-l">Costo estimado de la exención tributaria 2025-2034 según el Departamento del Tesoro</div>
+      </div>
+      <div class="war-stat">
+        <div class="war-stat-v">$10.1B</div>
+        <div class="war-stat-l">Costo de la exención solo entre 2020 y 2024 según el Joint Committee on Taxation</div>
+      </div>
+      <div class="war-stat">
+        <div class="war-stat-v">100+</div>
+        <div class="war-stat-l">Adquisiciones de bancos por cooperativas desde 2011, récord de 22 en 2024</div>
+      </div>
+      <div class="war-stat">
+        <div class="war-stat-v">2x</div>
+        <div class="war-stat-l">Las cooperativas han duplicado sus activos desde 2017</div>
+      </div>
+    </div>
+
+    <p>La American Bankers Association opera sitios como reformcreditunions.com argumentando que la exención tributaria ya no está justificada porque las cooperativas se han alejado de su misión original de servir a personas de recursos modestos. La Independent Community Bankers of America urge al Congreso a limitar la exención para cooperativas con más de 1.000 millones en activos.<a href="#fn16" class="fn-ref">[16]</a></p>
+    <p>La respuesta de America's Credit Unions es directa: en muchos casos las cooperativas están tomando el lugar de pequeños bancos que están cerrando, sirviendo a comunidades que los bancos han abandonado. La pregunta que los bancos no responden es quién sirve a esas comunidades si eliminan a las cooperativas.<a href="#fn17" class="fn-ref">[17]</a></p>
+
+    <div class="pull">
+      <p>La respuesta de los bancos no es mejorar su servicio sino atacar la estructura que permite a las cooperativas competir. Eso revela quién está bajo presión real: no las cooperativas, que crecen en miembros y activos, sino los bancos pequeños que se están quedando sin mercado.</p>
+    </div>
+
+    <div class="ibox ibox-red">
+      <div class="ibox-tag" style="color:var(--red)">El intento de 2025 que fracasó</div>
+      <p>En 2025 el Congreso republicano consideró seriamente eliminar la exención tributaria de las cooperativas en el One Big Beautiful Bill Act como mecanismo para financiar recortes de impuestos. La provisión fue finalmente excluida del texto final del proyecto aprobado. La presión continúa y el debate no está cerrado.<a href="#fn18" class="fn-ref">[18]</a></p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- VI: FEDNOW -->
+  <section class="sec" id="fednow">
+    <div class="sec-tag">VI — La oportunidad histórica</div>
+    <h2>FedNow y las cooperativas: la primera vez en 50 años que compiten en igualdad</h2>
+    <p>Antes de FedNow, las cooperativas dependían de bancos corresponsales para procesar pagos en tiempo real. Eso las ponía en una posición de desventaja estructural: sus propios competidores controlaban parte de la infraestructura que necesitaban para operar. FedNow, lanzado en julio de 2023, es el primer sistema de pagos instantáneos de la Reserva Federal en más de 50 años. Por primera vez, cooperativas y grandes bancos participan en la misma infraestructura de pagos en igualdad de condiciones.<a href="#fn19" class="fn-ref">[19]</a></p>
+
+    <div class="ibox ibox-teal">
+      <div class="ibox-tag" style="color:var(--teal)">El dato que lo dice todo</div>
+      <p>Las cooperativas y bancos comunitarios representan más del 95% de los más de 1.700 participantes actuales en FedNow. Los grandes bancos dominan RTP, el sistema de pagos instantáneos propiedad de The Clearing House, que a su vez es propiedad de un consorcio de grandes bancos incluyendo Citi, JPMorgan, Bank of America y Wells Fargo. Cada sistema de pagos tiene sus propietarios, y esos propietarios no son neutrales.<a href="#fn20" class="fn-ref">[20]</a></p>
+    </div>
+
+    <p>FedNow procesó más de 853.000 millones de dólares en pagos durante 2025 y registró un crecimiento interanual del volumen de transacciones del 1.200% en el primer trimestre de 2025. Sin embargo, aproximadamente 8.100 bancos y cooperativas, representando el 85% del mercado americano, todavía no han adoptado ninguna solución de pagos instantáneos.<a href="#fn21" class="fn-ref">[21]</a></p>
+    <p>Las cooperativas que no adoptan pagos instantáneos sufren lo que los analistas del sector describen como una erosión silenciosa de relevancia: cuando los miembros encuentran experiencias de pago más rápidas en otros servicios, sus expectativas cambian y eventualmente su lealtad también. Las cooperativas que lideran la adopción de FedNow están posicionándose para capturar esa demanda.<a href="#fn22" class="fn-ref">[22]</a></p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- VII: METALLICUS -->
+  <section class="sec" id="metallicus">
+    <div class="sec-tag">VII — La alianza estructural</div>
+    <h2>Metallicus y las cooperativas: dos modelos diseñados para el mismo propósito</h2>
+    <p>La alineación entre Metal Blockchain y las cooperativas de crédito no es circunstancial ni de marketing. Es una alineación estructural entre dos modelos diseñados con el mismo propósito: crear infraestructura financiera que sirve a sus usuarios en lugar de extraer valor de ellos.</p>
+    <p>Las cooperativas nacieron porque los bancos negaban crédito a las personas de recursos modestos. Metal Blockchain nació porque el sistema financiero tradicional excluye a instituciones que no pueden pagar la infraestructura tecnológica de los grandes bancos. Ambos comparten la misma filosofía: sin intermediarios que capturen el valor entre el usuario y el servicio.<a href="#fn23" class="fn-ref">[23]</a></p>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="340" fill="#070F1C" rx="12"/>
+        <text x="350" y="26" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="10" letter-spacing="3">ARQUITECTURA DE VALOR PARA COOPERATIVAS</text>
+
+        <!-- Reserva Federal -->
+        <rect x="230" y="40" width="240" height="48" rx="8" fill="rgba(46,134,222,0.1)" stroke="rgba(46,134,222,0.4)" stroke-width="2"/>
+        <text x="350" y="62" text-anchor="middle" fill="#2E86DE" font-family="Inter,sans-serif" font-size="12" font-weight="800">RESERVA FEDERAL</text>
+        <text x="350" y="78" text-anchor="middle" fill="rgba(46,134,222,0.6)" font-family="monospace" font-size="9">FedNow · ISO 20022 · 24/7/365</text>
+
+        <!-- Arrow -->
+        <line x1="350" y1="88" x2="350" y2="116" stroke="rgba(26,188,156,0.5)" stroke-width="2"/>
+        <polygon points="344,112 350,124 356,112" fill="rgba(26,188,156,0.5)"/>
+
+        <!-- Metallicus -->
+        <rect x="190" y="124" width="320" height="56" rx="8" fill="rgba(26,188,156,0.08)" stroke="rgba(26,188,156,0.4)" stroke-width="2"/>
+        <text x="350" y="148" text-anchor="middle" fill="#1ABC9C" font-family="Inter,sans-serif" font-size="13" font-weight="800">METALLICUS + METAL BLOCKCHAIN</text>
+        <text x="350" y="164" text-anchor="middle" fill="rgba(26,188,156,0.6)" font-family="monospace" font-size="9">proveedor FedNow · BSA nativo · KYC nativo · ISO 20022 nativo · Snowman</text>
+        <text x="350" y="175" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="8">4 certificaciones FedNow · única blockchain con cumplimiento nativo</text>
+
+        <!-- Arrow down -->
+        <line x1="350" y1="180" x2="350" y2="204" stroke="rgba(26,188,156,0.4)" stroke-width="1.5"/>
+        <polygon points="344,200 350,212 356,200" fill="rgba(26,188,156,0.4)"/>
+
+        <!-- Cooperativas -->
+        <rect x="50" y="212" width="140" height="52" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <text x="120" y="234" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="9" font-weight="700">Cooperativa A</text>
+        <text x="120" y="248" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">subred soberana</text>
+        <text x="120" y="258" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="7">+ stablecoin propia</text>
+
+        <rect x="210" y="212" width="140" height="52" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <text x="280" y="234" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="9" font-weight="700">Cooperativa B</text>
+        <text x="280" y="248" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">subred soberana</text>
+        <text x="280" y="258" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="7">+ stablecoin propia</text>
+
+        <rect x="370" y="212" width="140" height="52" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <text x="440" y="234" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="9" font-weight="700">Cooperativa C</text>
+        <text x="440" y="248" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="8">subred soberana</text>
+        <text x="440" y="258" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="7">+ stablecoin propia</text>
+
+        <rect x="530" y="212" width="120" height="52" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <text x="590" y="238" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">···</text>
+        <text x="590" y="254" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="8">N cooperativas</text>
+
+        <!-- Lines from Metal to coops -->
+        <line x1="120" y1="204" x2="120" y2="212" stroke="rgba(26,188,156,0.2)" stroke-width="1"/>
+        <line x1="280" y1="204" x2="280" y2="212" stroke="rgba(26,188,156,0.2)" stroke-width="1"/>
+        <line x1="440" y1="204" x2="440" y2="212" stroke="rgba(26,188,156,0.2)" stroke-width="1"/>
+        <line x1="590" y1="204" x2="590" y2="212" stroke="rgba(26,188,156,0.2)" stroke-width="1"/>
+
+        <!-- AWM label -->
+        <text x="350" y="300" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">comunicación nativa entre subredes via AWM · sin puentes externos</text>
+        <line x1="100" y1="290" x2="630" y2="290" stroke="rgba(26,188,156,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+      </svg>
+    </div>
+
+    <h3>Lo que cambia concretamente para una cooperativa que adopta Metal Blockchain</h3>
+    <p>Metallicus es proveedor certificado de FedNow con las cuatro certificaciones: Send, Receive, Liquidity Management y Request for Payment. Cualquier cooperativa que adopte la infraestructura de Metal Blockchain a través de Metallicus hereda automáticamente esa conectividad con FedNow sin proceso de certificación adicional propio.<a href="#fn24" class="fn-ref">[24]</a></p>
+    <p>Adicionalmente, esa cooperativa hereda compliance BSA nativo, KYC y AML nativos en el protocolo, ISO 20022 nativo para mensajería bancaria, y la capacidad de emitir su propia moneda estable en su propia subred soberana. Puede ofrecer a sus miembros pagos instantáneos, activos digitales propios, y productos financieros que hoy solo están disponibles en grandes bancos o plataformas fintech de terceros, sin depender de ninguno de ellos.<a href="#fn25" class="fn-ref">[25]</a></p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">Por qué los grandes bancos nunca ofrecerán esto voluntariamente</div>
+      <p>Los grandes bancos son intermediarios por naturaleza. Su modelo de negocio depende de capturar el valor entre el usuario y el servicio financiero. Una tecnología que elimina ese rol de intermediario es una amenaza existencial para su modelo. Las cooperativas, al no tener accionistas externos que proteger ni márgenes de intermediación que defender, no tienen ese conflicto de intereses. Pueden adoptar tecnología que sirve a sus miembros aunque eso reduzca sus propios márgenes, porque reducir los márgenes de la institución para beneficiar a los miembros es exactamente para lo que fueron diseñadas.</p>
+    </div>
+
+    <p>Esto explica también por qué las cooperativas y bancos comunitarios representan el 95% de los participantes en FedNow mientras los grandes bancos se concentran en RTP, el sistema que ellos mismos controlan. No es que los grandes bancos rechacen FedNow por razones técnicas. Es que FedNow es un sistema de la Reserva Federal que ningún banco privado controla. Y eso reduce su ventaja de intermediación.<a href="#fn26" class="fn-ref">[26]</a></p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CONCLUSIÓN -->
+  <section class="sec">
+    <div class="sec-tag">VIII — Conclusión</div>
+    <h2>El mismo espíritu, un siglo de distancia</h2>
+    <p>En 1901, Alphonse Desjardins organizó una cooperativa con 26 dólares y la idea de que las personas de recursos modestos merecían acceso al crédito en las mismas condiciones que los ricos. En 2026, Metallicus está construyendo la infraestructura que puede dar a las cooperativas de crédito el acceso a tecnología blockchain institucional en las mismas condiciones que los grandes bancos.</p>
+    <p>La guerra con los bancos tiene más de un siglo. La presión para eliminar la exención tributaria es real y no va a desaparecer. Pero las cooperativas que adopten infraestructura tecnológica avanzada tendrán una ventaja competitiva que ningún cambio tributario puede eliminar: la capacidad de ofrecer a sus miembros servicios que hoy solo existen en instituciones que no trabajan para sus usuarios sino para sus accionistas.</p>
+    <p>Con 144.7 millones de miembros y 2.43 billones en activos, las cooperativas de crédito americanas son demasiado grandes para ignorar y demasiado importantes para el tejido financiero de las comunidades americanas para desaparecer. Lo que necesitan es la infraestructura tecnológica que las ponga en igualdad de condiciones con los gigantes que las atacan. Metal Blockchain fue diseñado para ser exactamente eso.</p>
+
+    <div class="final">
+      <div class="final-tag">La conclusión del análisis</div>
+      <p>Las cooperativas nacieron porque los bancos no servían a todos. Metal Blockchain nació porque la infraestructura financiera digital no servía a las instituciones que no son bancos. <strong>Dos modelos con un siglo de diferencia, diseñados para el mismo propósito.</strong></p>
+      <p>La pregunta no es si las cooperativas adoptarán blockchain. Es cuál blockchain adoptarán. <strong>Y solo una fue diseñada para el sistema financiero regulado desde el primer tornillo.</strong></p>
+    </div>
+  </section>
+
+  <aside class="footnotes">
+    <div class="fn-title">Notas y referencias</div>
+    <div class="fn" id="fn1"><div class="fn-n">[1]</div><div class="fn-text">Carolinas Credit Union League (2025). "History of Credit Unions." Los pioneros alemanes Hermann Schulze-Delitzsch y Friedrich Raiffeisen establecieron las características fundamentales del movimiento cooperativo en el siglo XIX. <a href="https://carolinasleague.org/about/history/history-of-credit-unions/" target="_blank" rel="noopener">carolinasleague.org</a></div></div>
+    <div class="fn" id="fn2"><div class="fn-n">[2]</div><div class="fn-text">California's Credit Unions (2022). "Credit Union History." La primera colección total de todos los miembros de La Caisse Populaire de Lévis fue de solo $26. Desjardins la operó durante años a su propio costo. <a href="https://www.californiascreditunions.org/about/cu-movement/" target="_blank" rel="noopener">californiascreditunions.org</a></div></div>
+    <div class="fn" id="fn3"><div class="fn-n">[3]</div><div class="fn-text">California's Credit Unions (2022). "Credit Union History." Los principios fundacionales del movimiento: solo miembros pueden pedir préstamos, propósitos prudentes y productivos, el carácter importa más que la capacidad de pago. "These principles still govern most of the credit unions in the world." <a href="https://www.californiascreditunions.org/about/cu-movement/" target="_blank" rel="noopener">californiascreditunions.org</a></div></div>
+    <div class="fn" id="fn4"><div class="fn-n">[4]</div><div class="fn-text">CUSO Magazine (2020). "Edward Filene, Father of the American Credit Union System." Filene eligió el nombre "credit union": "credit" para disociarse de préstamos predatorios y "union" para mostrar solidaridad con los trabajadores. <a href="https://cusomag.com/2020/06/01/edward-filene-father-of-the-american-credit-union-system/" target="_blank" rel="noopener">cusomag.com</a></div></div>
+    <div class="fn" id="fn5"><div class="fn-n">[5]</div><div class="fn-text">BeSmart (2023). "4 Important People Involved in the History of American Credit Unions." Franklin Roosevelt conocía a Filene desde sus viajes y firmó el Federal Credit Union Act en 1934. <a href="https://www.besmartee.com/blog/credit-union-history-america/" target="_blank" rel="noopener">besmartee.com</a> — NCUA Historical Timeline: <a href="https://ncua.gov/about/historical-timeline" target="_blank" rel="noopener">ncua.gov/about/historical-timeline</a></div></div>
+    <div class="fn" id="fn6"><div class="fn-n">[6]</div><div class="fn-text">NCUA (2025). "What is a Credit Union?" Las cooperativas son organizaciones cooperativas sin fines de lucro exentas de impuestos. Sus clientes son miembros-propietarios con derecho a voto. <a href="https://mycreditunion.gov/about/what-credit-union" target="_blank" rel="noopener">mycreditunion.gov</a></div></div>
+    <div class="fn" id="fn7"><div class="fn-n">[7]</div><div class="fn-text">NCUA (2025). "About NCUA." La Administración Nacional de Cooperativas de Crédito es el regulador federal equivalente a la FDIC para las cooperativas. Opera el National Credit Union Share Insurance Fund. <a href="https://ncua.gov/about" target="_blank" rel="noopener">ncua.gov/about</a></div></div>
+    <div class="fn" id="fn8"><div class="fn-n">[8]</div><div class="fn-text">NCUA (2026, marzo 6). "NCUA Releases Fourth Quarter 2025 Credit Union System Performance Data." Datos oficiales Q4 2025: 4.287 cooperativas, 144.7 millones de miembros, $2.43 billones en activos totales, $1.72 billones en préstamos. <a href="https://ncua.gov/newsroom/press-release/2026/ncua-releases-fourth-quarter-2025-credit-union-system-performance-data" target="_blank" rel="noopener">ncua.gov</a></div></div>
+    <div class="fn" id="fn9"><div class="fn-n">[9]</div><div class="fn-text">NCUA (2026, marzo 6). "NCUA Releases Fourth Quarter 2025 Credit Union System Performance Data." Ingreso neto 2025: $18.800 millones, +31.5% respecto a 2024. Net worth ratio: 11.24%. <a href="https://ncua.gov/newsroom/press-release/2026/ncua-releases-fourth-quarter-2025-credit-union-system-performance-data" target="_blank" rel="noopener">ncua.gov</a></div></div>
+    <div class="fn" id="fn10"><div class="fn-n">[10]</div><div class="fn-text">Self Financial (2025). "Largest Credit Unions in the U.S." Navy Federal Credit Union: $180B+ en activos, 14.2 millones de miembros. State Employees' Credit Union: $52B+. Datos de NCUA Q4 2024. <a href="https://www.self.inc/info/credit-union-statistics/" target="_blank" rel="noopener">self.inc</a></div></div>
+    <div class="fn" id="fn11"><div class="fn-n">[11]</div><div class="fn-text">Tax Foundation (2025, junio 5). "Credit Union Bank Income Tax Treatment." El activo promedio por cooperativa fue de $519 millones en 2024 versus $179 millones en 2014, un incremento del 116% ajustado por inflación. <a href="https://taxfoundation.org/blog/credit-union-bank-income-taxes/" target="_blank" rel="noopener">taxfoundation.org</a></div></div>
+    <div class="fn" id="fn12"><div class="fn-n">[12]</div><div class="fn-text">Wikipedia / San Francisco Fed (2005). El número de cooperativas alcanzó su pico en 1969 con 23.866 instituciones. San Francisco Fed documenta la reducción de 23.866 en 1969 a 9.274 en 2005. <a href="https://en.wikipedia.org/wiki/Credit_unions_in_the_United_States" target="_blank" rel="noopener">wikipedia.org</a> — <a href="https://www.frbsf.org/research-and-insights/publications/economic-letter/2005/08/credit-union-failures-and-insurance-fund-losses-1971-2004/" target="_blank" rel="noopener">frbsf.org</a></div></div>
+    <div class="fn" id="fn13"><div class="fn-n">[13]</div><div class="fn-text">Self Financial (2025). "Largest Credit Unions in the U.S." En Q4 2024 había 142.3 millones de miembros, un 43.4% más que en Q4 2014 (99.2 millones). <a href="https://www.self.inc/info/credit-union-statistics/" target="_blank" rel="noopener">self.inc</a></div></div>
+    <div class="fn" id="fn14"><div class="fn-n">[14]</div><div class="fn-text">NCUA (2026, marzo 6). Q4 2025: El número de cooperativas complejas con activos superiores a $500 millones creció a 739 desde 728 el año anterior. Más de 400 cooperativas superan $1.000 millones. <a href="https://ncua.gov/newsroom/press-release/2026/ncua-releases-fourth-quarter-2025-credit-union-system-performance-data" target="_blank" rel="noopener">ncua.gov</a></div></div>
+    <div class="fn" id="fn15"><div class="fn-n">[15]</div><div class="fn-text">CUSO Magazine (2021). "Death and Taxes: A Tale of Bank vs. Credit Union Lobbying." La ABA afirma: "The credit union tax exemption is no longer justified." Historia del conflicto desde los años 1990. <a href="https://cusomag.com/2021/09/16/death-and-taxes-a-tale-of-bank-vs-credit-union-lobbying/" target="_blank" rel="noopener">cusomag.com</a></div></div>
+    <div class="fn" id="fn16"><div class="fn-n">[16]</div><div class="fn-text">CU Times (2025, marzo 12). "ICBA Changes Strategy: Remove Tax-Exempt Status for Credit Unions Over $1 Billion in Assets." La ICBA cambió su estrategia para 2025 urgiéndole al Congreso eliminar la exención para cooperativas con más de $1B en activos. <a href="https://www.cutimes.com/2025/03/12/icba-changes-strategy-remove-tax-exempt-status-for-credit-unions-over-1-billiion-in-assets/" target="_blank" rel="noopener">cutimes.com</a></div></div>
+    <div class="fn" id="fn17"><div class="fn-n">[17]</div><div class="fn-text">Punchbowl News (2025, febrero 4). "The quiet lobbying war you might have missed." Jim Nussle, CEO de America's Credit Unions: "In many instances, credit unions are taking the place of many of those small banks in service to communities." <a href="https://punchbowl.news/article/vault/lobbying-war-financial-services/" target="_blank" rel="noopener">punchbowl.news</a></div></div>
+    <div class="fn" id="fn18"><div class="fn-n">[18]</div><div class="fn-text">Wikipedia (2026). "Credit unions in the United States." En 2025 el Congreso republicano consideró eliminar la exención tributaria en el One Big Beautiful Bill Act. La provisión fue excluida del texto final aprobado. <a href="https://en.wikipedia.org/wiki/Credit_unions_in_the_United_States" target="_blank" rel="noopener">wikipedia.org</a></div></div>
+    <div class="fn" id="fn19"><div class="fn-n">[19]</div><div class="fn-text">Federal Reserve Financial Services (2025, julio 16). "FedNow Service: Two Years of Growth and Innovation." FedNow es el primer nuevo sistema de pagos de la Reserva Federal en más de 50 años, con más de 1.400 participantes. <a href="https://www.frbservices.org/news/fed360/issues/071625/fednow-service-two-years-growth-innovation" target="_blank" rel="noopener">frbservices.org</a></div></div>
+    <div class="fn" id="fn20"><div class="fn-n">[20]</div><div class="fn-text">CUInsight (2025, julio 24). "FedNow enters year three with increasing users, volumes and competition." Las cooperativas y bancos comunitarios representan más del 95% de los participantes en FedNow. <a href="https://www.cuinsight.com/fednow-enters-year-three-with-increasing-users-volumes-and-competition/" target="_blank" rel="noopener">cuinsight.com</a></div></div>
+    <div class="fn" id="fn21"><div class="fn-n">[21]</div><div class="fn-text">Catalyst Corp (2026, julio). "Instant Payments, Strategic Decisions: What it Means for Credit Unions." FedNow procesó más de $853 billones en pagos durante 2025. El 85% del mercado aún no ha adoptado pagos instantáneos. <a href="https://www.catalystcorp.org/resources/news-insights/july-2026/instant-payments-strategic-decisions-what-it-means-for-credit-unions" target="_blank" rel="noopener">catalystcorp.org</a></div></div>
+    <div class="fn" id="fn22"><div class="fn-n">[22]</div><div class="fn-text">Catalyst Corp (2026, julio). "Instant Payments, Strategic Decisions." "Credit unions that do not offer FedNow instant payments may not notice a member impact immediately. Instead, the impact tends to emerge gradually through what can best be described as a silent erosion of relevance." <a href="https://www.catalystcorp.org/resources/news-insights/july-2026/instant-payments-strategic-decisions-what-it-means-for-credit-unions" target="_blank" rel="noopener">catalystcorp.org</a></div></div>
+    <div class="fn" id="fn23"><div class="fn-n">[23]</div><div class="fn-text">Metallicus (2024). Documentación oficial de Metal Blockchain. La arquitectura de capa cero con BSA, KYC/AML, ISO 20022 e identidad WebAuth nativos fue diseñada específicamente para instituciones financieras reguladas. <a href="https://metalblockchain.org" target="_blank" rel="noopener">metalblockchain.org</a></div></div>
+    <div class="fn" id="fn24"><div class="fn-n">[24]</div><div class="fn-text">CUInsight / Metallicus (2026, febrero). "Metallicus Expands FedNow Service Capabilities With Request for Payment (RFP) Certification." Las cuatro certificaciones FedNow de Metallicus: Send, Receive, Liquidity Management y Request for Payment. <a href="https://www.cuinsight.com/press-release/metallicus-expands-fednow-service-capabilities-with-request-for-payment-rfp-certification/" target="_blank" rel="noopener">cuinsight.com</a></div></div>
+    <div class="fn" id="fn25"><div class="fn-n">[25]</div><div class="fn-text">Metallicus / Cointelegraph (2023, mayo 11). "Federal Reserve's FedNow will connect with Metal Blockchain." Marshall Hayner: "La conexión con FedNow puede permitir la formación de cadenas bancarias interconectadas... también permitirá a los bancos prepararse para stablecoins emitidas por bancos que pueden interactuar dentro de una canasta de monedas estables." <a href="https://cointelegraph.com/news/federal-reserve-s-fednow-will-integrate-with-metal-blockchain" target="_blank" rel="noopener">cointelegraph.com</a></div></div>
+    <div class="fn" id="fn26"><div class="fn-n">[26]</div><div class="fn-text">Payments Dive (2024, enero 18). "FedNow draws some banks, as others lag." The Clearing House, operador de RTP, es propiedad de grandes bancos incluyendo Citi, JPMorgan, Bank of America y Wells Fargo. Los mismos bancos que compiten con las cooperativas controlan el sistema de pagos alternativo a FedNow. <a href="https://www.paymentsdive.com/news/federal-reserve-fednow-bank-adoption-instant-payments-realtime/704908/" target="_blank" rel="noopener">paymentsdive.com</a></div></div>
+  </aside>
+
+  <div class="disclaimer">
+    Este artículo es informativo y no constituye asesoría financiera.<br>
+    Todas las referencias son verificables en las fuentes citadas. Publicado julio 2026.
+  </div>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('prog').style.width = (s/h*100)+'%';
+  });
+</script>
+</body>
+</html>

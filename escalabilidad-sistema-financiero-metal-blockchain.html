@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escalabilidad del sistema financiero global — AllanTDBN</title>
+  <meta name="description" content="El sistema financiero global necesita 500.000 TPS en picos, 100.000 instituciones con infraestructura soberana, e interoperabilidad nativa. Un análisis matemático de qué mecanismo de consenso puede lograrlo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0A1628; --card:#0F1E33; --deep:#070F1C;
+      --line:rgba(255,255,255,0.07); --line-gold:rgba(201,168,76,0.22);
+      --gold:#C9A84C; --gold-dim:rgba(201,168,76,0.09);
+      --blue:#2E86DE; --blue-dim:rgba(46,134,222,0.09);
+      --green:#27AE60; --green-dim:rgba(39,174,96,0.09);
+      --red:#E74C3C; --red-dim:rgba(231,76,60,0.09);
+      --teal:#1ABC9C; --teal-dim:rgba(26,188,156,0.09);
+      --orange:#E67E22; --orange-dim:rgba(230,126,34,0.09);
+      --purple:#9B59B6; --purple-dim:rgba(155,89,182,0.09);
+      --text:#F0EDE5; --text2:#A8B4C4; --dim:#546070;
+      --mono:'JetBrains Mono',monospace; --sans:'Inter',system-ui,sans-serif;
+      --rainbow:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#27ae60,#2e86de,#9b59b6);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text2); font-family:var(--sans); font-size:16px; line-height:1.75; }
+    #prog { position:fixed; top:0; left:0; height:3px; background:var(--rainbow); width:0%; z-index:200; transition:width .1s linear; }
+
+    .hero { position:relative; overflow:hidden; background:var(--deep); padding:88px 32px 72px; text-align:center; border-bottom:1px solid var(--line); }
+    .hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--rainbow); }
+    .hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+    .hero-inner { position:relative; z-index:1; max-width:900px; margin:0 auto; }
+    .hero-tag { font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; margin-bottom:24px; display:inline-block; }
+    .hero h1 { font-size:clamp(20px,3.5vw,40px); font-weight:900; line-height:1.15; color:var(--text); letter-spacing:-.03em; margin-bottom:14px; }
+    .hero h1 em { font-style:normal; color:var(--teal); }
+    .hero-sub { font-size:clamp(14px,2vw,17px); color:var(--text2); line-height:1.75; max-width:680px; margin:0 auto 40px; text-align:center; }
+    .hero-stats { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:8px; }
+    .hstat-box { border-radius:8px; padding:12px 18px; text-align:center; flex:1 1 140px; max-width:175px; }
+    .hstat-v { font-family:var(--mono); font-size:18px; font-weight:800; margin-bottom:4px; }
+    .hstat-l { font-size:10px; color:var(--dim); line-height:1.4; }
+
+    .wrap { max-width:820px; margin:0 auto; padding:64px 32px 80px; }
+    .sec { margin-bottom:72px; }
+    .sec-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+    .sec h2 { font-size:clamp(18px,3vw,28px); font-weight:800; color:var(--text); line-height:1.2; margin-bottom:24px; letter-spacing:-.02em; }
+    h3 { font-size:16px; font-weight:700; color:var(--text); margin:28px 0 10px; }
+    p { margin-bottom:18px; color:var(--text2); text-align:justify; }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text); font-weight:600; }
+    .fn-ref { font-family:var(--mono); font-size:10px; color:var(--gold); font-weight:700; vertical-align:super; text-decoration:none; margin-left:1px; }
+    .div { height:1px; background:linear-gradient(90deg,transparent,var(--line-gold),transparent); margin:64px 0; }
+    .pull { border-left:3px solid var(--gold); padding:4px 0 4px 24px; margin:28px 0; }
+    .pull p { font-size:17px; font-weight:600; color:var(--text); line-height:1.55; font-style:italic; margin:0; text-align:left; }
+    .ibox { border-radius:8px; padding:20px 24px; margin:24px 0; }
+    .ibox-gold { background:var(--gold-dim); border:1px solid var(--line-gold); border-left:3px solid var(--gold); }
+    .ibox-teal { background:var(--teal-dim); border:1px solid rgba(26,188,156,0.25); border-left:3px solid var(--teal); }
+    .ibox-red { background:var(--red-dim); border:1px solid rgba(231,76,60,0.2); border-left:3px solid var(--red); }
+    .ibox-blue { background:var(--blue-dim); border:1px solid rgba(46,134,222,0.2); border-left:3px solid var(--blue); }
+    .ibox-orange { background:var(--orange-dim); border:1px solid rgba(230,126,34,0.2); border-left:3px solid var(--orange); }
+    .ibox-tag { font-family:var(--mono); font-size:10px; letter-spacing:.12em; font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+    .ibox p { font-size:14px; margin:0; line-height:1.75; text-align:left; }
+    .svg-wrap { display:flex; justify-content:center; margin:32px 0; }
+
+    /* CONSENSUS CARDS */
+    .consensus-list { display:flex; flex-direction:column; gap:3px; margin:28px 0; }
+    .consensus-card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:20px 24px; display:grid; grid-template-columns:200px 1fr; gap:20px; }
+    .cc-left { border-right:1px solid var(--line); padding-right:20px; }
+    .cc-name { font-size:14px; font-weight:800; margin-bottom:4px; }
+    .cc-type { font-family:var(--mono); font-size:10px; color:var(--dim); margin-bottom:10px; }
+    .cc-users { font-size:12px; color:var(--text2); line-height:1.5; }
+    .cc-right { }
+    .cc-stat { display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; font-size:13px; color:var(--text2); line-height:1.5; }
+    .cc-label { font-family:var(--mono); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; flex-shrink:0; padding-top:2px; }
+    .cc-problem { margin-top:10px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--dim); line-height:1.6; }
+
+    /* BIG TABLE */
+    .big-table { width:100%; border-collapse:collapse; margin:28px 0; font-size:11px; border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+    .big-table th { background:var(--card); color:var(--dim); font-family:var(--mono); font-size:8px; letter-spacing:.08em; text-transform:uppercase; padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; }
+    .big-table td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    .big-table tr:last-child td { border-bottom:none; }
+    .big-table tr.hl td { background:rgba(26,188,156,0.04); }
+    .proj-n { font-weight:700; color:var(--text); font-size:12px; }
+    .badge { display:inline-block; padding:2px 7px; border-radius:3px; font-family:var(--mono); font-size:9px; font-weight:700; white-space:nowrap; }
+    .bn { background:rgba(26,188,156,0.15); color:var(--teal); }
+    .bp { background:rgba(241,196,15,0.15); color:#F1C40F; }
+    .br { background:rgba(231,76,60,0.15); color:#E8A09A; }
+    .bg { background:rgba(39,174,96,0.15); color:#7ECDA0; }
+    .bo { background:rgba(230,126,34,0.15); color:var(--orange); }
+
+    /* CALC SECTION */
+    .calc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:2px; margin:28px 0; }
+    .calc-card { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px; border-top:2px solid var(--teal); text-align:center; }
+    .calc-op { font-family:var(--mono); font-size:11px; color:var(--dim); margin-bottom:8px; }
+    .calc-v { font-family:var(--mono); font-size:20px; font-weight:800; color:var(--teal); margin-bottom:4px; }
+    .calc-l { font-size:12px; color:var(--text2); line-height:1.4; }
+
+    /* FINAL */
+    .final { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line-gold); border-radius:8px; padding:48px 40px; margin-top:64px; text-align:center; }
+    .final::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--rainbow); }
+    .final-tag { font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; }
+    .final p { font-size:clamp(14px,2.5vw,18px); color:var(--text); line-height:1.75; max-width:640px; margin:0 auto 14px; font-weight:500; text-align:center; }
+    .final p:last-child { margin-bottom:0; }
+    .final strong { color:var(--gold); }
+
+    .footnotes { border-top:1px solid var(--line); padding-top:48px; margin-top:64px; }
+    .fn-title { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; margin-bottom:28px; }
+    .fn { display:flex; gap:14px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+    .fn:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .fn-n { flex-shrink:0; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--gold); padding-top:2px; }
+    .fn-text { font-size:12px; color:var(--dim); line-height:1.65; text-align:left; }
+    .fn-text a { color:var(--gold); text-decoration:underline; text-underline-offset:3px; }
+    .disclaimer { text-align:center; padding:32px; font-size:12px; color:var(--dim); border-top:1px solid var(--line); margin-top:48px; }
+    @media(max-width:600px){ .hero,.wrap{padding-left:18px;padding-right:18px} .final{padding:28px 18px} .consensus-card{grid-template-columns:1fr;} .cc-left{border-right:none;padding-right:0;border-bottom:1px solid var(--line);padding-bottom:12px;} }
+  </style>
+</head>
+<body>
+<div id="prog"></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Escalabilidad · Consenso · Infraestructura financiera global</div>
+    <h1>¿Puede el sistema financiero global<br>correr sobre blockchain?<br><em>Un análisis de escalabilidad, mecanismos<br>de consenso y restricciones matemáticas</em></h1>
+    <p class="hero-sub">El sistema financiero global opera mediante sistemas paralelos independientes cuya suma de capacidad en pico simultáneo extremo supera 1 millón de TPS. En condiciones normales el throughput agregado está entre 100.000 y 300.000 TPS. Solo un mecanismo de consenso puede dar infraestructura soberana a cada institución simultáneamente. Y la razón es matemática, no de marketing.</p>
+    <div class="hero-stats">
+      <div class="hstat-box" style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.25)">
+        <div class="hstat-v" style="color:var(--red)">1M+</div>
+        <div class="hstat-l">TPS pico agregado de todos los sistemas financieros en paralelo</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25)">
+        <div class="hstat-v" style="color:var(--gold)">200K+</div>
+        <div class="hstat-l">instituciones financieras reguladas globales</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(26,188,156,0.08);border:1px solid rgba(26,188,156,0.25)">
+        <div class="hstat-v" style="color:var(--teal)">20</div>
+        <div class="hstat-l">nodos consultados por Snowman, siempre, sin importar el tamaño de la red</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(26,188,156,0.08);border:1px solid rgba(26,188,156,0.25)">
+        <div class="hstat-v" style="color:var(--teal)">&lt;0.5s</div>
+        <div class="hstat-l">finality de Metal Blockchain a cualquier escala</div>
+      </div>
+      <div class="hstat-box" style="background:rgba(26,188,156,0.08);border:1px solid rgba(26,188,156,0.25)">
+        <div class="hstat-v" style="color:var(--teal)">∞</div>
+        <div class="hstat-l">límite teórico de validadores en Snowman</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- SECCIÓN 0 -->
+  <section class="sec" id="problema">
+    <div class="sec-tag">0 — El problema correcto</div>
+    <h2>Tres requisitos simultáneos que ningún sistema puede sacrificar</h2>
+    <p>La pregunta de qué blockchain puede servir como infraestructura del sistema financiero global no tiene una respuesta de marketing. Tiene una respuesta matemática. Hay tres requisitos que el sistema financiero impone simultáneamente, y cualquier arquitectura que no cumpla los tres simultáneamente no puede ser la infraestructura del sistema financiero global. No importa cuánto capital tenga el proyecto, ni cuántos bancos lo respalden, ni cuántos años lleva en desarrollo.</p>
+    <p>El primer requisito es TPS suficiente para el volumen real del sistema financiero global en condiciones de pico. El segundo es capacidad de dar infraestructura soberana a decenas de miles de instituciones de forma simultánea, cada una con sus propias reglas, su propia moneda, y su propio governance. El tercero es interoperabilidad nativa entre todas esas instituciones con compliance automático, sin puentes externos que introduzcan sus propios puntos de fallo. Si un mecanismo de consenso falla en cualquiera de los tres, no puede ser la infraestructura del sistema financiero global. Eso no es una opinión: es una restricción matemática que el análisis siguiente va a demostrar.<a href="#fn1" class="fn-ref">[1]</a></p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">La restricción que define todo lo demás</div>
+      <p>El costo de mensajería de un mecanismo de consenso determina cuántos validadores puede tener antes de colapsar bajo su propio peso de comunicación. En los sistemas BFT clásicos, ese costo es O(N²): duplicar validadores cuadruplica los mensajes necesarios. En Snowman, el costo es O(1) por nodo porque cada nodo siempre consulta exactamente 20 nodos sin importar el tamaño total de la red. No es que el costo crezca lentamente: es que no crece en absoluto. Esa diferencia matemática es lo que separa a los mecanismos de consenso del siglo XX de los del siglo XXI.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN I: TPS -->
+  <section class="sec" id="tps">
+    <div class="sec-tag">I — Los números reales</div>
+    <h2>Los sistemas de pago que mueven el mundo y las TPS que requieren</h2>
+    <p>Para entender qué infraestructura necesita el sistema financiero global hay que partir de los datos reales de los sistemas que ya existen en producción. Esos sistemas no son equivalentes entre sí. Hay tres categorías distintas que la gente frecuentemente confunde y que tienen requerimientos de TPS completamente distintos.<a href="#fn2" class="fn-ref">[2]</a></p>
+
+    <h3>Las tres capas del sistema financiero global</h3>
+    <p><strong>Primera capa — Sistemas de autorización y pagos retail:</strong> son los que procesan autorizaciones en tiempo real para consumidores y comercios. Cuando pagas con tu tarjeta Visa en un comercio, lo que ocurre en ese instante no es que el dinero se mueva: es que Visa consulta al banco emisor si tienes fondos y autoriza la transacción en milisegundos. El dinero real se mueve horas después en un proceso de liquidación separado que pasa por sistemas interbancarios como ACH en EEUU o SEPA en Europa. Visa y Mastercard son redes de mensajería de autorización, no de transferencia de dinero. Los volúmenes son los más altos del sistema porque hay cientos de millones de personas haciendo transacciones pequeñas simultáneamente. Aquí están Alipay, WeChat Pay, Visa, Mastercard, y UPI India.</p>
+    <p><strong>Segunda capa — Sistemas de liquidación final institucional:</strong> son los que mueven el dinero real entre instituciones financieras. Son tres tipos distintos que operan en paralelo. Primero, los sistemas de liquidación bruta en tiempo real de cada banco central: Fedwire en EEUU mueve dinero entre bancos americanos con cuenta en la Reserva Federal, TARGET2 del Banco Central Europeo hace lo mismo en Europa, BOJ-NET en Japón, CHAPS en el Reino Unido. Cada banco central tiene su propio sistema para su jurisdicción, no son parte de Fedwire sino equivalentes regionales independientes. Segundo, la DTCC que es un sistema distinto y separado: no mueve dinero sino valores, acciones, bonos, ETFs americanos. Cuando compras una acción, la transferencia del efectivo puede pasar por Fedwire pero la transferencia de la acción en sí pasa por la DTCC. Son activos distintos con procesos de liquidación distintos. La DTCC necesita 19.000 TPS en su pico extremo según su propio benchmark de 2018.</p>
+    <p><strong>Tercera capa — Sistemas de mensajería financiera:</strong> Swift no es un sistema de pagos ni de autorización. Es un sistema de mensajería que envía instrucciones seguras entre instituciones sobre cómo mover dinero en los sistemas de la segunda capa. Swift no mueve dinero: coordina quién lo mueve, cuándo, y hacia dónde. Por eso sus TPS son bajos, 580 mensajes por segundo promedio en 2024, aunque cada mensaje puede representar transacciones de cualquier tamaño.</p>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="330" fill="#070F1C" rx="10"/>
+        <text x="350" y="20" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">TPS DE SISTEMAS FINANCIEROS REALES EN PRODUCCIÓN</text>
+        <!-- Scale: max 544000 → bar height max 220px -->
+        <!-- Alipay 544000 → 220 -->
+        <rect x="20" y="62" width="52" height="220" rx="3" fill="rgba(231,76,60,0.7)"/>
+        <text x="46" y="57" text-anchor="middle" fill="#E74C3C" font-family="monospace" font-size="7" font-weight="700">544K</text>
+        <text x="46" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">Alipay</text>
+        <text x="46" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">pico 2019</text>
+        <!-- WeChat 409000 → 165 -->
+        <rect x="80" y="117" width="52" height="165" rx="3" fill="rgba(231,76,60,0.55)"/>
+        <text x="106" y="112" text-anchor="middle" fill="#E74C3C" font-family="monospace" font-size="7" font-weight="700">409K</text>
+        <text x="106" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">WeChat</text>
+        <text x="106" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">pico AÑO NUEVO</text>
+        <!-- Visa 65000 → 26 -->
+        <rect x="140" y="256" width="52" height="26" rx="3" fill="rgba(46,134,222,0.7)"/>
+        <text x="166" y="251" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="7" font-weight="700">65K</text>
+        <text x="166" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">Visa</text>
+        <text x="166" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">cap. máx</text>
+        <!-- Mastercard 20000 → 8 -->
+        <rect x="200" y="274" width="52" height="8" rx="3" fill="rgba(46,134,222,0.5)"/>
+        <text x="226" y="269" text-anchor="middle" fill="#2E86DE" font-family="monospace" font-size="7" font-weight="700">20K</text>
+        <text x="226" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">Mastercard</text>
+        <text x="226" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">pico</text>
+        <!-- DTCC 19000 → 7.7 -->
+        <rect x="260" y="274" width="52" height="8" rx="3" fill="rgba(100,100,180,0.7)"/>
+        <text x="286" y="269" text-anchor="middle" fill="#8888DD" font-family="monospace" font-size="7" font-weight="700">19K</text>
+        <text x="286" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">DTCC</text>
+        <text x="286" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">pico valores</text>
+        <!-- UPI 7500 → 3 -->
+        <rect x="320" y="279" width="52" height="3" rx="2" fill="rgba(39,174,96,0.7)"/>
+        <text x="346" y="274" text-anchor="middle" fill="#27AE60" font-family="monospace" font-size="7" font-weight="700">7.5K</text>
+        <text x="346" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">UPI India</text>
+        <text x="346" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">promedio</text>
+        <!-- Swift 580 → tiny -->
+        <rect x="380" y="281" width="52" height="1" rx="1" fill="rgba(201,168,76,0.7)"/>
+        <text x="406" y="276" text-anchor="middle" fill="#C9A84C" font-family="monospace" font-size="7" font-weight="700">580</text>
+        <text x="406" y="295" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7">Swift</text>
+        <text x="406" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">mensajería</text>
+        <!-- Bitcoin 7 -->
+        <rect x="440" y="281" width="52" height="0.5" rx="1" fill="rgba(255,255,255,0.3)"/>
+        <text x="466" y="276" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="7" font-weight="700">7</text>
+        <text x="466" y="295" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="7">Bitcoin</text>
+        <text x="466" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">producción</text>
+        <!-- Ethereum 30 -->
+        <rect x="500" y="281" width="52" height="0.5" rx="1" fill="rgba(155,89,182,0.4)"/>
+        <text x="526" y="276" text-anchor="middle" fill="rgba(155,89,182,0.7)" font-family="monospace" font-size="7" font-weight="700">30</text>
+        <text x="526" y="295" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="monospace" font-size="7">Ethereum</text>
+        <text x="526" y="305" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="6">mainnet</text>
+        <!-- baseline -->
+        <line x1="10" y1="282" x2="570" y2="282" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <!-- Legend -->
+        <rect x="590" y="62" width="10" height="10" fill="rgba(231,76,60,0.7)" rx="2"/>
+        <text x="605" y="72" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="8">Pagos consumidores</text>
+        <rect x="590" y="82" width="10" height="10" fill="rgba(46,134,222,0.6)" rx="2"/>
+        <text x="605" y="92" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="8">Autorización</text>
+        <rect x="590" y="102" width="10" height="10" fill="rgba(100,100,180,0.7)" rx="2"/>
+        <text x="605" y="112" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="8">Liquidación inst.</text>
+        <rect x="590" y="122" width="10" height="10" fill="rgba(39,174,96,0.7)" rx="2"/>
+        <text x="605" y="132" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="8">Pagos públicos</text>
+        <rect x="590" y="142" width="10" height="10" fill="rgba(201,168,76,0.7)" rx="2"/>
+        <text x="605" y="152" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="8">Mensajería</text>
+        <!-- DTCC annotation -->
+        <line x1="286" y1="260" x2="286" y2="240" stroke="rgba(100,100,180,0.5)" stroke-width="1" stroke-dasharray="2,2"/>
+        <text x="286" y="235" text-anchor="middle" fill="rgba(100,100,180,0.6)" font-family="monospace" font-size="7">DTCC supera límite</text>
+        <text x="286" y="225" text-anchor="middle" fill="rgba(100,100,180,0.6)" font-family="monospace" font-size="7">teórico de Besu</text>
+      </svg>
+    </div>
+
+    <h3>Los sistemas en detalle</h3>
+    <p><strong>Alipay</strong> es el sistema de pagos de Ant Group, filial de Alibaba. Es el sistema de pagos móviles más grande del mundo por volumen. Registró un pico verificado de 544.000 TPS durante el Singles Day chino de 2019, el evento de compras más grande del mundo que procesa más volumen que el Black Friday y el Cyber Monday americanos combinados. Opera principalmente en China y Asia.</p>
+    <p><strong>WeChat Pay</strong> es el sistema de pagos integrado en WeChat, la superapp de Tencent con más de 1.300 millones de usuarios activos. Su pico de 409.000 TPS ocurrió durante el Año Nuevo chino cuando millones de personas intercambian sobres rojos digitales simultáneamente. Es el segundo sistema de pagos más grande del mundo por volumen en pico.</p>
+    <p><strong>Visa</strong> opera VisaNet, una red privada centralizada que conecta bancos emisores y bancos adquirentes en más de 200 países. Capacidad máxima de 65.000 TPS. Promedio de 8.500 TPS en condiciones normales. No es una blockchain. Es una base de datos centralizada extremadamente optimizada.</p>
+    <p><strong>Mastercard</strong> opera de forma similar a Visa con un pico de 20.000 TPS y hasta 400 millones de transacciones diarias en períodos de alta demanda. Junto con Visa conforman el duopolio de redes de autorización de pagos privadas de Occidente.</p>
+    <p><strong>DTCC</strong> es el sistema de liquidación de valores más importante de EEUU. Su benchmark de 2018 demostró necesitar 6.300 trades por segundo en pico sostenido durante cinco horas, con tres transacciones en el ledger digital por cada trade, resultando en aproximadamente 19.000 TPS. Representa alrededor del 3.8% del volumen pico del sistema financiero global. Y aun así, con ese 3.8%, ya supera el límite teórico de Hyperledger Besu con QBFT que tiene un máximo de 10.000 TPS. Ese es el problema que la propia Global Head of Digital Assets de la DTCC, Nadine Chakar, reconoció públicamente en julio de 2026 cuando dijo que ninguna blockchain actual puede manejar su volumen.<a href="#fn3" class="fn-ref">[3]</a></p>
+    <p><strong>UPI India</strong>, Unified Payments Interface, fue creado por el gobierno indio a través del National Payments Corporation of India. Promedio de 7.500 TPS, gratuito, 24/7, e interoperable entre todos los bancos de India sin costo por transacción. Es el modelo de infraestructura de pagos públicos más exitoso del mundo y el que más países están intentando replicar.</p>
+    <p><strong>Swift</strong>, Society for Worldwide Interbank Financial Telecommunication, no es un sistema de pagos. Es un sistema de mensajería financiera que envía instrucciones seguras entre instituciones sobre cómo mover dinero. Promedio de 580 mensajes por segundo en 2024 basado en 50 millones de mensajes FIN diarios. Conecta más de 11.000 instituciones en más de 200 países. Cada mensaje puede representar desde miles hasta miles de millones de dólares.</p>
+    <p>El sistema financiero global no es una sola red: es una colección de sistemas paralelos e independientes que operan simultáneamente. La suma de sus capacidades en pico da una perspectiva correcta del volumen real. La primera capa de pagos retail suma aproximadamente 1.095.000 TPS en pico, con Alipay 544.000, WeChat 409.000, Visa 65.000, Mastercard 20.000, UPI 7.500 y otros sistemas regionales. La segunda capa de liquidación institucional suma aproximadamente 22.000 TPS adicionales con la DTCC 19.000, Fedwire, TARGET2 y otros sistemas de bancos centrales. La tercera capa de mensajería suma aproximadamente 1.000 TPS con Swift y equivalentes. El total agregado en pico simultáneo extremo supera 1.1 millones de TPS. En condiciones normales el throughput agregado está entre 100.000 y 300.000 TPS. Hay que ser precisos: los picos de Alipay ocurren durante el Singles Day chino y los picos de la DTCC ocurren en días de alta volatilidad del mercado americano, no necesariamente al mismo tiempo. Pero la arquitectura de infraestructura tiene que estar diseñada para los picos, no para los promedios. Bitcoin con 7 TPS y Ethereum mainnet con 15-30 TPS están cuatro y cinco órdenes de magnitud por debajo del requerimiento agregado real. Eso no es un problema de implementación: es una restricción arquitectónica de sus mecanismos de consenso.<a href="#fn3" class="fn-ref">[3]</a></p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN II: INSTITUCIONES -->
+  <section class="sec" id="instituciones">
+    <div class="sec-tag">II — La escala real</div>
+    <h2>Las instituciones que necesitarían infraestructura soberana: el sistema completo</h2>
+    <p>El sistema financiero global no es solo los 1.000 bancos más grandes que aparecen en las listas de The Banker o S&P Global. Es el sistema completo que incluye bancos comerciales, cooperativas de crédito, aseguradoras, fondos de inversión, bancos de desarrollo, y fintechs reguladas en todos los países del mundo.</p>
+    <p>Los 1.000 bancos más grandes tienen activos combinados de $164 billones y generaron $1.33 billones en beneficio neto en FY2024 según TAB Global 1000 2025, cubriendo 100 países, territorios y regiones administrativas especiales. Pero ese número subestima enormemente el sistema completo.<a href="#fn4" class="fn-ref">[4]</a></p>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="230" fill="#070F1C" rx="10"/>
+        <text x="350" y="22" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">INSTITUCIONES FINANCIERAS GLOBALES</text>
+
+        <!-- Bancos comerciales -->
+        <rect x="30" y="40" width="280" height="50" rx="5" fill="rgba(46,134,222,0.08)" stroke="rgba(46,134,222,0.25)" stroke-width="1"/>
+        <text x="170" y="62" text-anchor="middle" fill="#2E86DE" font-family="Inter,sans-serif" font-size="12" font-weight="800">~30.000</text>
+        <text x="170" y="78" text-anchor="middle" fill="rgba(46,134,222,0.6)" font-family="monospace" font-size="9">bancos comerciales globales</text>
+
+        <!-- Cooperativas -->
+        <rect x="390" y="40" width="280" height="50" rx="5" fill="rgba(39,174,96,0.08)" stroke="rgba(39,174,96,0.25)" stroke-width="1"/>
+        <text x="530" y="62" text-anchor="middle" fill="#27AE60" font-family="Inter,sans-serif" font-size="12" font-weight="800">85.400</text>
+        <text x="530" y="78" text-anchor="middle" fill="rgba(39,174,96,0.6)" font-family="monospace" font-size="9">cooperativas de crédito globales</text>
+
+        <!-- Aseguradoras -->
+        <rect x="30" y="105" width="175" height="46" rx="5" fill="rgba(230,126,34,0.07)" stroke="rgba(230,126,34,0.2)" stroke-width="1"/>
+        <text x="117" y="126" text-anchor="middle" fill="#E67E22" font-family="Inter,sans-serif" font-size="11" font-weight="700">~10.000</text>
+        <text x="117" y="141" text-anchor="middle" fill="rgba(230,126,34,0.5)" font-family="monospace" font-size="8">aseguradoras</text>
+
+        <!-- Fondos -->
+        <rect x="220" y="105" width="175" height="46" rx="5" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        <text x="307" y="126" text-anchor="middle" fill="#C9A84C" font-family="Inter,sans-serif" font-size="11" font-weight="700">~50.000</text>
+        <text x="307" y="141" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="8">fondos de inversión</text>
+
+        <!-- Fintechs -->
+        <rect x="410" y="105" width="175" height="46" rx="5" fill="rgba(155,89,182,0.07)" stroke="rgba(155,89,182,0.2)" stroke-width="1"/>
+        <text x="497" y="126" text-anchor="middle" fill="#9B59B6" font-family="Inter,sans-serif" font-size="11" font-weight="700">~30.000</text>
+        <text x="497" y="141" text-anchor="middle" fill="rgba(155,89,182,0.5)" font-family="monospace" font-size="8">fintechs reguladas</text>
+
+        <!-- Total -->
+        <rect x="175" y="170" width="350" height="48" rx="6" fill="rgba(26,188,156,0.1)" stroke="rgba(26,188,156,0.4)" stroke-width="2"/>
+        <text x="350" y="192" text-anchor="middle" fill="#1ABC9C" font-family="Inter,sans-serif" font-size="14" font-weight="900">TOTAL: +200.000 instituciones</text>
+        <text x="350" y="208" text-anchor="middle" fill="rgba(26,188,156,0.6)" font-family="monospace" font-size="9">que podrían requerir infraestructura soberana propia</text>
+      </svg>
+    </div>
+
+    <p>Las cooperativas de crédito globales suman 85.400 instituciones con 411 millones de miembros y $3.7 billones en activos según el World Council of Credit Unions Statistical Report 2023. Para EEUU específicamente: 4.287 cooperativas según NCUA Q4 2025 y aproximadamente 4.500 bancos comerciales asegurados por la FDIC. A nivel global, si añadimos aseguradoras, fondos, brokers y fintechs reguladas, el número de instituciones que podrían necesitar infraestructura soberana propia supera las 200.000.<a href="#fn5" class="fn-ref">[5]</a></p>
+
+    <div class="ibox ibox-blue">
+      <div class="ibox-tag" style="color:var(--blue)">La implicancia arquitectónica que se ignora</div>
+      <p>Ninguna institución financiera regulada va a correr su operación en la blockchain de un competidor. Los bancos no van a correr sobre el XRP Ledger. Las cooperativas no van a correr sobre la blockchain de JPMorgan. Cada institución que adopte blockchain como infraestructura necesita su propia cadena soberana con sus propias reglas, su propio governance, y su propia privacidad. Eso no es un capricho: es un requisito regulatorio y competitivo. Por eso la arquitectura de subredes soberanas no es una característica opcional: es la única arquitectura compatible con la realidad del sistema financiero.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN III: CONSENSO -->
+  <section class="sec" id="consenso">
+    <div class="sec-tag">III — La restricción matemática</div>
+    <h2>Los mecanismos de consenso y sus límites matemáticos: de menor a mayor capacidad de escalar</h2>
+    <p>La elección del mecanismo de consenso no es una decisión de preferencia técnica. Es la decisión que determina los límites absolutos de lo que un sistema puede hacer. Los siguientes análisis están basados en documentación oficial y papers académicos verificables.</p>
+
+    <div class="ibox ibox-gold">
+      <div class="ibox-tag" style="color:var(--gold)">Qué significa O(N), O(N²) y O(1): la notación que explica todo</div>
+      <p>La notación O, llamada notación Big-O, describe cómo crece el costo de un sistema a medida que aumenta su tamaño. La letra <strong>N</strong> representa el número de validadores en la red. <strong>O(N²)</strong> significa que el costo crece cuadráticamente: duplicar validadores cuadruplica el costo. Con 10 validadores tienes 100 unidades de costo. Con 20 validadores tienes 400. Con 100 validadores tienes 10.000. Con 200 validadores tienes 40.000. El sistema colapsa bajo su propio peso antes de que puedas escalar. <strong>O(N)</strong> significa que el costo crece linealmente: duplicar validadores duplica el costo. Mejor que O(N²) pero el costo sigue creciendo. <strong>O(1)</strong> significa que el costo es constante independientemente de N: duplicar validadores no cambia el costo en absoluto. Snowman tiene costo O(1) por nodo porque cada nodo siempre consulta exactamente 20 nodos sin importar cuántos haya en la red. Con 100 validadores son 20 mensajes por nodo. Con 100.000 validadores siguen siendo 20 mensajes por nodo. El costo no crece. Eso es lo que ningún otro mecanismo de consenso verificado en producción puede afirmar.</p>
+    </div>
+
+    <div class="consensus-list">
+
+      <div class="consensus-card" style="border-top:2px solid rgba(255,255,255,0.1)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:rgba(255,255,255,0.5)">Proof of Work</div>
+          <div class="cc-type">Bitcoin, Litecoin</div>
+          <div class="cc-users">Validadores activos: ilimitado en teoría, pero los 5 pools más grandes controlan +65% del hashrate global</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">TPS</span>7 TPS en Bitcoin mainnet. No escala con más validadores.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">Mensajería</span>Sin comunicación entre nodos para consenso, pero la propagación de bloques tiene latencia inherente.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">Finality</span>Probabilística. 60 minutos para seguridad práctica en Bitcoin.</div>
+          <div class="cc-problem">Problema estructural: El TPS está limitado por el tamaño del bloque y el tiempo entre bloques, no por el número de validadores. Más mineros = más seguridad pero no más velocidad. Incompatible con el sistema financiero institucional.</div>
+        </div>
+      </div>
+
+      <div class="consensus-card" style="border-top:2px solid rgba(231,76,60,0.6)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:var(--red)">Delegated Proof of Stake</div>
+          <div class="cc-type">BNB Chain (21), EOS (21), TRON (27)</div>
+          <div class="cc-users">Validadores activos: 21 en BNB Chain por diseño. Límite fijo e inamovible del protocolo.</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--orange)">TPS</span>Hasta 300 TPS en BNB Chain. Mayor velocidad gracias al set pequeño de validadores.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">Mensajería</span>O(N²) pero manejable con N=21. Aumentar N colapsa el rendimiento.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--orange)">Finality</span>~3 segundos.</div>
+          <div class="cc-problem">Problema estructural: El límite de 21 validadores es una decisión de diseño para maximizar velocidad a costa de descentralización. Un ataque coordinado a 11 de 21 nodos colapsa la red. No puede ofrecer infraestructura soberana a miles de instituciones simultáneamente porque el set de validadores es uno solo para toda la red.<a href="#fn6" class="fn-ref">[6]</a></div>
+        </div>
+      </div>
+
+      <div class="consensus-card" style="border-top:2px solid rgba(230,126,34,0.6)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:var(--orange)">Federated Byzantine Agreement</div>
+          <div class="cc-type">XRP Ledger (35 en UNL), Stellar (SCP)</div>
+          <div class="cc-users">Validadores activos: 35 en la UNL del XRPL de 150+ existentes. La UNL es definida por Ripple y XRPL Foundation.</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--orange)">TPS</span>1.500 TPS teóricos, significativamente menos en producción real con carga.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--orange)">Mensajería</span>El sistema de confianza federado crea inercia hacia UNL pequeñas. Ampliar la UNL tiene costos cuadráticos en la comunicación entre nodos.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--green)">Finality</span>3-5 segundos. Uno de los puntos más fuertes del XRPL.</div>
+          <div class="cc-problem">Problema estructural: No tiene arquitectura de subredes soberanas. Los Permissioned Domains del XRPL son entornos aislados dentro de una misma L1 que no interoperan nativamente entre sí. Eso crea islas que necesitan puentes externos para comunicarse. Además, la gobernanza de la UNL concentra el poder en Ripple y la XRPL Foundation.<a href="#fn7" class="fn-ref">[7]</a></div>
+        </div>
+      </div>
+
+      <div class="consensus-card" style="border-top:2px solid rgba(201,168,76,0.6)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:var(--gold)">Classical BFT</div>
+          <div class="cc-type">Tendermint/Cosmos (125), Hyperledger Besu/Canton Network</div>
+          <div class="cc-users">Validadores activos: 125 en Cosmos por diseño del protocolo Tendermint. Canton: seleccionados por operadores de cada subnet.</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--gold)">TPS</span>Hasta 10.000 TPS en implementaciones optimizadas con set pequeño de validadores.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">Mensajería</span>O(N²) — duplicar validadores cuadruplica los mensajes. Por eso Cosmos limita a 125: es el punto donde el costo de mensajería se vuelve manejable.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--green)">Finality</span>1-6 segundos según implementación.</div>
+          <div class="cc-problem">Problema estructural: El límite de 125 validadores en Cosmos no es arbitrario. Es la consecuencia matemática del costo O(N²) de los protocolos BFT. Más allá de ~200 validadores, la red se degrada inaceptablemente. La interoperabilidad entre subredes en Cosmos requiere IBC, una capa adicional que introduce su propio set de riesgos.<a href="#fn8" class="fn-ref">[8]</a></div>
+        </div>
+      </div>
+
+      <div class="consensus-card" style="border-top:2px solid rgba(46,134,222,0.6)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:var(--blue)">Proof of Stake con comités</div>
+          <div class="cc-type">Ethereum PoS, Algorand</div>
+          <div class="cc-users">Validadores: 1M+ en Ethereum pero usa comités aleatorios de 128 validadores por slot para evitar O(N²).</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--red)">TPS</span>15-30 TPS en Ethereum mainnet. Con L2s puede escalar pero la interoperabilidad entre L2s requiere puentes externos.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--blue)">Mensajería</span>Los comités aleatorios resuelven el problema O(N²) del BFT clásico pero introducen aleatoriedad que afecta la predictibilidad.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--orange)">Finality</span>~12 segundos para confirmación, ~13 minutos para finality económica completa.</div>
+          <div class="cc-problem">Problema estructural: El TPS de mainnet es insuficiente para uso institucional. Los L2s de Ethereum no tienen interoperabilidad nativa entre sí: Optimism, Arbitrum y Base necesitan puentes externos para comunicarse. Para un sistema financiero con miles de instituciones en distintos L2s, eso es estructuralmente inviable.<a href="#fn9" class="fn-ref">[9]</a></div>
+        </div>
+      </div>
+
+      <div class="consensus-card" style="border-top:2px solid var(--teal)">
+        <div class="cc-left">
+          <div class="cc-name" style="color:var(--teal)">Snowman</div>
+          <div class="cc-type">Avalanche, Metal Blockchain</div>
+          <div class="cc-users" style="color:var(--teal)">Validadores activos: ~700 en Avalanche pública según Avascan julio 2026. Sin límite teórico por diseño del protocolo. Metal Blockchain: validadores activos en la red.</div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-stat"><span class="cc-label" style="color:var(--teal)">TPS</span>Hasta 4.500 TPS en C-Chain actual. Proyección HyperSDK: 100.000+ TPS por subred según Ava Labs — objetivo confirmado por Marshall Hayner para las subredes de Metal Blockchain, actualmente en desarrollo activo. Escalabilidad horizontal ilimitada via subredes paralelas.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--teal)">Mensajería</span>O(1) por nodo — cada nodo siempre consulta exactamente 20 nodos independientemente del tamaño de la red. El costo no crece con más validadores. No hay degradación.</div>
+          <div class="cc-stat"><span class="cc-label" style="color:var(--teal)">Finality</span>Menos de 0.5 segundos en Metal Blockchain. 0.8 a 1.5 segundos en la C-Chain de Avalanche pública según documentación oficial.</div>
+          <div class="cc-problem" style="color:var(--teal);border-top-color:rgba(26,188,156,0.2)">Ventaja estructural: El muestreo aleatorio de exactamente 20 nodos es el mecanismo de consenso, no una optimización de él. No hay límite teórico de validadores porque el costo de comunicación no crece con N. Metal Blockchain parametriza Snowman con umbral del 80% versus el 67% estándar para mayor seguridad institucional.<a href="#fn10" class="fn-ref">[10]</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARISON SVG -->
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="260" fill="#070F1C" rx="10"/>
+        <text x="350" y="22" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">COSTO DE MENSAJERÍA: O(N²) VS O(1)</text>
+
+        <!-- Left: BFT O(N^2) -->
+        <text x="175" y="45" text-anchor="middle" fill="rgba(231,76,60,0.7)" font-family="Inter,sans-serif" font-size="12" font-weight="700">BFT Clásico: O(N²)</text>
+        <text x="175" y="60" text-anchor="middle" fill="rgba(231,76,60,0.4)" font-family="monospace" font-size="9">mensajes crecen cuadráticamente</text>
+
+        <!-- N=10: 100 -->
+        <text x="60" y="85" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">10 validadores</text>
+        <rect x="40" y="90" width="240" height="10" rx="2" fill="rgba(231,76,60,0.3)"/>
+        <text x="285" y="100" fill="rgba(231,76,60,0.6)" font-family="monospace" font-size="8">100 mensajes</text>
+
+        <!-- N=50: 2500 -->
+        <text x="60" y="118" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">50 validadores</text>
+        <rect x="40" y="122" width="240" height="25" rx="2" fill="rgba(231,76,60,0.5)"/>
+        <text x="285" y="137" fill="rgba(231,76,60,0.7)" font-family="monospace" font-size="8">2.500 mensajes</text>
+
+        <!-- N=125: 15625 -->
+        <text x="60" y="158" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">125 validadores → límite Cosmos</text>
+        <rect x="40" y="162" width="240" height="60" rx="2" fill="rgba(231,76,60,0.7)"/>
+        <text x="285" y="197" fill="#E74C3C" font-family="monospace" font-size="8" font-weight="700">15.625 mensajes</text>
+
+        <!-- N=200 collapse -->
+        <text x="60" y="230" text-anchor="middle" fill="rgba(231,76,60,0.4)" font-family="monospace" font-size="8">200+ validadores → colapso</text>
+
+        <!-- Right: Snowman O(N) -->
+        <text x="530" y="45" text-anchor="middle" fill="rgba(26,188,156,0.8)" font-family="Inter,sans-serif" font-size="12" font-weight="700">Snowman: O(1) por nodo</text>
+        <text x="530" y="60" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="9">siempre 20 mensajes por nodo</text>
+
+        <text x="420" y="85" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">10 validadores</text>
+        <rect x="400" y="90" width="38" height="10" rx="2" fill="rgba(26,188,156,0.4)"/>
+        <text x="445" y="100" fill="rgba(26,188,156,0.6)" font-family="monospace" font-size="8">20 msgs/nodo</text>
+
+        <text x="420" y="118" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">1.000 validadores</text>
+        <rect x="400" y="122" width="38" height="10" rx="2" fill="rgba(26,188,156,0.5)"/>
+        <text x="445" y="132" fill="rgba(26,188,156,0.7)" font-family="monospace" font-size="8">20 msgs/nodo</text>
+
+        <text x="420" y="150" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="9">100.000 validadores</text>
+        <rect x="400" y="154" width="38" height="10" rx="2" fill="rgba(26,188,156,0.7)"/>
+        <text x="445" y="164" fill="#1ABC9C" font-family="monospace" font-size="8" font-weight="700">20 msgs/nodo</text>
+
+        <text x="530" y="195" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="9">∞ validadores → sigue siendo</text>
+        <text x="530" y="208" text-anchor="middle" fill="#1ABC9C" font-family="monospace" font-size="10" font-weight="700">20 mensajes por nodo</text>
+
+        <!-- divider -->
+        <line x1="350" y1="40" x2="350" y2="240" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+      </svg>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN IV: INTEROPERABILIDAD -->
+  <section class="sec" id="interop">
+    <div class="sec-tag">IV — El problema que se multiplica</div>
+    <h2>El problema de interoperabilidad: por qué N instituciones necesitan N×(N-1)÷2 puentes sin una L0 compartida</h2>
+    <p>Tener muchos validadores y alto TPS no es suficiente si las instituciones en distintas subredes no pueden comunicarse entre sí sin puentes externos. Aquí está la matemática del problema que los proyectos de blockchain rara vez mencionan abiertamente.<a href="#fn11" class="fn-ref">[11]</a></p>
+    <p>Con N instituciones cada una con su propia blockchain que no interopera nativamente, para que cada una pueda comunicarse con todas las demás necesitas N×(N-1)÷2 conexiones bilaterales. Para 100 instituciones eso son 4.950 puentes. Para 1.000 instituciones son 499.500 puentes. Para 10.000 instituciones son 49.995.000 puentes. Cada puente tiene sus propios validadores, su propio contrato inteligente, y sus propios puntos de fallo.</p>
+
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 270" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto">
+        <rect width="700" height="270" fill="#070F1C" rx="10"/>
+        <text x="350" y="22" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="monospace" font-size="9" letter-spacing="3">N INSTITUCIONES: PUENTES BILATERALES VS L0 COMPARTIDA</text>
+
+        <!-- LEFT: N*(N-1)/2 model -->
+        <text x="155" y="45" text-anchor="middle" fill="rgba(231,76,60,0.7)" font-family="Inter,sans-serif" font-size="11" font-weight="700">Modelo de puentes bilaterales</text>
+        <text x="155" y="58" text-anchor="middle" fill="rgba(231,76,60,0.4)" font-family="monospace" font-size="8">N×(N-1)÷2 conexiones</text>
+
+        <!-- 6 nodes with many connections -->
+        <circle cx="155" cy="105" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="210" cy="80" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="255" cy="110" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="240" cy="160" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="170" cy="178" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="100" cy="150" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <!-- Lines between all pairs (15 connections) -->
+        <line x1="155" y1="105" x2="210" y2="80" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="155" y1="105" x2="255" y2="110" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="155" y1="105" x2="240" y2="160" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="155" y1="105" x2="170" y2="178" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="155" y1="105" x2="100" y2="150" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="210" y1="80" x2="255" y2="110" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="210" y1="80" x2="240" y2="160" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="210" y1="80" x2="170" y2="178" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="210" y1="80" x2="100" y2="150" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="255" y1="110" x2="240" y2="160" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="255" y1="110" x2="170" y2="178" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="255" y1="110" x2="100" y2="150" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="240" y1="160" x2="170" y2="178" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="240" y1="160" x2="100" y2="150" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+        <line x1="170" y1="178" x2="100" y2="150" stroke="rgba(231,76,60,0.4)" stroke-width="1"/>
+
+        <text x="155" y="210" text-anchor="middle" fill="rgba(231,76,60,0.6)" font-family="monospace" font-size="9">6 instituciones = 15 puentes</text>
+        <text x="155" y="225" text-anchor="middle" fill="rgba(231,76,60,0.5)" font-family="monospace" font-size="8">1.000 instituciones = 499.500 puentes</text>
+        <text x="155" y="240" text-anchor="middle" fill="rgba(231,76,60,0.4)" font-family="monospace" font-size="8">cada uno con su propio punto de fallo</text>
+
+        <!-- divider -->
+        <line x1="340" y1="40" x2="340" y2="255" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- RIGHT: L0 model -->
+        <text x="525" y="45" text-anchor="middle" fill="rgba(26,188,156,0.8)" font-family="Inter,sans-serif" font-size="11" font-weight="700">Modelo Layer Cero compartida (Metal)</text>
+        <text x="525" y="58" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">subredes se comunican nativamente via AWM</text>
+
+        <!-- L0 circle -->
+        <circle cx="525" cy="140" r="35" fill="rgba(26,188,156,0.08)" stroke="rgba(26,188,156,0.4)" stroke-width="2"/>
+        <text x="525" y="136" text-anchor="middle" fill="#1ABC9C" font-family="monospace" font-size="10" font-weight="700">L0</text>
+        <text x="525" y="150" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="8">AWM</text>
+
+        <!-- Subnet nodes around -->
+        <circle cx="440" cy="85" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="525" cy="75" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="610" cy="85" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="620" cy="175" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="525" cy="200" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <circle cx="430" cy="175" r="10" fill="rgba(46,134,222,0.3)" stroke="rgba(46,134,222,0.6)" stroke-width="1"/>
+        <!-- Lines to L0 only -->
+        <line x1="448" y1="91" x2="497" y2="118" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+        <line x1="525" y1="85" x2="525" y2="105" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+        <line x1="602" y1="91" x2="555" y2="118" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+        <line x1="612" y1="169" x2="558" y2="162" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+        <line x1="525" y1="190" x2="525" y2="175" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+        <line x1="438" y1="169" x2="492" y2="162" stroke="rgba(26,188,156,0.5)" stroke-width="1.5"/>
+
+        <text x="525" y="228" text-anchor="middle" fill="rgba(26,188,156,0.6)" font-family="monospace" font-size="9">6 subredes se comunican nativamente via AWM</text>
+        <text x="525" y="243" text-anchor="middle" fill="rgba(26,188,156,0.5)" font-family="monospace" font-size="8">1.000 subredes — misma comunicación nativa</text>
+        <text x="525" y="257" text-anchor="middle" fill="rgba(26,188,156,0.4)" font-family="monospace" font-size="8">sin puentes · sin intermediarios · compliance nativo</text>
+      </svg>
+    </div>
+
+    <p>Este fue exactamente el problema que enfrentó el ODL de Ripple: con 140 empresas en el consorcio Open USD cada una con su propia stablecoin, el sistema necesitaría 140×139÷2 = 9.730 corredores bilaterales. Inviable. En Metal Blockchain, todas las subredes están conectadas a la misma layer cero y se comunican nativamente a través de AWM sin puentes ni intermediarios. La complejidad no es lineal ni cuadrática: es parte del protocolo base.<a href="#fn12" class="fn-ref">[12]</a></p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN V: TABLA -->
+  <section class="sec" id="tabla">
+    <div class="sec-tag">V — El cuadro completo</div>
+    <h2>Tabla de escalabilidad: qué puede cada proyecto teóricamente</h2>
+    <div style="overflow-x:auto">
+      <table class="big-table">
+        <thead>
+          <tr>
+            <th>Proyecto</th>
+            <th>Consenso</th>
+            <th>Límite validadores</th>
+            <th>TPS verificado</th>
+            <th>TPS teórico</th>
+            <th>Subredes soberanas</th>
+            <th>Interop nativa</th>
+            <th>Compliance nativo</th>
+            <th>Sistema financiero global</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="proj-n">Bitcoin</td>
+            <td><span class="badge bo">PoW</span></td>
+            <td><span class="badge br">Concentrado en pools</span></td>
+            <td><span class="badge br">7 TPS</span></td>
+            <td><span class="badge br">7 TPS</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Imposible</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">BNB Chain</td>
+            <td><span class="badge br">DPoS</span></td>
+            <td><span class="badge br">21 fijo</span></td>
+            <td><span class="badge bp">300 TPS</span></td>
+            <td><span class="badge bp">2.000 TPS</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Solo puentes</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Imposible</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">XRP Ledger</td>
+            <td><span class="badge bo">FBA</span></td>
+            <td><span class="badge br">35 en UNL</span></td>
+            <td><span class="badge bp">1.500 TPS</span></td>
+            <td><span class="badge bp">3.000 TPS</span></td>
+            <td><span class="badge br">No (dominios aislados)</span></td>
+            <td><span class="badge br">Solo puentes</span></td>
+            <td><span class="badge br">No (opcional)</span></td>
+            <td><span class="badge br">Inviable</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Stellar</td>
+            <td><span class="badge bo">SCP/FBA</span></td>
+            <td><span class="badge br">Limitado por confianza</span></td>
+            <td><span class="badge bp">1.000 TPS</span></td>
+            <td><span class="badge bp">1.000 TPS</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Solo puentes</span></td>
+            <td><span class="badge br">No (opcional)</span></td>
+            <td><span class="badge br">Inviable</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Hedera</td>
+            <td><span class="badge bo">aBFT gossip</span></td>
+            <td><span class="badge bp">Consejo de 39</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Solo puentes</span></td>
+            <td><span class="badge br">No (opcional)</span></td>
+            <td><span class="badge br">Inviable</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Ethereum PoS</td>
+            <td><span class="badge bo">PoS comités</span></td>
+            <td><span class="badge bp">1M+ (comités 128)</span></td>
+            <td><span class="badge br">15-30 TPS</span></td>
+            <td><span class="badge bp">Con L2s 100K</span></td>
+            <td><span class="badge bp">L2s (no soberanas)</span></td>
+            <td><span class="badge br">Solo puentes</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Inviable por interop</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Canton Network</td>
+            <td><span class="badge bo">BFT Besu</span></td>
+            <td><span class="badge bp">Permisionado</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge bp">Subredes privadas</span></td>
+            <td><span class="badge br">CCIP (puente)</span></td>
+            <td><span class="badge br">No nativo</span></td>
+            <td><span class="badge br">Parcial</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Cosmos</td>
+            <td><span class="badge bo">Tendermint BFT</span></td>
+            <td><span class="badge br">125 fijo</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge bp">10.000 TPS</span></td>
+            <td><span class="badge bp">Appchains IBC</span></td>
+            <td><span class="badge bp">IBC (capa adicional)</span></td>
+            <td><span class="badge br">No</span></td>
+            <td><span class="badge br">Inviable por límites</span></td>
+          </tr>
+          <tr>
+            <td class="proj-n">Avalanche pública</td>
+            <td><span class="badge bg">Snowman</span></td>
+            <td><span class="badge bg">~700 activos (jul 2026) sin límite teórico</span></td>
+            <td><span class="badge bg">4.500 TPS</span></td>
+            <td><span class="badge bg">100K+ HyperSDK</span></td>
+            <td><span class="badge bg">Subredes soberanas</span></td>
+            <td><span class="badge bg">AWM nativo</span></td>
+            <td><span class="badge br">No nativo</span></td>
+            <td><span class="badge bp">Posible sin compliance</span></td>
+          </tr>
+          <tr class="hl">
+            <td class="proj-n" style="color:var(--teal)">Metal Blockchain</td>
+            <td><span class="badge bn">Snowman 80%</span></td>
+            <td><span class="badge bn">200+ sin límite teórico</span></td>
+            <td><span class="badge bn">4.500 TPS</span></td>
+            <td><span class="badge bn">100K+ HyperSDK</span></td>
+            <td><span class="badge bn">Subredes soberanas ✓</span></td>
+            <td><span class="badge bn">AWM nativo ✓</span></td>
+            <td><span class="badge bn">BSA/KYC/ISO 20022 ✓</span></td>
+            <td><span class="badge bn">Única viable ✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN VI: EL CÁLCULO -->
+  <section class="sec" id="calculo">
+    <div class="sec-tag">VI — La matemática concreta</div>
+    <h2>¿Puede Metal Blockchain escalar al sistema financiero global? El cálculo explícito</h2>
+
+    <div class="calc-grid">
+      <div class="calc-card">
+        <div class="calc-op">TPS agregado pico global</div>
+        <div class="calc-v">1.1M+</div>
+        <div class="calc-l">suma de todos los sistemas financieros paralelos en pico simultáneo extremo. Entre 100K y 300K TPS en condiciones normales.</div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-op">TPS por subred HyperSDK</div>
+        <div class="calc-v">100.000</div>
+        <div class="calc-l">TPS proyectado por subred según Ava Labs. Objetivo confirmado por Marshall Hayner para Metal Blockchain. En desarrollo activo.</div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-op">Subredes para pico global</div>
+        <div class="calc-v">11+</div>
+        <div class="calc-l">subredes de alta capacidad necesarias para cubrir el pico agregado de 1.1M TPS con HyperSDK</div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-op">Escenario institucional</div>
+        <div class="calc-v">10.000</div>
+        <div class="calc-l">subredes × capacidad propia = throughput agregado del ecosistema sin límite teórico</div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-op">Costo post-Etna upgrade</div>
+        <div class="calc-v">1.33</div>
+        <div class="calc-l">AVAX/mes por validador (diciembre 2024) vs 2.000 AVAX stake continuo anterior</div>
+      </div>
+      <div class="calc-card">
+        <div class="calc-op">Conexiones requeridas</div>
+        <div class="calc-v">N</div>
+        <div class="calc-l">conexiones al L0 para N instituciones. No N×(N-1)÷2 puentes bilaterales.</div>
+      </div>
+    </div>
+
+    <p>El upgrade Etna de Avalanche activado el 16 de diciembre de 2024 cambió radicalmente el modelo económico de las subredes. El costo de lanzar una subred pasó de requerir un stake continuo de 2.000 AVAX a una tarifa mensual de 1.33 AVAX por validador. Eso hace que miles de subredes institucionales sean económicamente viables, eliminando la barrera de capital que antes limitaba la adopción.<a href="#fn13" class="fn-ref">[13]</a></p>
+    <p>La propiedad matemática central de Snowman confirma que este escenario es técnicamente posible: "Snowball es muy escalable a medida que aumenta el número de nodos en la red. Independientemente del número de participantes, el número de mensajes de consenso enviados permanece igual porque en una consulta dada, un nodo solo consulta 20 nodos, incluso si hay miles de nodos en la red." Eso significa que una red con 1.000 subredes y 100.000 validadores tiene exactamente el mismo costo de mensajería por nodo que una red con 10 subredes y 200 validadores. No hay degradación de performance por escala.<a href="#fn14" class="fn-ref">[14]</a></p>
+
+    <div class="ibox ibox-teal">
+      <div class="ibox-tag" style="color:var(--teal)">La prueba empírica que ya existe</div>
+      <p>Metallicus tiene las cuatro certificaciones FedNow de la Reserva Federal. La certificación FedNow no valida solo la capacidad técnica de procesar pagos: valida que el sistema puede demostrar identidad verificable de todos los participantes, compliance BSA obligatorio, y mensajería ISO 20022 en producción. Esa combinación es la que ningún otro mecanismo de consenso puede proveer de forma nativa. Avalanche pública con Snowman puede escalar, pero no tiene compliance nativo. Metal Blockchain tiene ambas cosas simultáneamente porque Snowman fue adoptado por Metallicus y luego construyeron encima de él exactamente las características que el sistema financiero institucional necesita.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN VII: CONCLUSIÓN -->
+  <section class="sec" id="conclusion">
+    <div class="sec-tag">VII — La restricción que no se puede comprar</div>
+    <h2>La conclusión matemática: por qué el sistema financiero global no puede correr sobre los mecanismos de consenso existentes</h2>
+    <p>El sistema financiero global no puede correr sobre un DPoS con 21 validadores porque un ataque a 11 nodos colapsa la red que custodia trillones en activos institucionales. No puede correr sobre FBA con 35 validadores porque no tiene arquitectura de subredes soberanas para dar infraestructura propia a cada institución. No puede correr sobre BFT clásico con límite de 125 validadores porque ese límite es la consecuencia directa de la complejidad O(N²) que colapsa el rendimiento con más nodos. No puede correr sobre Ethereum mainnet con 15-30 TPS porque está tres órdenes de magnitud por debajo del requerimiento.</p>
+    <p>Los problemas que enfrentan esos mecanismos de consenso no son de implementación. No se resuelven con más ingenieros, más financiamiento, ni más tiempo de desarrollo. Son restricciones matemáticas que emergen del diseño fundamental de cada mecanismo. Un sistema BFT con N validadores requiere O(N²) mensajes. Eso no cambia con upgrades. Un sistema FBA con confianza federada tiene inercia hacia UNL pequeñas. Eso no cambia con marketing. Un sistema DPoS con 21 validadores tiene ese límite porque el costo cuadrático de aumentarlo es prohibitivo. Eso no cambia con roadmaps.</p>
+
+    <div class="pull">
+      <p>Snowman resuelve el problema matemático de raíz. No limitando validadores para controlar el costo. No usando comités aleatorios que introducen latencia. Sino eliminando el crecimiento del costo: en lugar de O(N²) o incluso O(N), es O(1) por nodo. Eso permite escala ilimitada de validadores sin degradación de performance. Es el único mecanismo de consenso verificado en producción que tiene esa propiedad.</p>
+    </div>
+
+    <p>Metal Blockchain es la única implementación de Snowman que además tiene compliance nativo BSA/KYC/AML, ISO 20022 nativo en el protocolo base, identidad WebAuth, subredes soberanas con interoperabilidad nativa via AWM, y certificación FedNow de la Reserva Federal. No porque Metallicus sea el proyecto con más capital o más marketing. Sino porque tomaron el único mecanismo de consenso que puede escalar al sistema financiero global y construyeron sobre él exactamente las características que ese sistema exige. Las otras alternativas no tienen esa combinación porque sus mecanismos de consenso base no se lo permiten. Y ese es un problema que no se puede parchear.<a href="#fn15" class="fn-ref">[15]</a></p>
+
+    <div class="final">
+      <div class="final-tag">La conclusión del análisis</div>
+      <p>El sistema financiero global no es una sola red sino una colección de sistemas paralelos cuyos TPS agregados en pico simultáneo extremo superan 1.1 millones. Diseñar infraestructura para ese sistema no significa construir una red con 1.1 millones de TPS: significa dar a cada institución su propia subred soberana con los TPS que necesita, todas conectadas por el mismo L0. Esa arquitectura horizontal es exactamente lo que distingue a Snowman de todos los mecanismos anteriores.</p>
+      <p>Snowman es el único mecanismo verificado en producción donde el costo de mensajería no crece con el número de validadores. Metal Blockchain es la única implementación de Snowman con compliance nativo e ISO 20022 nativo. <strong>La combinación de esas dos características no existe en ningún otro proyecto verificable hoy.</strong></p>
+    </div>
+  </section>
+
+  <aside class="footnotes">
+    <div class="fn-title">Notas y referencias</div>
+    <div class="fn" id="fn1"><div class="fn-n">[1]</div><div class="fn-text">BIS (2022). "The crypto ecosystem: key elements and risks." El BIS identifica que las blockchains públicas tienen limitaciones estructurales de escalabilidad, finalidad y gobernanza que las hacen actualmente inadecuadas para la liquidación de pagos de alto valor. <a href="https://www.bis.org/publ/work1049.htm" target="_blank" rel="noopener">bis.org</a></div></div>
+    <div class="fn" id="fn2"><div class="fn-n">[2]</div><div class="fn-text">SDK.Finance (2026, abril). "High-Volume Transactions: Lessons from the Largest Payment Systems." Documenta los TPS verificados de los principales sistemas de pago: Visa (65.000 TPS capacidad, 8.500 TPS promedio), Mastercard (20.000 TPS pico), Alipay (544.000 TPS pico 2019), WeChat Pay (409.000 TPS). <a href="https://sdk.finance/blog/high-volume-transactions-lessons-from-the-largest-payment-systems/" target="_blank" rel="noopener">sdk.finance</a></div></div>
+    <div class="fn" id="fn3"><div class="fn-n">[3]</div><div class="fn-text">Grokipedia (2026). "Transactions per second." VisaNet tiene capacidad de 65.000 TPS. Swift procesa un promedio de 580 mensajes por segundo basado en 50 millones de mensajes FIN diarios en 2024. <a href="https://grokipedia.com/page/Transactions_per_second" target="_blank" rel="noopener">grokipedia.com</a></div></div>
+    <div class="fn" id="fn4"><div class="fn-n">[4]</div><div class="fn-text">TABInsights (2025). "TAB Global 1000 2025." Los 1.000 bancos más grandes tienen activos combinados de $164 billones, $83 billones en préstamos netos, $103 billones en depósitos, y generaron $1.33 billones en beneficio neto en FY2024, cubriendo 100 países. <a href="https://tabinsights.com/ab1000/largest-banks-in-the-world" target="_blank" rel="noopener">tabinsights.com</a></div></div>
+    <div class="fn" id="fn5"><div class="fn-n">[5]</div><div class="fn-text">World Council of Credit Unions (2023). "Statistical Report 2023." Las cooperativas de crédito globales suman 85.400 instituciones con 411 millones de miembros y $3.7 billones en activos. NCUA Q4 2025: 4.287 cooperativas federalmente aseguradas en EEUU con 144.7 millones de miembros. <a href="https://www.woccu.org/newsroom/releases/Global_Credit_Union_Membership_Surpasses_411_Million" target="_blank" rel="noopener">woccu.org</a></div></div>
+    <div class="fn" id="fn6"><div class="fn-n">[6]</div><div class="fn-text">BNB Chain Documentation (2024). "Validator Set." BNB Chain tiene 21 validadores activos por diseño del protocolo DPoS. El número es fijo para maximizar velocidad de consenso. <a href="https://docs.bnbchain.org/docs/learn/intro" target="_blank" rel="noopener">docs.bnbchain.org</a></div></div>
+    <div class="fn" id="fn7"><div class="fn-n">[7]</div><div class="fn-text">XRPL.org (2025). "Consensus." La UNL del XRPL tiene 35 validadores activos de 150+ existentes. Desde 2025 hay dos publicadores de UNL: Ripple y la XRPL Foundation. La UNL define quién puede participar en el consenso. <a href="https://xrpl.org/consensus.html" target="_blank" rel="noopener">xrpl.org</a></div></div>
+    <div class="fn" id="fn8"><div class="fn-n">[8]</div><div class="fn-text">Cosmos Documentation (2024). "Tendermint BFT." Cosmos limita a 125 validadores activos por los costos de comunicación O(N²) del protocolo Tendermint BFT. Aumentar más allá de ese límite degrada el rendimiento inaceptablemente. <a href="https://docs.cosmos.network/main/intro/overview" target="_blank" rel="noopener">docs.cosmos.network</a></div></div>
+    <div class="fn" id="fn9"><div class="fn-n">[9]</div><div class="fn-text">Ethereum Foundation (2024). "Ethereum Proof of Stake." Ethereum mainnet procesa 15-30 TPS. La transición a PoS usa comités aleatorios de 128 validadores por slot para evitar el problema O(N²). La finality económica completa toma aproximadamente 13 minutos. <a href="https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/" target="_blank" rel="noopener">ethereum.org</a></div></div>
+    <div class="fn" id="fn10"><div class="fn-n">[10]</div><div class="fn-text">Ava Labs (2024). "Snowman Consensus." Documentación oficial: "Snowball is very scalable as the number of nodes on the network increases. Regardless of the number of participants, the number of consensus messages sent remains the same because in a given query, a node only queries 20 nodes." Finality de 0.8 a 1.5 segundos en la C-Chain de Avalanche pública. Metal Blockchain parametriza Snowman con umbral del 80% versus el 67% estándar, logrando finality de menos de 0.5 segundos. <a href="https://build.avax.network/docs/primary-network/avalanche-consensus" target="_blank" rel="noopener">build.avax.network</a></div></div>
+    <div class="fn" id="fn11"><div class="fn-n">[11]</div><div class="fn-text">Chainalysis (2023). "Bridge Hacks." Los puentes cross-chain han acumulado más de $2.8 billones en pérdidas, representando el 40% de todo el valor hackeado en Web3. Cada conexión bilateral entre blockchains requiere un contrato de puente con sus propios vectores de ataque. <a href="https://www.chainalysis.com/blog/cross-chain-bridge-hacks-2022/" target="_blank" rel="noopener">chainalysis.com</a></div></div>
+    <div class="fn" id="fn12"><div class="fn-n">[12]</div><div class="fn-text">Metallicus / Cointelegraph (2023, mayo). "Federal Reserve's FedNow will connect with Metal Blockchain." Marshall Hayner describe la visión de bank chains interconectadas donde todas las instituciones se comunican a través de una infraestructura compartida sin puentes externos. El problema del ODL con 9.730 corredores potenciales fue el catalizador del consorcio Open USD en 2026. <a href="https://cointelegraph.com/news/federal-reserve-s-fednow-will-integrate-with-metal-blockchain" target="_blank" rel="noopener">cointelegraph.com</a></div></div>
+    <div class="fn" id="fn13"><div class="fn-n">[13]</div><div class="fn-text">Ava Labs (2024, diciembre 16). "Etna Upgrade Activated." El upgrade Etna activado el 16 de diciembre de 2024 cambió el modelo económico de las subredes de Avalanche: de un stake continuo de 2.000 AVAX a una tarifa mensual de 1.33 AVAX por validador. <a href="https://eco.com/support/en/articles/12168599-what-is-avalanche-avax-l1s-and-subnets-in-2026" target="_blank" rel="noopener">eco.com</a></div></div>
+    <div class="fn" id="fn14"><div class="fn-n">[14]</div><div class="fn-text">Avalaunch (2024). "Avalanche's Snowman Consensus Protocol." Documenta que "Scalability — Enabled by its subsampling process, Snowman Consensus ensures that the number of messages each node sends remains the same, whether the network is made up of 100 or 100,000 nodes." <a href="https://blog.avalaunch.app/avalanches-snowman-consensus-protocol/" target="_blank" rel="noopener">avalaunch.app</a></div></div>
+    <div class="fn" id="fn15"><div class="fn-n">[15]</div><div class="fn-text">Metallicus (2024, octubre 22). "Metallicus Supports the FedNow Service." Certificación como proveedor de servicios FedNow con Send, Receive y Liquidity Management. Completado en febrero-marzo 2026 con Request for Payment. Metallicus es el único proveedor de infraestructura blockchain pública con las cuatro certificaciones FedNow. <a href="https://www.metallicus.com/blog/fednow" target="_blank" rel="noopener">metallicus.com</a></div></div>
+  </aside>
+
+  <div class="disclaimer">
+    Este artículo es informativo y no constituye asesoría financiera.<br>
+    Todas las referencias son verificables en las fuentes citadas. Publicado julio 2026.
+  </div>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var s = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('prog').style.width = (s/h*100)+'%';
+  });
+</script>
+</body>
+</html>
